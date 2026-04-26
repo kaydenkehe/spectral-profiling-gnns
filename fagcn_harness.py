@@ -129,12 +129,12 @@ def train_sweep(datasets, depths=(2, 3, 4), hidden_dims=(16, 32, 64), eps_values
                         acc, val_history = fit(model, g, masks, device=device)
                         accs.append(acc)
                         val_histories.append(val_history)
-                        print(f"{name} L={depth} H={hidden_dim} eps={eps} "
-                              f"seed={i} test={acc:.4f}")
+                        # print(f"{name} L={depth} H={hidden_dim} eps={eps} "
+                        #       f"seed={i} test={acc:.4f}")
 
                     results[name][(depth, hidden_dim, eps)] = (accs, val_histories)
-                    print(f"{name} L={depth} H={hidden_dim} eps={eps} "
-                          f"mean={np.mean(accs):.4f} ± {np.std(accs):.4f}")
+                    # print(f"{name} L={depth} H={hidden_dim} eps={eps} "
+                    #       f"mean={np.mean(accs):.4f} ± {np.std(accs):.4f}")
 
     return results
 
