@@ -9,10 +9,9 @@ from torch_geometric.utils import get_laplacian, to_dense_adj, subgraph
 import torch
 import matplotlib.pyplot as plt
 
-
 # collect graphs
 
-data_dir = './graph_data'
+data_dir = '../graph_data'
 
 cora_dataset = Planetoid(root=data_dir, name='Cora')
 amazon_dataset = Amazon(root=data_dir, name='Photo')
@@ -33,6 +32,18 @@ datasets = [cora_dataset, amazon_dataset, texas_dataset, chameleon_dataset, cite
 graphs = [dataset[0] for dataset in datasets]
 labels = [graph.y for graph in graphs]
 
+# compute homophily
+
+# add this function near compute_spectrum / compute_slp
+def compute_homophily(edge_index, labels):
+    N = labels.shape[0]
+    num_classes = labels.max().item() + 1
+    A = to_dense_adj(edge_index, max_num_nodes=N)[0]
+    src, dst = A.nonzero(as_tuple=True)
+    idx = labels[src] * num_classes + labels[dst]
+    co = torch.bincount(idx, minlength=num_classes**2).reshape(num_classes, num_classes).float()
+
+    return (co.diag() / co.sum(dim=1).clamp(min=1)).mean().item()
 
 # compute spectra
 
@@ -40,6 +51,7 @@ def compute_spectrum(edge_index, n):
     edge_index, edge_weight = get_laplacian(edge_index, normalization='sym', num_nodes=n)
     L = to_dense_adj(edge_index, edge_attr=edge_weight, max_num_nodes=n)[0]
     evals, evecs = torch.linalg.eigh(L)
+
     return evals, evecs
 
 # compute profile
@@ -65,8 +77,9 @@ for d, g, name in zip(datasets, graphs, names):
 
     evals_f, evecs_f = compute_spectrum(g.edge_index, n)
     cdf_f = compute_slp(evecs_f, g.y, C)
+    h = compute_homophily(g.edge_index, g.y)
 
-    results[name] = (evals_f, cdf_f)
+    results[name] = (evals_f, cdf_f, h)
 
 # plot
 
@@ -76,10 +89,10 @@ fig, axes = plt.subplots(n_rows, n_cols,
                          sharex=True, sharey=True)
 axes_flat = axes.flatten()
 
-for ax, (name, (evals_f, cdf_f)) in zip(axes_flat, results.items()):
+for ax, (name, (evals_f, cdf_f, h)) in zip(axes_flat, results.items()):
     ax.step(evals_f.cpu().numpy(), cdf_f.cpu().numpy(),
             where='post', label='full', linewidth=1.5)
-    ax.set_title(name, fontsize=10)
+    ax.set_title(f'{name} (h={h:.2f})', fontsize=10)
     ax.set_xlim(0, 2)
     ax.set_ylim(0, 1.02)
     ax.grid(alpha=0.3)

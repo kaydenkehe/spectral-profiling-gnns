@@ -6,7 +6,7 @@ import torch
 import matplotlib.pyplot as plt
 
 torch.manual_seed(777)
-data_dir = './graph_data'
+data_dir = '../graph_data'
 os.makedirs(data_dir, exist_ok=True)
 
 # collect graphs
@@ -52,7 +52,7 @@ for d, g, name in zip(datasets, graphs, names):
     n = g.num_nodes
     evals_f, evecs_f = compute_spectrum(g.edge_index, n)
 
-    sub_n = int(0.9 * n)
+    sub_n = int(0.8 * n)
     subset_nodes = torch.randperm(n)[:sub_n]
     sub_edge_index, _ = subgraph(subset_nodes, g.edge_index, num_nodes=n, relabel_nodes=True)
     evals_s, evecs_s = compute_spectrum(sub_edge_index, sub_n)
