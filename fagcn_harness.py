@@ -34,7 +34,7 @@ class FAGCN(nn.Module):
         for i in range(self.num_layers):
             h = self.layers[i](h, raw, edge_index)
         h = self.t2(h)
-        return F
+        return n
 
 
 # get train, val, test masks
