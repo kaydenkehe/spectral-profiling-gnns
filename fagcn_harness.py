@@ -99,7 +99,7 @@ def fit(model, data, masks, lr=1e-2, weight_decay=5e-4, max_epochs=300, patience
 
 # run for all datasets
 
-def train_sweep(datasets, depths=(2, 3, 4), hidden_dims=(16, 32, 64), eps_values=(0.1, 0.3, 0.5), dropout=0.5, n_runs=3):
+def train_sweep(datasets, depths=(2, 3, 4), hidden_dims=(16, 32, 64), eps_values=(0.1, 0.2, 0.3, 0.4, 0.5), dropout=0.5, n_runs=3):
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     results = {}
 
