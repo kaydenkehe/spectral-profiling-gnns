@@ -31,7 +31,7 @@ class FAGCN(nn.Module):
         h = torch.relu(self.t1(h))
         h = F.dropout(h, p=self.dropout, training=self.training)
         raw = h
-        for i in range(self.layer_num):
+        for i in range(self.num_layers):
             h = self.layers[i](h, raw, edge_index)
         h = self.t2(h)
         return F
