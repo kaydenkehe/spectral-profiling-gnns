@@ -5,7 +5,7 @@ from torch_geometric.datasets import (
 )
 import torch_geometric.transforms as T
 
-data_dir = './graph_data'
+data_dir = '../graph_data'
 os.makedirs(data_dir, exist_ok=True)
 
 def build_datasets():
