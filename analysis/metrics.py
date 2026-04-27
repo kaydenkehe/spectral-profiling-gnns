@@ -1,4 +1,6 @@
 import os
+import json
+import numpy as np
 from torch_geometric.datasets import (   
     Planetoid, Amazon, Coauthor, WebKB, WikipediaNetwork,
     Actor, HeterophilousGraphDataset,
@@ -33,8 +35,11 @@ graphs = [dataset[0] for dataset in datasets]
 labels = [graph.y for graph in graphs]
 
 # compute homophily
+# this is a vectorized version given to me by AI - non-vectorized in homophily.py
+# computed by counting co-occurrences of class labels across edges,
+# then dividing the diagonal (same-class edges) by the row sums (total edges per class)
+# to get per-class homophily. Then, we average across classes to get an overall homophily score.
 
-# add this function near compute_spectrum / compute_slp
 def compute_homophily(edge_index, labels):
     N = labels.shape[0]
     num_classes = labels.max().item() + 1
@@ -54,7 +59,7 @@ def compute_spectrum(edge_index, n):
 
     return evals, evecs
 
-# compute profile
+# compute SLP
 
 def compute_slp(evecs, labels, num_classes):
     N = labels.shape[0]
@@ -69,6 +74,9 @@ def compute_slp(evecs, labels, num_classes):
 
     return cdf
 
+# compute metrics, write to json
+
+lambd_grid = np.linspace(0, 2, num=50)
 results = {}
 
 for d, g, name in zip(datasets, graphs, names):
@@ -79,7 +87,27 @@ for d, g, name in zip(datasets, graphs, names):
     cdf_f = compute_slp(evecs_f, g.y, C)
     h = compute_homophily(g.edge_index, g.y)
 
-    results[name] = (evals_f, cdf_f, h)
+    evals_np = evals_f.cpu().numpy()
+    cdf_np = cdf_f.cpu().numpy()
+
+    # gives number of evals <= each lambd in the grid,
+    # -1, gives index of largest eval <= lambd 
+    idx = np.searchsorted(evals_np, lambd_grid, side='right') - 1
+
+    # look up cdf at those indices
+    profile = np.where(idx >= 0, cdf_np[idx.clip(min=0)], 0.0)
+
+    results[name] = {
+        'num_classes': C,
+        'num_nodes': n,
+        'num_edges': g.edge_index.size(1),
+        'homophily': h,
+        'eigenvalues': lambd_grid.tolist(),
+        'cdf': profile.tolist(),
+    }
+
+with open('metrics.json', 'w') as f:
+    json.dump(results, f)
 
 # plot
 
@@ -89,10 +117,9 @@ fig, axes = plt.subplots(n_rows, n_cols,
                          sharex=True, sharey=True)
 axes_flat = axes.flatten()
 
-for ax, (name, (evals_f, cdf_f, h)) in zip(axes_flat, results.items()):
-    ax.step(evals_f.cpu().numpy(), cdf_f.cpu().numpy(),
-            where='post', label='full', linewidth=1.5)
-    ax.set_title(f'{name} (h={h:.2f})', fontsize=10)
+for ax, (name, r) in zip(axes_flat, results.items()):
+    ax.step(r['eigenvalues'], r['cdf'], where='post', label='full', linewidth=1.5)
+    ax.set_title(f'{name} (h={r['homophily']:.2f})', fontsize=10)
     ax.set_xlim(0, 2)
     ax.set_ylim(0, 1.02)
     ax.grid(alpha=0.3)
@@ -107,7 +134,7 @@ for ax in axes[:, 0]:
 
 axes_flat[n_cols - 1].legend(loc='lower right', fontsize=8)
 fig.tight_layout()
-plt.savefig('all_slp.png', dpi=150)
+plt.savefig('metrics.png', dpi=150)
 plt.show()
 
 

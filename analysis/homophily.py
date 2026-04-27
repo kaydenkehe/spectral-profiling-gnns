@@ -80,11 +80,12 @@ for name, graph in zip(names, graphs):
     for c, h in enumerate(homophily.tolist()):
         detail_rows.append({'dataset': name, 'class': c, 'homophily': h})
 
+# deprecated - done in metrics.py
 # summary: one row per dataset
-with open('homophily_summary.csv', 'w', newline='') as f:
-    writer = csv.DictWriter(f, fieldnames=summary_rows[0].keys())
-    writer.writeheader()
-    writer.writerows(summary_rows)
+# with open('homophily_summary.csv', 'w', newline='') as f:
+#     writer = csv.DictWriter(f, fieldnames=summary_rows[0].keys())
+#     writer.writeheader()
+#     writer.writerows(summary_rows)
 
 # detail: one row per (dataset, class)
 with open('homophily_per_class.csv', 'w', newline='') as f:
