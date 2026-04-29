@@ -5,7 +5,7 @@ run_dirs = [
     'gcn_20260426-071840',
     'fagcn_20260426-203611',
     'mlp_20260426-230354',
-    'hfgcn_TODO-REPLACE-WITH-TIMESTAMP',
+    'hfgcn_20260429-135103',
 ]
 
 runs_root = Path(__file__).parent
