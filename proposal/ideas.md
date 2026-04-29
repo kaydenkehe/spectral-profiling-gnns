@@ -1,0 +1,9 @@
+-We could try to predict the accuracy gap between architectures (like) $\Delta =  \text{acc}{\text{FAGCN}} - \text{acc}{\text{MLP}}$  from the SLP.
+- Can try to find a high-pass only model. This may be a bit artificial. But we could have a GCN model where the propagation operator is flipped, i.e. 
+    - GCN: $\hat{A} = \tilde{D}^{-1/2}(A + I)\tilde{D}^{-1/2}, \qquad h(\lambda) = (1 - \lambda)^L$
+    - GCN-HF: $L = I - \hat{A}, \qquad h(\lambda) = \lambda^L$
+- If we think is what is happening is that FAGCN can just approximate what GCN does for homophilic graphs, then we could write out some theory based on how FAGCN works on how it can adapt to just use low-frequency signal in our write-up.
+- Try to see if our claim "a linear spectral label profile indicates no graph–label alignment, so an MLP should work best" holds true.
+- Instead of thinking about classification over architectures, we could do regression on the accuracy gap between architectures, based on the SLP.
+- Certainly we want to try this on the big datasets once we validate in these torch_geometric.datasets what we want to run on bigger graphs.
+- Ege: probably in spectral-profling-gnns/spectral we run the other set of experiments for spectral gnns. ANd we need to do the polynomial basis ideas.
