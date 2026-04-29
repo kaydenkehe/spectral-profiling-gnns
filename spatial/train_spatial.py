@@ -6,13 +6,15 @@ from datasets import build_datasets
 
 # model selection
 
-model = 'mlp'
+model = 'hfgcn'
 if model == 'gcn':
     from gcn_harness import train_sweep
 elif model == 'fagcn':
     from fagcn_harness import train_sweep
 elif model == 'mlp':
     from mlp_harness import train_sweep
+elif model == 'hfgcn':
+    from hfgcn_harness import train_sweep
 
 # setup dir
 
