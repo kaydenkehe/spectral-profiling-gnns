@@ -1,0 +1,125 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{natbib}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, fit, calc}
+
+\hypersetup{colorlinks=true, linkcolor=blue!60!black,
+  urlcolor=blue!60!black, citecolor=blue!60!black}
+
+\newcommand{\Lap}{\mathcal{L}}
+\newcommand{\Ytil}{\widetilde{Y}}
+
+\title{Spectral Label Profiles for Graph Neural Network Filter Selection}
+\author{Ege \c{C}akar, Kayden Kehe, Dries Rooryck, Lia Zheng \\ CS 2252 --- Final Project Proposal}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Broad Strokes}
+We propose a framework for cheaply predicting optimal graph neural network (GNN) architectures for node-prediction on graphs from spectral properties of the input graphs to these GNNs. Our method is motivated by the intuition that using the spectral information of the input graph distribution is a compression of the structural qualities (neighborhood information, hierarchy) of the graphs that are important for the downstream task while being less computationally inexpensive.
+
+Take a set of graphs as training data. On one graph, we train multiple GNNs (see Models section) for node prediction and then acquire a \textbf{label} of what architecture performs best on this input graph. On the same graph $G$, we get the Laplacian $L(G),$ do eigen-decomposition to get a set of eigenvectors, compute the spectral label profile (equation 1), to finally acquire \textbf{features} of the spectral label profile (see Evaluation section). We use these features and labels to train a simple multiclass classifier (this could be simple multiclass logistic regression, or a tree-based classifier) to predict which GNN architecture to use for test-time input graphs. The success of the classifier indicates how predictive spectral qualities are of model architecture across a broad swathe of input graphs. This is a big value-add for researchers who want a cheap way to understand which GNN architecture is likely to work well on their input graph (order of minutes), as opposed to fully training a broad swathe of GNN architectures (hours on a GPU).
+
+\section{Introduction}
+
+A \textbf{graph neural network} (GNN) performs node-level prediction by iteratively aggregating each node's representation with those of its neighbors. In the linear case, an $L$-layer GNN computes $h(\Lap)\,X$ for some degree-$L$ polynomial $h$ and node-feature matrix $X$, where $\Lap = I - D^{-1/2}AD^{-1/2}$ is the normalized Laplacian. In the eigenbasis $\Lap = U\Lambda U^\top$, this acts diagonally: eigenvector component $u_i^\top X$ is scaled by $h(\lambda_i)$. Thus, a GNN is a \textbf{spectral filter}, and choosing an architecture is choosing a frequency response $h(\lambda)$ \citep{nt2019lowpass}.
+
+Different architectures yield different filters. \emph{Spatial GNNs}
+define $h$ implicitly: GCN gives $h(\lambda) = (1-\lambda)^L$ (low-pass),
+while FAGCN \citep{bo2021fagcn} attends to high-frequency modes.
+\emph{Spectral GNNs} parameterize $h$ explicitly as a polynomial in a
+chosen basis: Chebyshev (ChebNet), Bernstein (BernNet), or monomials
+$(1-\lambda)^k$ (GPR-GNN). Through their respective techniques, both avoid the explicit decomposition of $L$, staying computationally feasible.
+
+We propose a \textbf{training-free diagnostic} that reads the answer off the exact Laplacian spectrum of the training subgraph. Let $G_{\text{train}}$ be the subgraph induced by the training nodes, with corresponding eigenvalues $\lambda_i \in [0, 2]$ and eigenvectors $u_i$ of the symmetric normalized Laplacian. Let $Y \in \{0,1\}^{n_{\text{train}} \times C}$ be the one-hot label matrix for the training set, and $\tilde{Y}$ its column-centered version. 
+
+To prevent majority classes from dominating the signal under class imbalance, we compute the frequency distribution independently per class. Let $\tilde{Y}_{\cdot c}$ denote the $c$-th column of $\tilde{Y}$. Define the discrete frequency response for class $c$ as \begin{equation}p_i^{(c)} = (u_i^\top \tilde{Y}_{\cdot c})^2 / \lVert \tilde{Y}_{\cdot c} \rVert_2^2.\label{eq:p_i}\end{equation}
+
+The \textbf{spectral label profile} evaluates the cumulative distribution function (CDF) of the balanced frequency response up to a frequency threshold $\lambda^* \in [0,2]$:
+\begin{equation}
+  \Pi(\lambda^*) \;=\; \sum_{i:\, \lambda_i \leq \lambda^*} \left( \frac{1}{C} \sum_{c=1}^C p_i^{(c)} \right) \;\in\; [0,1].
+  \label{eq:pi_lambda}
+\end{equation}
+The term $p_i = \frac{1}{C} \sum_{c=1}^C p_i^{(c)}$ forms a balanced discrete distribution over the exact graph frequencies, and $\Pi(\lambda^*)$ measures \emph{the average fraction of label variation explained by all frequencies up to $\lambda^*$}. A profile $\Pi$ with a steep ascent near $\lambda=0$ indicates low-frequency labels (homophily)---use a low-pass filter. A steep ascent near $\lambda=2$ indicates high-frequency labels (heterophily)---use an adaptive or high-pass filter. A linear profile $\Pi(\lambda^*) \approx \lambda^*/2$ indicates no graph--label alignment---use an MLP. Computing this exact profile requires a full symmetric eigendecomposition over $G_{\text{train}}$, which operates in $\mathcal{O}(n_{\text{train}}^3)$ time but executes rapidly on modern GPU hardware without requiring model training for all graphs that we will be dealing with.
+
+\section{Research Questions}
+
+\begin{description}[leftmargin=0.5em, style=nextline]
+  \item[RQ1: Spatial GNN selection.]
+    Does the spectral profile $\Pi$ predict which filter class (low-pass, high-pass,
+    learnable polynomial) achieves the best node-classification
+    accuracy on a given graph? Does it outperform the much simpler adjusted homophily metric
+    \citep{platonov2023characterizing}?
+
+  \item[RQ2: Spectral GNN basis and order selection.]
+    Can $\Pi$ guide the choice of polynomial basis (Chebyshev,
+    Bernstein, monomial) for spectral GNNs? The label
+    energy profile implied by $\Pi$ determines an ideal filter shape;
+    different bases approximate different shapes with different efficiency
+    at a given $K$. We will also investigate how the performance of our prescriptive method for architecture selection varies with $K$.
+
+\end{description}
+
+\section{Prior Work}
+
+\citet{nt2019lowpass} showed GCN is a low-pass filter; we ask
+\emph{when} low-pass is the right choice. \citet{bo2021fagcn} observed
+heterophilic graphs need high-frequency components but gave no
+quantitative diagnostic. \citet{platonov2023characterizing} defined adjusted
+homophily and label informativeness---probabilistic, not spectral, and
+they leave open whether a finer measure dominates. For spectral GNNs, \citet{defferrard2016chebnet},
+\citet{he2021bernnet}, and \citet{chien2021gprgnn} introduced Chebyshev,
+Bernstein, and monomial bases, but no prior work uses label-spectral
+information to recommend among them.
+
+\section{Approach}
+
+\paragraph{Datasets.} We will validate our approach on a synthetic graphs, and then move onto evaluating our approach on real graphs.  \emph{Synthetic}: SBMs with varying spectral gap and homophily; Erd\H{o}s--R\'enyi.
+\emph{Real}: Cora, Amazon-Photo, Texas, Chameleon, Pubmed, and more \citep{hu2020ogb, rozemberczki2021twitch, weber2019anti}.
+
+\paragraph{Models.}
+GCN \citep{kipf2017gcn} and FAGCN \citep{bo2021fagcn} (spatial, at depths $L \in \{2,4\}$); ChebNet \citep{defferrard2016chebnet}, BernNet \citep{he2021bernnet},
+and GPR-GNN \citep{chien2021gprgnn} (spectral, at orders $K \in \{4\}$).
+Each trained with 3 seeds. We may choose a subset of these or all of them.
+
+\paragraph{Evaluation.}
+To fully capture the shape of the spectral label profile for automated model selection, we extract a fixed-length shape embedding from the exact spectrum. We directly compute the exact Chebyshev moments $\mu_m$ of the underlying discrete spectral density $p_i$ up to degree $M=4$. This projection yields an embedding $\vec{x} = [\mu_1, \dots, \mu_4]^\top$ that maps varying graph spectra into a shared polynomial basis, such as moments in a Chebyshev basis. Using these embeddings, we will train a multinomial logistic regression classifier to predict the empirically optimal architecture class across our graph pool. We will report the classification accuracy of this meta-learner against baseline heuristics like adjusted homophily.
+
+\section{Timeline}
+
+\begin{center}
+\begin{tabular}{@{}cl@{}}
+  \toprule
+  \textbf{Week} & \textbf{Focus} \\
+  \midrule
+  1 & Spectral feature pipeline, graph pool, training harness. \\
+  2 & Full training sweep; RQ1 analysis (spatial GNN selection). \\
+  3 & RQ2 analysis (spectral GNN basis/order). \\
+  4 & Last-minute experiments, figures, and writeup. \\
+  \bottomrule
+\end{tabular}
+\end{center}
+
+\section{Fallback Plan}
+
+If our classifier fails to provide a reliable prescription for architecture selection, we will investigate the underlying causes of this underperformance. For instance, noisy results could be driven by the learning dynamics of certain GNN architectures, or our evaluation metric might struggle due to a lack of sufficient training data. To address these specific issues, we can pivot by evaluating a broader range of architectures or exploring alternative approximations of the CDF.
+
+If our results demonstrate that the spectral metric cannot reliably predict optimal architectures, we will report this as a meaningful negative finding.
+
+\pagebreak
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+
+
+\end{document} 
