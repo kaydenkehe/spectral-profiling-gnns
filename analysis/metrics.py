@@ -38,7 +38,7 @@ labels = [graph.y for graph in graphs]
 # this is a vectorized version given to me by AI - non-vectorized in homophily.py
 # computed by counting co-occurrences of class labels across edges,
 # then dividing the diagonal (same-class edges) by the row sums (total edges per class)
-# to get per-class homophily. Then, we average across classes to get an overall homophily score.
+# to get per-class homophily. Then we average across classes to get an overall homophily score.
 
 def compute_homophily(edge_index, labels):
     N = labels.shape[0]
