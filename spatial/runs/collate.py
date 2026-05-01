@@ -2,10 +2,10 @@ from pathlib import Path
 import pandas as pd
 
 run_dirs = [
-    'gcn_20260426-071840',
-    'fagcn_20260426-203611',
-    'mlp_20260426-230354',
-    'hfgcn_20260429-135103',
+    'gcn_20260501-212928',
+    'fagcn_20260501-213130',
+    'mlp_20260501-212825',
+    'hfgcn_20260501-212658',
 ]
 
 runs_root = Path(__file__).parent
