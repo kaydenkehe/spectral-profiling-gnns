@@ -96,9 +96,16 @@ class BatchedJacobiConv(nn.Module):
 
 def get_split_masks(data, split_idx=0):
     if hasattr(data, "train_mask") and data.train_mask is not None:
-        if data.train_mask.dim() == 2:
-            return data.train_mask[:, split_idx], data.val_mask[:, split_idx], data.test_mask[:, split_idx]
-        return data.train_mask, data.val_mask, data.test_mask
+        def select_mask(mask):
+            if mask.dim() == 2:
+                return mask[:, split_idx % mask.size(1)]
+            return mask
+
+        return (
+            select_mask(data.train_mask),
+            select_mask(data.val_mask),
+            select_mask(data.test_mask),
+        )
 
     n = data.num_nodes
     perm = torch.randperm(n)
