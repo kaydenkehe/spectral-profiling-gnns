@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch_geometric.utils import get_laplacian
 from copy import deepcopy
+from pathlib import Path
 import numpy as np
 
 # fixed high-pass GCN: same as GCN but propagates with L = I - A_hat
@@ -38,21 +39,12 @@ class HFGCN(nn.Module):
         x = torch.sparse.mm(L, x)
         return x
 
-# get train, val, test masks
+# load 80/10/10 train, val, test masks from spatial/masks/
 
-def get_splits(data, train_r = 0.6, val_r = 0.2):
-    n = data.num_nodes
-    perm = torch.randperm(n)
-    n_tr = int(train_r * n)
-    n_val = int(val_r * n)
-    train_mask = torch.zeros(n, dtype=torch.bool)
-    val_mask = torch.zeros(n, dtype=torch.bool)
-    test_mask = torch.zeros(n, dtype=torch.bool)
-    train_mask[perm[:n_tr]] = True
-    val_mask[perm[n_tr:n_tr + n_val]] = True
-    test_mask[perm[n_tr + n_val:]] = True
-
-    return train_mask, val_mask, test_mask
+def load_masks(name):
+    p = Path(__file__).resolve().parent / 'masks' / f'{name}.pt'
+    m = torch.load(p)
+    return m['train_mask'], m['val_mask'], m['test_mask']
 
 # train one model. val early stopping. return test acc
 
@@ -106,6 +98,7 @@ def train_sweep(datasets, depths=(2, 3, 4), hidden_dims=(16, 32, 64), n_runs=3):
 
     for name, d in datasets:
         g = d[0]
+        masks = load_masks(name)
         results[name] = {}
         for depth in depths:
             for hidden_dim in hidden_dims:
@@ -115,7 +108,6 @@ def train_sweep(datasets, depths=(2, 3, 4), hidden_dims=(16, 32, 64), n_runs=3):
                 for i in range(n_runs):
                     torch.manual_seed(i)
                     np.random.seed(i)
-                    masks = get_splits(g)
 
                     model = HFGCN(
                         in_dim=g.x.size(1),
