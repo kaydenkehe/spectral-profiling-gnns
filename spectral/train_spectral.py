@@ -1,15 +1,16 @@
 import argparse
 import csv
+import importlib
 import json
 from datetime import datetime
 from pathlib import Path
 
 from datasets import build_datasets
-from poly_harness import train_sweep
 
 
 def parse_args():
     p = argparse.ArgumentParser()
+    p.add_argument("--harness", choices=["poly", "paper"], default="poly")
     p.add_argument("--models", nargs="+", default=["GPRGNN", "ChebGNN", "BernNet", "JacobiConv"])
     p.add_argument("--k", nargs="+", type=int, default=[4, 8, 10])
     p.add_argument("--hidden", nargs="+", type=int, default=[64])
@@ -23,6 +24,14 @@ def parse_args():
     p.add_argument("--dprate", type=float, default=0.0)
     p.add_argument("--out-dir", default="runs")
     return p.parse_args()
+
+
+def load_train_sweep(harness):
+    module_name = {
+        "poly": "poly_harness",
+        "paper": "paper_faithful_harness",
+    }[harness]
+    return importlib.import_module(module_name).train_sweep
 
 
 def write_outputs(results, args, run_dir):
@@ -66,9 +75,10 @@ def write_outputs(results, args, run_dir):
 
 def main():
     args = parse_args()
+    train_sweep = load_train_sweep(args.harness)
 
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    run_dir = Path(args.out_dir) / f"poly_{timestamp}"
+    run_dir = Path(args.out_dir) / f"{args.harness}_{timestamp}"
     run_dir.mkdir(parents=True, exist_ok=True)
 
     datasets = build_datasets()

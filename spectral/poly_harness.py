@@ -127,13 +127,15 @@ class BernNet(nn.Module):
         return z
 
 class JacobiConv(nn.Module):
-    operator = 'A_hat'
+    operator = 'A_norm'
     def __init__(self, in_dim, hidden_dim, num_classes, k_val,
-                 a=1.0, b=1.0, l=-1.0, r=1.0,
+                 a=1.0, b=1.0,
                  dropout=0.5, dprate=0.0):
         super().__init__()
+        if a <= -1.0 or b <= -1.0:
+            raise ValueError("Jacobi a and b must be greater than -1.")
         self.K = k_val
-        self.a, self.b, self.l, self.r = a, b, l, r
+        self.a, self.b = a, b
         self.dropout = dropout
         self.dprate = dprate
 
@@ -145,44 +147,36 @@ class JacobiConv(nn.Module):
             nn.Linear(hidden_dim, num_classes),
         )
 
-        # Filter coefficients gamma_k. Random small init — no canonical Jacobi prior.
-        self.gamma = nn.Parameter(torch.randn(self.K + 1) * 0.1)
+        # One polynomial filter per output channel, as in JacobiConv.
+        self.gamma = nn.Parameter(torch.randn(self.K + 1, num_classes) * 0.1)
 
-    def _jacobi_step(self, L, P_prev, P_curr, A_hat):
+    def _jacobi_step(self, k, P_prev, P_curr, A_norm):
         """Compute P_L from P_{L-1} (P_curr) and P_{L-2} (P_prev)."""
-        a, b, l, r = self.a, self.b, self.l, self.r
+        a, b = self.a, self.b
 
-        if L == 1:
-            coef1 = (a - b) / 2 - (a + b + 2) / 2 * (l + r) / (r - l)
-            coef2 = (a + b + 2) / (r - l)
-            return coef1 * P_curr + coef2 * spmm(A_hat, P_curr)
+        if k == 1:
+            return ((a - b) / 2) * P_curr + ((a + b + 2) / 2) * spmm(A_norm, P_curr)
 
-        # general L >= 2 recurrence
-        coef_L     = 2 * L * (L + a + b) * (2 * L - 2 + a + b)
-        coef_Lm1_1 = (2 * L + a + b - 1) * (2 * L + a + b) * (2 * L + a + b - 2)
-        coef_Lm1_2 = (2 * L + a + b - 1) * (a**2 - b**2)
-        coef_Lm2   = 2 * (L - 1 + a) * (L - 1 + b) * (2 * L + a + b)
+        theta = ((2 * k + a + b) * (2 * k + a + b - 1)) / (2 * k * (k + a + b))
+        theta_prime = (
+            (2 * k + a + b - 1) * (a**2 - b**2)
+        ) / (2 * k * (k + a + b) * (2 * k + a + b - 2))
+        theta_double = (
+            (k + a - 1) * (k + b - 1) * (2 * k + a + b)
+        ) / (k * (k + a + b) * (2 * k + a + b - 2))
 
-        tmp1 = coef_Lm1_1 / coef_L
-        tmp2 = coef_Lm1_2 / coef_L
-        tmp3 = coef_Lm2   / coef_L
+        return theta * spmm(A_norm, P_curr) + theta_prime * P_curr - theta_double * P_prev
 
-        # rescale from [-1, 1] to [l, r]: x -> (2x - (l+r)) / (r - l)
-        tmp1_scaled = tmp1 * (2 / (r - l))
-        tmp2_scaled = tmp1 * ((r + l) / (r - l)) + tmp2
-
-        return tmp1_scaled * spmm(A_hat, P_curr) - tmp2_scaled * P_curr - tmp3 * P_prev
-
-    def forward(self, x, A_hat):
+    def forward(self, x, A_norm):
         h = self.encoder(x)
         h = F.dropout(h, p=self.dprate, training=self.training)
 
-        # P_0(A_hat) h = h
+        # P_0(A_norm) h = h
         P_prev = h
-        P_curr = self._jacobi_step(1, None, P_prev, A_hat)
+        P_curr = self._jacobi_step(1, None, P_prev, A_norm)
         z = self.gamma[0] * P_prev + self.gamma[1] * P_curr
         for k in range(2, self.K + 1):
-            P_next = self._jacobi_step(k, P_prev, P_curr, A_hat)
+            P_next = self._jacobi_step(k, P_prev, P_curr, A_norm)
             z = z + self.gamma[k] * P_next
             P_prev, P_curr = P_curr, P_next
         return z
@@ -205,12 +199,16 @@ def get_splits(data, train_r = 0.6, val_r = 0.2):
 
 # train one model. val early stopping. return test acc
 def make_operators(data, device):
-    """Build A_hat (for GPR/Jacobi), L_sym (for BernNet), L_tilde (for ChebNet)."""
+    """Build operators used by the polynomial-basis models."""
     N = data.num_nodes
 
-    # A_hat = D̃^{-1/2}(A+I)D̃^{-1/2}, eigenvalues in [-1, 1]
+    # A_hat = D̃^{-1/2}(A+I)D̃^{-1/2}, used by GPR-style propagation.
     ei, ew = gcn_norm(data.edge_index, num_nodes=N, add_self_loops=True, dtype=torch.float)
     A_hat = torch.sparse_coo_tensor(ei, ew, (N, N)).coalesce().to(device)
+
+    # A_norm = D^{-1/2}AD^{-1/2}, used by JacobiConv as P_k(I - L_sym).
+    ei_A, ew_A = gcn_norm(data.edge_index, num_nodes=N, add_self_loops=False, dtype=torch.float)
+    A_norm = torch.sparse_coo_tensor(ei_A, ew_A, (N, N)).coalesce().to(device)
 
     # L_sym = I - D^{-1/2} A D^{-1/2}, eigenvalues in [0, 2], no self-loops
     ei_L, ew_L = get_laplacian(data.edge_index, normalization='sym', num_nodes=N)
@@ -222,7 +220,7 @@ def make_operators(data, device):
     ew_tilde[self_loop_mask] -= 1.0
     L_tilde = torch.sparse_coo_tensor(ei_L, ew_tilde, (N, N)).coalesce().to(device)
 
-    return {'A_hat': A_hat, 'L_sym': L_sym, 'L_tilde': L_tilde}
+    return {'A_hat': A_hat, 'A_norm': A_norm, 'L_sym': L_sym, 'L_tilde': L_tilde}
 
 
 def fit(model, data, masks, operators, lr=1e-2, weight_decay=5e-4, max_epochs=300, patience=20, device='cuda'):
