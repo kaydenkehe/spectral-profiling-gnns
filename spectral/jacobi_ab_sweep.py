@@ -1,6 +1,7 @@
 import argparse
 import csv
 import json
+import sys
 import time
 from datetime import datetime
 from itertools import product
@@ -13,6 +14,20 @@ import torch.nn.functional as F
 from torch_geometric.nn.conv.gcn_conv import gcn_norm
 
 from datasets import build_datasets
+
+
+class Tee:
+    def __init__(self, *streams):
+        self.streams = streams
+
+    def write(self, data):
+        for stream in self.streams:
+            stream.write(data)
+            stream.flush()
+
+    def flush(self):
+        for stream in self.streams:
+            stream.flush()
 
 
 class BatchedJacobiConv(nn.Module):
@@ -228,6 +243,10 @@ def main():
     out_path = run_dir / out_name
     details_path = out_path.with_name(f"{out_path.stem}_details{out_path.suffix}")
     config_path = out_path.with_name(f"{out_path.stem}_config.json")
+    log_path = run_dir / "progress.log"
+    log_file = open(log_path, "a", buffering=1)
+    sys.stdout = Tee(sys.stdout, log_file)
+    sys.stderr = Tee(sys.stderr, log_file)
 
     a_vals = np.arange(args.a_min, args.a_max + 1e-9, args.step)
     b_vals = np.arange(args.b_min, args.b_max + 1e-9, args.step)
@@ -239,6 +258,7 @@ def main():
     print(f"grid: {len(a_vals)} x {len(b_vals)} = {len(ab_pairs)} configs")
     print(f"K values: {args.K}")
     print(f"output directory: {run_dir}")
+    print(f"progress log: {log_path}")
 
     with open(config_path, "w") as f:
         json.dump(vars(args), f, indent=2)
