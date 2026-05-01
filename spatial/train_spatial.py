@@ -6,7 +6,7 @@ from datasets import build_datasets
 
 # model selection
 
-model = 'hfgcn'
+model = 'fagcn'
 if model == 'gcn':
     from gcn_harness import train_sweep
 elif model == 'fagcn':
