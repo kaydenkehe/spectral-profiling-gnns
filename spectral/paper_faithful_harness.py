@@ -268,6 +268,7 @@ def train_sweep(
     max_epochs=300,
     patience=20,
     device=None,
+    verbose=True,
 ):
     if device is None:
         device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -275,8 +276,16 @@ def train_sweep(
         models = tuple(MODELS.keys())
 
     results = {}
-    for name, dataset in datasets:
+    total_datasets = len(datasets)
+    for dataset_idx, (name, dataset) in enumerate(datasets, start=1):
         graph = dataset[0]
+        if verbose:
+            print(
+                f"[{dataset_idx}/{total_datasets}] {name}: "
+                f"{graph.num_nodes} nodes, {graph.num_edges} edges, "
+                f"{dataset.num_classes} classes",
+                flush=True,
+            )
         operators = make_operators(graph, device)
         results[name] = {}
 
@@ -288,6 +297,14 @@ def train_sweep(
                         for wd_value in values(weight_decay):
                             for epoch_value in values(max_epochs):
                                 for patience_value in values(patience):
+                                    if verbose:
+                                        print(
+                                            f"  {name} | {model_name} | K={k} | "
+                                            f"hidden={hidden_dim} | lr={lr_value:g} | "
+                                            f"wd={wd_value:g} | epochs={epoch_value} | "
+                                            f"patience={patience_value}",
+                                            flush=True,
+                                        )
                                     accs = []
                                     val_histories = []
                                     for seed in range(n_runs):
@@ -316,6 +333,12 @@ def train_sweep(
                                         )
                                         accs.append(acc)
                                         val_histories.append(history)
+                                        if verbose:
+                                            print(
+                                                f"    seed {seed + 1}/{n_runs}: "
+                                                f"test={acc:.4f}, epochs_ran={len(history)}",
+                                                flush=True,
+                                            )
 
                                     key = (
                                         model_name, k, hidden_dim,

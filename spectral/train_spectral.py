@@ -23,6 +23,7 @@ def parse_args():
     p.add_argument("--dropout", type=float, default=0.5)
     p.add_argument("--dprate", type=float, default=0.0)
     p.add_argument("--out-dir", default="runs")
+    p.add_argument("--quiet", action="store_true")
     return p.parse_args()
 
 
@@ -94,6 +95,15 @@ def main():
     run_dir.mkdir(parents=True, exist_ok=True)
 
     datasets = build_datasets()
+    print(f"Run directory: {run_dir}", flush=True)
+    print(f"Datasets: {len(datasets)}", flush=True)
+    print(
+        "Sweep: "
+        f"models={args.models}, k={args.k}, hidden={args.hidden}, runs={args.runs}, "
+        f"epochs={args.epochs}, patience={args.patience}, lr={args.lr}, "
+        f"weight_decay={args.weight_decay}, device={args.device}",
+        flush=True,
+    )
 
     results = train_sweep(
         datasets,
@@ -108,6 +118,7 @@ def main():
         max_epochs=args.epochs,
         patience=args.patience,
         device=args.device,
+        verbose=not args.quiet,
     )
 
     write_outputs(results, args, run_dir)
