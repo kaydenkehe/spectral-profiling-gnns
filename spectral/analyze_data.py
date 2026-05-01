@@ -1,5 +1,6 @@
 import argparse
 import os
+from datetime import datetime
 from pathlib import Path
 
 os.environ.setdefault("MPLCONFIGDIR", "/private/tmp/spectral-profiling-matplotlib")
@@ -248,7 +249,18 @@ def slp_features_from_profiles(profiles, n_bins, out=None):
     return features
 
 
-def plot_regression_predictions(predictions, K, n_bins, out):
+def select_feature_cols(features, feature_set):
+    slp_cols = [c for c in features.columns if c.startswith("slp_bin_")]
+    if feature_set == "slp":
+        return slp_cols
+    if feature_set == "homophily":
+        return ["homophily"]
+    if feature_set == "slp_homophily":
+        return slp_cols + ["homophily"]
+    raise ValueError(f"Unknown feature set: {feature_set}")
+
+
+def plot_regression_predictions(predictions, K, n_bins, out, feature_set):
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
@@ -263,12 +275,12 @@ def plot_regression_predictions(predictions, K, n_bins, out):
         ax.plot([lo, hi], [lo, hi], color="black", linewidth=1, linestyle="--")
         ax.set_xlabel(f"actual {target}")
         ax.set_ylabel(f"LOO predicted {target}")
-        ax.set_title(f"{target}, K={K}, {n_bins} SLP bins")
+        ax.set_title(f"{target}, K={K}, {feature_set}, bins={n_bins}")
         ax.grid(alpha=0.25)
         for _, row in predictions.iterrows():
             ax.annotate(row["dataset"], (row[f"actual_{target}"], row[f"pred_{target}"]), fontsize=7)
     fig.tight_layout()
-    path = out / f"slp_regression_K{K}_bins_{n_bins}.png"
+    path = out / f"regression_{feature_set}_K{K}_bins_{n_bins}.png"
     fig.savefig(path, dpi=180)
     plt.close(fig)
     return path
@@ -287,7 +299,7 @@ def lookup_nearest_config(landscape, dataset, K, pred_a, pred_b):
     return row["a"], row["b"], row["mean_test_acc"]
 
 
-def run_slp_regression(winners, landscape, out, min_bins, max_bins, make_plots):
+def run_slp_regression(winners, landscape, out, min_bins, max_bins, make_plots, feature_set):
     targets = winners.copy()
     targets["dataset_key"] = targets["dataset"].map(dataset_key)
     profiles = compute_slp_profiles(targets["dataset"], out)
@@ -304,7 +316,7 @@ def run_slp_regression(winners, landscape, out, min_bins, max_bins, make_plots):
     for K, k_targets in targets.groupby("K"):
         for n_bins in range(min_bins, max_bins + 1):
             features = slp_features_from_profiles(profiles, n_bins, out=out)
-            feature_cols = [c for c in features.columns if c.startswith("slp_bin_")]
+            feature_cols = select_feature_cols(features, feature_set)
             merged = k_targets.merge(features, on="dataset_key", suffixes=("", "_metrics"))
             if len(merged) < 3:
                 continue
@@ -333,6 +345,7 @@ def run_slp_regression(winners, landscape, out, min_bins, max_bins, make_plots):
 
             pred_rows = merged[["dataset", "K", "a", "b", "mean_test_acc"]].copy()
             pred_rows = pred_rows.rename(columns={"a": "actual_a", "b": "actual_b"})
+            pred_rows["feature_set"] = feature_set
             pred_rows["n_bins"] = n_bins
             pred_rows["pred_a"] = loo_pred[:, 0]
             pred_rows["pred_b"] = loo_pred[:, 1]
@@ -397,7 +410,7 @@ def run_slp_regression(winners, landscape, out, min_bins, max_bins, make_plots):
                 index=False,
             )
             if make_plots:
-                plot_regression_predictions(pred_rows, K, n_bins, out)
+                plot_regression_predictions(pred_rows, K, n_bins, out, feature_set)
 
             ridge = model.named_steps["ridgecv"]
             alpha = ridge.alpha_
@@ -408,6 +421,7 @@ def run_slp_regression(winners, landscape, out, min_bins, max_bins, make_plots):
                     coef_rows.append({
                         "K": K,
                         "n_bins": n_bins,
+                        "feature_set": feature_set,
                         "target": target_name,
                         "feature": feature_name,
                         "coef_standardized": coef_value,
@@ -418,6 +432,7 @@ def run_slp_regression(winners, landscape, out, min_bins, max_bins, make_plots):
             summary_rows.append({
                 "K": K,
                 "n_bins": n_bins,
+                "feature_set": feature_set,
                 "n_datasets": len(merged),
                 "train_r2_a": r2_score(y[:, 0], train_pred[:, 0]),
                 "train_r2_b": r2_score(y[:, 1], train_pred[:, 1]),
@@ -444,11 +459,11 @@ def run_slp_regression(winners, landscape, out, min_bins, max_bins, make_plots):
         )
         pd.DataFrame(coef_rows).to_csv(out / "slp_regression_coefficients.csv", index=False)
 
-        print("\nSLP regression summary")
+        print("\nRegression summary")
         print(summary.to_string(index=False))
 
 
-def analyze_jacobi(csv_path, out, min_bins, max_bins, make_plots):
+def analyze_jacobi(csv_path, out, min_bins, max_bins, make_plots, feature_set):
     df = pd.read_csv(csv_path)
     full_landscape = {"a", "b", "K", "mean_test_acc"}.issubset(df.columns)
     if "mean_test_acc" in df.columns:
@@ -516,7 +531,15 @@ def analyze_jacobi(csv_path, out, min_bins, max_bins, make_plots):
         heatmaps = make_jacobi_heatmaps(df, out)
         print(f"\nWrote {len(heatmaps)} Jacobi heatmaps")
 
-    run_slp_regression(best_by_dataset_k, df, out, min_bins, max_bins, make_plots)
+    run_slp_regression(
+        best_by_dataset_k,
+        df,
+        out,
+        min_bins,
+        max_bins,
+        make_plots,
+        feature_set,
+    )
 
 
 def infer_mode(input_path, requested_mode):
@@ -535,7 +558,9 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("input", help="train_spectral run dir or jacobi_ab_sweep CSV")
     p.add_argument("--mode", choices=["auto", "train", "jacobi"], default="auto")
-    p.add_argument("--slp-min-bins", type=int, default=4)
+    p.add_argument("--feature-set", choices=["slp", "homophily", "slp_homophily"],
+                   default="slp_homophily")
+    p.add_argument("--slp-min-bins", type=int, default=1)
     p.add_argument("--slp-max-bins", type=int, default=10)
     p.add_argument("--no-plots", action="store_true")
     p.add_argument("--out", default=None)
@@ -543,7 +568,9 @@ def main():
 
     input_path = Path(args.input)
     mode = infer_mode(input_path, args.mode)
-    default_out = input_path / "analysis" if input_path.is_dir() else input_path.with_suffix("") / "analysis"
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    analysis_root = input_path / "analysis" if input_path.is_dir() else input_path.with_suffix("") / "analysis"
+    default_out = analysis_root / timestamp
     out = Path(args.out) if args.out else default_out
     out.mkdir(parents=True, exist_ok=True)
 
@@ -556,6 +583,7 @@ def main():
             args.slp_min_bins,
             args.slp_max_bins,
             not args.no_plots,
+            args.feature_set,
         )
 
     print(f"\nWrote analysis tables to {out}")

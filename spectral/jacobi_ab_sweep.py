@@ -2,6 +2,7 @@ import argparse
 import csv
 import json
 import time
+from datetime import datetime
 from itertools import product
 from pathlib import Path
 
@@ -203,14 +204,21 @@ def parse_args():
     p.add_argument("--dprate", type=float, default=0.0)
     p.add_argument("--max-batch", type=int, default=100)
     p.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
-    p.add_argument("--out", default="jacobi_ab_sweep.csv")
+    p.add_argument("--out-dir", default="jacobi_ab_sweep")
+    p.add_argument("--out", default="summary.csv",
+                   help="Summary CSV filename written inside the timestamped output directory.")
     return p.parse_args()
 
 
 def main():
     args = parse_args()
     device = torch.device(args.device)
-    out_path = Path(args.out)
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    run_dir = Path(args.out_dir) / timestamp
+    run_dir.mkdir(parents=True, exist_ok=True)
+
+    out_name = Path(args.out).name
+    out_path = run_dir / out_name
     details_path = out_path.with_name(f"{out_path.stem}_details{out_path.suffix}")
     config_path = out_path.with_name(f"{out_path.stem}_config.json")
 
@@ -223,6 +231,7 @@ def main():
     print(f"device: {device}")
     print(f"grid: {len(a_vals)} x {len(b_vals)} = {len(ab_pairs)} configs")
     print(f"K values: {args.K}")
+    print(f"output directory: {run_dir}")
 
     with open(config_path, "w") as f:
         json.dump(vars(args), f, indent=2)
