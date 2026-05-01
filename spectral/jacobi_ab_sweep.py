@@ -1,17 +1,15 @@
 import argparse
 import csv
-import os
 import time
 from itertools import product
-from pathlib import Path
 
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import torch_geometric.transforms as T
-from torch_geometric.datasets import Planetoid, WebKB, WikipediaNetwork
 from torch_geometric.nn.conv.gcn_conv import gcn_norm
+
+from datasets import build_datasets
 
 
 class BatchedJacobiConv(nn.Module):
@@ -91,20 +89,6 @@ class BatchedJacobiConv(nn.Module):
             z = z + self.alpha[:, k].unsqueeze(1) * p_next
             p_prev, p_curr = p_curr, p_next
         return z
-
-
-def load_dataset(name, root):
-    name_lc = name.lower()
-    if name_lc == "cora":
-        return Planetoid(root=os.path.join(root, "Planetoid"), name="Cora",
-                         transform=T.NormalizeFeatures())
-    if name_lc in ("chameleon", "squirrel"):
-        return WikipediaNetwork(root=os.path.join(root, "WikipediaNetwork"),
-                                name=name_lc, transform=T.NormalizeFeatures())
-    if name_lc in ("texas", "wisconsin", "cornell"):
-        return WebKB(root=os.path.join(root, "WebKB"), name=name_lc.capitalize(),
-                     transform=T.NormalizeFeatures())
-    raise ValueError(f"Unknown dataset: {name}")
 
 
 def get_split_masks(data, split_idx=0):
@@ -189,8 +173,8 @@ def train_batched(model, x, y, A_norm, train_mask, val_mask, test_mask,
 def parse_args():
     p = argparse.ArgumentParser()
     p.add_argument("--datasets", nargs="+",
-                   default=["Cora", "Texas", "Wisconsin", "Chameleon", "Squirrel"])
-    p.add_argument("--data-root", default=str(Path(__file__).resolve().parents[1] / "graph_data"))
+                   default=["all"],
+                   help='Datasets to run, or "all" for the train_spectral dataset list.')
     p.add_argument("--a-min", type=float, default=-0.9)
     p.add_argument("--a-max", type=float, default=2.0)
     p.add_argument("--b-min", type=float, default=-0.9)
@@ -222,8 +206,22 @@ def main():
     print(f"device: {device}")
     print(f"grid: {len(a_vals)} x {len(b_vals)} = {len(ab_pairs)} configs")
 
-    for ds_name in args.datasets:
-        dataset = load_dataset(ds_name, args.data_root)
+    all_datasets = build_datasets()
+    if args.datasets == ["all"]:
+        selected_datasets = all_datasets
+    else:
+        wanted = {name.lower() for name in args.datasets}
+        selected_datasets = [
+            (name, dataset) for name, dataset in all_datasets
+            if name.lower() in wanted
+        ]
+        found = {name.lower() for name, _ in selected_datasets}
+        missing = sorted(wanted - found)
+        if missing:
+            available = ", ".join(name for name, _ in all_datasets)
+            raise ValueError(f"Unknown dataset(s): {', '.join(missing)}. Available: {available}")
+
+    for ds_name, dataset in selected_datasets:
         data = dataset[0]
         A_norm = build_A_norm(data, device)
         x = data.x.to(device)
