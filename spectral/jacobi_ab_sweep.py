@@ -180,7 +180,7 @@ def parse_args():
     p.add_argument("--b-min", type=float, default=-0.9)
     p.add_argument("--b-max", type=float, default=2.0)
     p.add_argument("--step", type=float, default=0.5)
-    p.add_argument("--K", type=int, default=4)
+    p.add_argument("--K", nargs="+", type=int, default=[4])
     p.add_argument("--seeds", nargs="+", type=int, default=[0, 1, 2])
     p.add_argument("--epochs", type=int, default=300)
     p.add_argument("--patience", type=int, default=50)
@@ -205,6 +205,7 @@ def main():
     rows = []
     print(f"device: {device}")
     print(f"grid: {len(a_vals)} x {len(b_vals)} = {len(ab_pairs)} configs")
+    print(f"K values: {args.K}")
 
     all_datasets = build_datasets()
     if args.datasets == ["all"]:
@@ -228,59 +229,62 @@ def main():
         y = data.y.to(device)
 
         print(f"\n=== {ds_name}: {data.num_nodes} nodes, {data.num_edges} edges ===")
-        per_pair = {pair: [] for pair in ab_pairs}
 
-        for seed in args.seeds:
-            torch.manual_seed(seed)
-            np.random.seed(seed)
-            train_mask, val_mask, test_mask = get_split_masks(data, split_idx=seed % 10)
-            train_mask = train_mask.to(device)
-            val_mask = val_mask.to(device)
-            test_mask = test_mask.to(device)
+        for K in args.K:
+            print(f"  K={K}")
+            per_pair = {pair: [] for pair in ab_pairs}
 
-            t0 = time.time()
-            for start in range(0, len(ab_pairs), args.max_batch):
-                chunk = ab_pairs[start:start + args.max_batch]
-                model = BatchedJacobiConv(
-                    in_dim=dataset.num_features,
-                    num_classes=dataset.num_classes,
-                    K=args.K,
-                    ab_pairs=chunk,
-                    dropout=args.dropout,
-                    dprate=args.dprate,
-                ).to(device)
+            for seed in args.seeds:
+                torch.manual_seed(seed)
+                np.random.seed(seed)
+                train_mask, val_mask, test_mask = get_split_masks(data, split_idx=seed % 10)
+                train_mask = train_mask.to(device)
+                val_mask = val_mask.to(device)
+                test_mask = test_mask.to(device)
 
-                _, test_accs = train_batched(
-                    model,
-                    x,
-                    y,
-                    A_norm,
-                    train_mask,
-                    val_mask,
-                    test_mask,
-                    lr=args.lr,
-                    weight_decay=args.weight_decay,
-                    epochs=args.epochs,
-                    patience=args.patience,
-                )
-                for pair, acc in zip(chunk, test_accs):
-                    per_pair[pair].append(float(acc))
+                t0 = time.time()
+                for start in range(0, len(ab_pairs), args.max_batch):
+                    chunk = ab_pairs[start:start + args.max_batch]
+                    model = BatchedJacobiConv(
+                        in_dim=dataset.num_features,
+                        num_classes=dataset.num_classes,
+                        K=K,
+                        ab_pairs=chunk,
+                        dropout=args.dropout,
+                        dprate=args.dprate,
+                    ).to(device)
 
-                del model
-                if device.type == "cuda":
-                    torch.cuda.empty_cache()
-            print(f"  seed {seed}: {time.time() - t0:.1f}s")
+                    _, test_accs = train_batched(
+                        model,
+                        x,
+                        y,
+                        A_norm,
+                        train_mask,
+                        val_mask,
+                        test_mask,
+                        lr=args.lr,
+                        weight_decay=args.weight_decay,
+                        epochs=args.epochs,
+                        patience=args.patience,
+                    )
+                    for pair, acc in zip(chunk, test_accs):
+                        per_pair[pair].append(float(acc))
 
-        for (a, b), accs in per_pair.items():
-            rows.append({
-                "dataset": ds_name,
-                "a": a,
-                "b": b,
-                "K": args.K,
-                "mean_test_acc": float(np.mean(accs)),
-                "std_test_acc": float(np.std(accs)),
-                "n_seeds": len(accs),
-            })
+                    del model
+                    if device.type == "cuda":
+                        torch.cuda.empty_cache()
+                print(f"    seed {seed}: {time.time() - t0:.1f}s")
+
+            for (a, b), accs in per_pair.items():
+                rows.append({
+                    "dataset": ds_name,
+                    "a": a,
+                    "b": b,
+                    "K": K,
+                    "mean_test_acc": float(np.mean(accs)),
+                    "std_test_acc": float(np.std(accs)),
+                    "n_seeds": len(accs),
+                })
 
         with open(args.out, "w", newline="") as f:
             writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
