@@ -10,6 +10,10 @@ from torch_geometric.utils import get_laplacian
 
 # Polynomial Basis Setup - Bernstein, Chebyshev, etc.
 def spmm(A, x): return torch.sparse.mm(A, x) if A.is_sparse else A @ x # helper
+
+def values(x):
+    return x if isinstance(x, (list, tuple)) else (x,)
+
 class GPRGNN(nn.Module):
     operator = 'A_hat'
     def __init__(self, in_dim, hidden_dim, num_classes,  k_val, init="PPR", alpha=0.1, dropout=0.5, dprate=0):
@@ -147,7 +151,7 @@ class JacobiConv(nn.Module):
             nn.Linear(hidden_dim, num_classes),
         )
 
-        # One polynomial filter per output channel, as in JacobiConv.
+        # JacobiConv learns one polynomial filter per output channel.
         self.gamma = nn.Parameter(torch.randn(self.K + 1, num_classes) * 0.1)
 
     def _jacobi_step(self, k, P_prev, P_curr, A_norm):
@@ -305,36 +309,44 @@ def train_sweep(
             ModelClass = MODELS[model_name]
             for k in K:
                 for hidden_dim in hidden_dims:
-                    accs = []
-                    val_histories = []
-                    for i in range(n_runs):
-                        torch.manual_seed(i)
-                        np.random.seed(i)
-                        masks = get_splits(g)
+                    for lr_value in values(lr):
+                        for wd_value in values(weight_decay):
+                            for epoch_value in values(max_epochs):
+                                for patience_value in values(patience):
+                                    accs = []
+                                    val_histories = []
+                                    for i in range(n_runs):
+                                        torch.manual_seed(i)
+                                        np.random.seed(i)
+                                        masks = get_splits(g)
 
-                        model = ModelClass(
-                            in_dim=g.x.size(1),
-                            hidden_dim=hidden_dim,
-                            num_classes=d.num_classes,
-                            k_val=k,
-                            dropout=dropout,
-                            dprate=dprate
-                        )
-                        acc, history = fit(
-                            model,
-                            g,
-                            masks,
-                            operators,
-                            lr=lr,
-                            weight_decay=weight_decay,
-                            max_epochs=max_epochs,
-                            patience=patience,
-                            device=device,
-                        )
-                        accs.append(acc)
-                        val_histories.append(history)
+                                        model = ModelClass(
+                                            in_dim=g.x.size(1),
+                                            hidden_dim=hidden_dim,
+                                            num_classes=d.num_classes,
+                                            k_val=k,
+                                            dropout=dropout,
+                                            dprate=dprate
+                                        )
+                                        acc, history = fit(
+                                            model,
+                                            g,
+                                            masks,
+                                            operators,
+                                            lr=lr_value,
+                                            weight_decay=wd_value,
+                                            max_epochs=epoch_value,
+                                            patience=patience_value,
+                                            device=device,
+                                        )
+                                        accs.append(acc)
+                                        val_histories.append(history)
 
-                    results[name][(model_name, k, hidden_dim)] = (accs, val_histories)
+                                    key = (
+                                        model_name, k, hidden_dim,
+                                        lr_value, wd_value, epoch_value, patience_value,
+                                    )
+                                    results[name][key] = (accs, val_histories)
 
     return results
 
@@ -344,6 +356,7 @@ if __name__ == '__main__':
     results = train_sweep(datasets, K=(4,), hidden_dims=(64,), n_runs=3)
 
     for dataset_name, configs in results.items():
-        for (model_name, k, hidden_dim), (accs, _) in configs.items():
+        for (model_name, k, hidden_dim, lr, wd, epochs, patience), (accs, _) in configs.items():
             print(f"{dataset_name:15s} {model_name:12s} h={hidden_dim} "
-                  f"K={k} {np.mean(accs):.4f} ± {np.std(accs):.4f}")
+                  f"K={k} lr={lr:g} wd={wd:g} epochs={epochs} patience={patience} "
+                  f"{np.mean(accs):.4f} ± {np.std(accs):.4f}")

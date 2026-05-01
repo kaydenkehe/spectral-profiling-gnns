@@ -14,6 +14,10 @@ def spmm(A, x):
     return torch.sparse.mm(A, x) if A.is_sparse else A @ x
 
 
+def values(x):
+    return x if isinstance(x, (list, tuple)) else (x,)
+
+
 class GPRGNN(nn.Module):
     operator = "A_hat"
 
@@ -130,6 +134,7 @@ class JacobiConv(nn.Module):
 
         # JacobiConv: linear transform first, then filter each output channel.
         self.lin = nn.Linear(in_dim, num_classes)
+        # JacobiConv learns one polynomial filter per output channel.
         self.alpha = nn.Parameter(torch.randn(self.K + 1, num_classes) * 0.1)
 
     def _step(self, k, prevprev, prev, A_norm):
@@ -279,35 +284,43 @@ def train_sweep(
             ModelClass = MODELS[model_name]
             for k in K:
                 for hidden_dim in hidden_dims:
-                    accs = []
-                    val_histories = []
-                    for seed in range(n_runs):
-                        torch.manual_seed(seed)
-                        np.random.seed(seed)
-                        masks = get_splits(graph)
+                    for lr_value in values(lr):
+                        for wd_value in values(weight_decay):
+                            for epoch_value in values(max_epochs):
+                                for patience_value in values(patience):
+                                    accs = []
+                                    val_histories = []
+                                    for seed in range(n_runs):
+                                        torch.manual_seed(seed)
+                                        np.random.seed(seed)
+                                        masks = get_splits(graph)
 
-                        model = ModelClass(
-                            in_dim=graph.x.size(1),
-                            hidden_dim=hidden_dim,
-                            num_classes=dataset.num_classes,
-                            k_val=k,
-                            dropout=dropout,
-                            dprate=dprate,
-                        )
-                        acc, history = fit(
-                            model,
-                            graph,
-                            masks,
-                            operators,
-                            lr=lr,
-                            weight_decay=weight_decay,
-                            max_epochs=max_epochs,
-                            patience=patience,
-                            device=device,
-                        )
-                        accs.append(acc)
-                        val_histories.append(history)
+                                        model = ModelClass(
+                                            in_dim=graph.x.size(1),
+                                            hidden_dim=hidden_dim,
+                                            num_classes=dataset.num_classes,
+                                            k_val=k,
+                                            dropout=dropout,
+                                            dprate=dprate,
+                                        )
+                                        acc, history = fit(
+                                            model,
+                                            graph,
+                                            masks,
+                                            operators,
+                                            lr=lr_value,
+                                            weight_decay=wd_value,
+                                            max_epochs=epoch_value,
+                                            patience=patience_value,
+                                            device=device,
+                                        )
+                                        accs.append(acc)
+                                        val_histories.append(history)
 
-                    results[name][(model_name, k, hidden_dim)] = (accs, val_histories)
+                                    key = (
+                                        model_name, k, hidden_dim,
+                                        lr_value, wd_value, epoch_value, patience_value,
+                                    )
+                                    results[name][key] = (accs, val_histories)
 
     return results

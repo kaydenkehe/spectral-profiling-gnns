@@ -16,10 +16,10 @@ def parse_args():
     p.add_argument("--hidden", nargs="+", type=int, default=[64])
     p.add_argument("--runs", type=int, default=3)
     p.add_argument("--device", default=None)  # none, harness chooses cuda/cpu
-    p.add_argument("--epochs", type=int, default=300)
-    p.add_argument("--patience", type=int, default=20)
-    p.add_argument("--lr", type=float, default=1e-2)
-    p.add_argument("--weight-decay", type=float, default=5e-4)
+    p.add_argument("--epochs", nargs="+", type=int, default=[300])
+    p.add_argument("--patience", nargs="+", type=int, default=[20])
+    p.add_argument("--lr", nargs="+", type=float, default=[1e-2])
+    p.add_argument("--weight-decay", nargs="+", type=float, default=[5e-4])
     p.add_argument("--dropout", type=float, default=0.5)
     p.add_argument("--dprate", type=float, default=0.0)
     p.add_argument("--out-dir", default="runs")
@@ -41,9 +41,13 @@ def write_outputs(results, args, run_dir):
     rows = []
 
     for dataset_name, configs in results.items():
-        for (model_name, K, hidden_dim), (accs, val_histories) in configs.items():
+        for config_key, (accs, val_histories) in configs.items():
+            model_name, K, hidden_dim, lr, weight_decay, epochs, patience = config_key
             for seed, (acc, history) in enumerate(zip(accs, val_histories)):
-                row_id = f"{dataset_name}_{model_name}_K{K}_H{hidden_dim}_s{seed}"
+                row_id = (
+                    f"{dataset_name}_{model_name}_K{K}_H{hidden_dim}"
+                    f"_lr{lr:g}_wd{weight_decay:g}_e{epochs}_p{patience}_s{seed}"
+                )
 
                 rows.append({
                     "id": row_id,
@@ -51,6 +55,10 @@ def write_outputs(results, args, run_dir):
                     "model": model_name,
                     "K": K,
                     "hidden": hidden_dim,
+                    "lr": lr,
+                    "weight_decay": weight_decay,
+                    "epochs": epochs,
+                    "patience": patience,
                     "seed": seed,
                     "test_acc": f"{acc:.4f}",
                 })
@@ -61,7 +69,11 @@ def write_outputs(results, args, run_dir):
                     for epoch, val_acc in enumerate(history):
                         writer.writerow([epoch, f"{val_acc:.4f}"])
 
-    fieldnames = ["id", "dataset", "model", "K", "hidden", "seed", "test_acc"]
+    fieldnames = [
+        "id", "dataset", "model", "K", "hidden",
+        "lr", "weight_decay", "epochs", "patience",
+        "seed", "test_acc",
+    ]
     with open(run_dir / "summary.csv", "w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
