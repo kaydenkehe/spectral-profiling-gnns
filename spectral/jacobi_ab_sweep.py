@@ -1,7 +1,9 @@
 import argparse
 import csv
+import json
 import time
 from itertools import product
+from pathlib import Path
 
 import numpy as np
 import torch
@@ -133,7 +135,9 @@ def train_batched(model, x, y, A_norm, train_mask, val_mask, test_mask,
     stale = torch.zeros(B, dtype=torch.long)
     finished = torch.zeros(B, dtype=torch.bool)
 
-    for _ in range(epochs):
+    epochs_ran = 0
+    for epoch in range(epochs):
+        epochs_ran = epoch + 1
         model.train()
         optimizer.zero_grad()
         logits = model(x, A_norm)
@@ -167,7 +171,16 @@ def train_batched(model, x, y, A_norm, train_mask, val_mask, test_mask,
         if finished.all():
             break
 
-    return best_val.numpy(), best_test.numpy()
+    return best_val.numpy(), best_test.numpy(), epochs_ran
+
+
+def write_csv(path, rows):
+    if not rows:
+        return
+    with open(path, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
+        writer.writeheader()
+        writer.writerows(rows)
 
 
 def parse_args():
@@ -197,15 +210,22 @@ def parse_args():
 def main():
     args = parse_args()
     device = torch.device(args.device)
+    out_path = Path(args.out)
+    details_path = out_path.with_name(f"{out_path.stem}_details{out_path.suffix}")
+    config_path = out_path.with_name(f"{out_path.stem}_config.json")
 
     a_vals = np.arange(args.a_min, args.a_max + 1e-9, args.step)
     b_vals = np.arange(args.b_min, args.b_max + 1e-9, args.step)
     ab_pairs = [(float(a), float(b)) for a, b in product(a_vals, b_vals)]
 
     rows = []
+    detail_rows = []
     print(f"device: {device}")
     print(f"grid: {len(a_vals)} x {len(b_vals)} = {len(ab_pairs)} configs")
     print(f"K values: {args.K}")
+
+    with open(config_path, "w") as f:
+        json.dump(vars(args), f, indent=2)
 
     all_datasets = build_datasets()
     if args.datasets == ["all"]:
@@ -232,7 +252,7 @@ def main():
 
         for K in args.K:
             print(f"  K={K}")
-            per_pair = {pair: [] for pair in ab_pairs}
+            per_pair = {pair: {"val": [], "test": []} for pair in ab_pairs}
 
             for seed in args.seeds:
                 torch.manual_seed(seed)
@@ -254,7 +274,7 @@ def main():
                         dprate=args.dprate,
                     ).to(device)
 
-                    _, test_accs = train_batched(
+                    val_accs, test_accs, epochs_ran = train_batched(
                         model,
                         x,
                         y,
@@ -267,8 +287,29 @@ def main():
                         epochs=args.epochs,
                         patience=args.patience,
                     )
-                    for pair, acc in zip(chunk, test_accs):
-                        per_pair[pair].append(float(acc))
+                    for pair, val_acc, test_acc in zip(chunk, val_accs, test_accs):
+                        per_pair[pair]["val"].append(float(val_acc))
+                        per_pair[pair]["test"].append(float(test_acc))
+                        detail_rows.append({
+                            "dataset": ds_name,
+                            "num_nodes": data.num_nodes,
+                            "num_edges": data.num_edges,
+                            "num_features": dataset.num_features,
+                            "num_classes": dataset.num_classes,
+                            "K": K,
+                            "a": pair[0],
+                            "b": pair[1],
+                            "seed": seed,
+                            "best_val_acc": float(val_acc),
+                            "best_test_acc": float(test_acc),
+                            "epochs_ran": epochs_ran,
+                            "lr": args.lr,
+                            "weight_decay": args.weight_decay,
+                            "dropout": args.dropout,
+                            "dprate": args.dprate,
+                            "patience": args.patience,
+                            "max_epochs": args.epochs,
+                        })
 
                     del model
                     if device.type == "cuda":
@@ -278,19 +319,30 @@ def main():
             for (a, b), accs in per_pair.items():
                 rows.append({
                     "dataset": ds_name,
+                    "num_nodes": data.num_nodes,
+                    "num_edges": data.num_edges,
+                    "num_features": dataset.num_features,
+                    "num_classes": dataset.num_classes,
                     "a": a,
                     "b": b,
                     "K": K,
-                    "mean_test_acc": float(np.mean(accs)),
-                    "std_test_acc": float(np.std(accs)),
-                    "n_seeds": len(accs),
+                    "mean_val_acc": float(np.mean(accs["val"])),
+                    "std_val_acc": float(np.std(accs["val"])),
+                    "mean_test_acc": float(np.mean(accs["test"])),
+                    "std_test_acc": float(np.std(accs["test"])),
+                    "n_seeds": len(accs["test"]),
+                    "lr": args.lr,
+                    "weight_decay": args.weight_decay,
+                    "dropout": args.dropout,
+                    "dprate": args.dprate,
+                    "patience": args.patience,
+                    "max_epochs": args.epochs,
                 })
 
-        with open(args.out, "w", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
-            writer.writeheader()
-            writer.writerows(rows)
-        print(f"  wrote {len(rows)} rows to {args.out}")
+        write_csv(out_path, rows)
+        write_csv(details_path, detail_rows)
+        print(f"  wrote {len(rows)} summary rows to {out_path}")
+        print(f"  wrote {len(detail_rows)} detail rows to {details_path}")
 
 
 if __name__ == "__main__":
