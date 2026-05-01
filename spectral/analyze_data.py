@@ -15,6 +15,9 @@ from sklearn.model_selection import LeaveOneOut
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
+SCRIPT_DIR = Path(__file__).resolve().parent
+REPO_ROOT = SCRIPT_DIR.parent
+
 
 def analyze_train(run_dir, out):
     df = pd.read_csv(run_dir / "summary.csv")
@@ -68,6 +71,19 @@ def dataset_key(name):
     }
     key = str(name).strip().lower()
     return aliases.get(key, key)
+
+
+def resolve_existing_path(path):
+    path = Path(path)
+    if path.exists() or path.is_absolute():
+        return path
+
+    for base in (Path.cwd(), REPO_ROOT, SCRIPT_DIR):
+        candidate = base / path
+        if candidate.exists():
+            return candidate
+
+    return path
 
 
 def make_jacobi_heatmaps(df, out):
@@ -159,7 +175,7 @@ def slp_features(metrics_path, n_bins):
     return pd.DataFrame(rows)
 
 
-def plot_regression_predictions(predictions, n_bins, out):
+def plot_regression_predictions(predictions, K, n_bins, out):
     fig, axes = plt.subplots(1, 2, figsize=(9, 4))
     for ax, target in zip(axes, ["a", "b"]):
         actual = predictions[f"actual_{target}"]
@@ -170,18 +186,19 @@ def plot_regression_predictions(predictions, n_bins, out):
         ax.plot([lo, hi], [lo, hi], color="black", linewidth=1, linestyle="--")
         ax.set_xlabel(f"actual {target}")
         ax.set_ylabel(f"LOO predicted {target}")
-        ax.set_title(f"{target}, {n_bins} SLP bins")
+        ax.set_title(f"{target}, K={K}, {n_bins} SLP bins")
         ax.grid(alpha=0.25)
         for _, row in predictions.iterrows():
             ax.annotate(row["dataset"], (row[f"actual_{target}"], row[f"pred_{target}"]), fontsize=7)
     fig.tight_layout()
-    path = out / f"slp_regression_bins_{n_bins}.png"
+    path = out / f"slp_regression_K{K}_bins_{n_bins}.png"
     fig.savefig(path, dpi=180)
     plt.close(fig)
     return path
 
 
 def run_slp_regression(winners, metrics_path, out, min_bins, max_bins):
+    metrics_path = resolve_existing_path(metrics_path)
     if not metrics_path.exists():
         print(f"\nSkipping SLP regression: missing {metrics_path}")
         return
@@ -194,72 +211,78 @@ def run_slp_regression(winners, metrics_path, out, min_bins, max_bins):
     all_predictions = []
     coef_rows = []
 
-    for n_bins in range(min_bins, max_bins + 1):
-        features = slp_features(metrics_path, n_bins)
-        feature_cols = [c for c in features.columns if c.startswith("slp_bin_")]
-        merged = targets.merge(features, on="dataset_key", suffixes=("", "_metrics"))
-        if len(merged) < 3:
-            continue
+    for K, k_targets in targets.groupby("K"):
+        for n_bins in range(min_bins, max_bins + 1):
+            features = slp_features(metrics_path, n_bins)
+            feature_cols = [c for c in features.columns if c.startswith("slp_bin_")]
+            merged = k_targets.merge(features, on="dataset_key", suffixes=("", "_metrics"))
+            if len(merged) < 3:
+                continue
 
-        X = merged[feature_cols].to_numpy(dtype=float)
-        y = merged[target_cols].to_numpy(dtype=float)
+            X = merged[feature_cols].to_numpy(dtype=float)
+            y = merged[target_cols].to_numpy(dtype=float)
 
-        model = make_pipeline(
-            StandardScaler(),
-            RidgeCV(alphas=alpha_grid),
-        )
-        model.fit(X, y)
-        train_pred = model.predict(X)
-
-        loo_pred = np.zeros_like(y)
-        loo = LeaveOneOut()
-        for train_idx, test_idx in loo.split(X):
-            loo_model = make_pipeline(
+            model = make_pipeline(
                 StandardScaler(),
                 RidgeCV(alphas=alpha_grid),
             )
-            loo_model.fit(X[train_idx], y[train_idx])
-            loo_pred[test_idx] = loo_model.predict(X[test_idx])
+            model.fit(X, y)
+            train_pred = model.predict(X)
 
-        pred_rows = merged[["dataset", "K", "a", "b", "mean_test_acc"]].copy()
-        pred_rows = pred_rows.rename(columns={"a": "actual_a", "b": "actual_b"})
-        pred_rows["n_bins"] = n_bins
-        pred_rows["pred_a"] = loo_pred[:, 0]
-        pred_rows["pred_b"] = loo_pred[:, 1]
-        pred_rows["abs_error_a"] = (pred_rows["actual_a"] - pred_rows["pred_a"]).abs()
-        pred_rows["abs_error_b"] = (pred_rows["actual_b"] - pred_rows["pred_b"]).abs()
-        all_predictions.append(pred_rows)
-        pred_rows.to_csv(out / f"slp_regression_predictions_bins_{n_bins}.csv", index=False)
-        plot_regression_predictions(pred_rows, n_bins, out)
+            loo_pred = np.zeros_like(y)
+            loo = LeaveOneOut()
+            for train_idx, test_idx in loo.split(X):
+                loo_model = make_pipeline(
+                    StandardScaler(),
+                    RidgeCV(alphas=alpha_grid),
+                )
+                loo_model.fit(X[train_idx], y[train_idx])
+                loo_pred[test_idx] = loo_model.predict(X[test_idx])
 
-        ridge = model.named_steps["ridgecv"]
-        alpha = ridge.alpha_
-        coef = ridge.coef_
-        intercept = ridge.intercept_
-        for target_idx, target_name in enumerate(target_cols):
-            for feature_name, coef_value in zip(feature_cols, coef[target_idx]):
-                coef_rows.append({
-                    "n_bins": n_bins,
-                    "target": target_name,
-                    "feature": feature_name,
-                    "coef_standardized": coef_value,
-                    "intercept": intercept[target_idx],
-                    "alpha": alpha,
-                })
+            pred_rows = merged[["dataset", "K", "a", "b", "mean_test_acc"]].copy()
+            pred_rows = pred_rows.rename(columns={"a": "actual_a", "b": "actual_b"})
+            pred_rows["n_bins"] = n_bins
+            pred_rows["pred_a"] = loo_pred[:, 0]
+            pred_rows["pred_b"] = loo_pred[:, 1]
+            pred_rows["abs_error_a"] = (pred_rows["actual_a"] - pred_rows["pred_a"]).abs()
+            pred_rows["abs_error_b"] = (pred_rows["actual_b"] - pred_rows["pred_b"]).abs()
+            all_predictions.append(pred_rows)
+            pred_rows.to_csv(
+                out / f"slp_regression_predictions_K{K}_bins_{n_bins}.csv",
+                index=False,
+            )
+            plot_regression_predictions(pred_rows, K, n_bins, out)
 
-        summary_rows.append({
-            "n_bins": n_bins,
-            "n_datasets": len(merged),
-            "train_r2_a": r2_score(y[:, 0], train_pred[:, 0]),
-            "train_r2_b": r2_score(y[:, 1], train_pred[:, 1]),
-            "loo_mae_a": mean_absolute_error(y[:, 0], loo_pred[:, 0]),
-            "loo_mae_b": mean_absolute_error(y[:, 1], loo_pred[:, 1]),
-            "loo_rmse_a": np.sqrt(mean_squared_error(y[:, 0], loo_pred[:, 0])),
-            "loo_rmse_b": np.sqrt(mean_squared_error(y[:, 1], loo_pred[:, 1])),
-        })
+            ridge = model.named_steps["ridgecv"]
+            alpha = ridge.alpha_
+            coef = ridge.coef_
+            intercept = ridge.intercept_
+            for target_idx, target_name in enumerate(target_cols):
+                for feature_name, coef_value in zip(feature_cols, coef[target_idx]):
+                    coef_rows.append({
+                        "K": K,
+                        "n_bins": n_bins,
+                        "target": target_name,
+                        "feature": feature_name,
+                        "coef_standardized": coef_value,
+                        "intercept": intercept[target_idx],
+                        "alpha": alpha,
+                    })
+
+            summary_rows.append({
+                "K": K,
+                "n_bins": n_bins,
+                "n_datasets": len(merged),
+                "train_r2_a": r2_score(y[:, 0], train_pred[:, 0]),
+                "train_r2_b": r2_score(y[:, 1], train_pred[:, 1]),
+                "loo_mae_a": mean_absolute_error(y[:, 0], loo_pred[:, 0]),
+                "loo_mae_b": mean_absolute_error(y[:, 1], loo_pred[:, 1]),
+                "loo_rmse_a": np.sqrt(mean_squared_error(y[:, 0], loo_pred[:, 0])),
+                "loo_rmse_b": np.sqrt(mean_squared_error(y[:, 1], loo_pred[:, 1])),
+            })
 
     if summary_rows:
-        summary = pd.DataFrame(summary_rows).sort_values(["loo_mae_a", "loo_mae_b"])
+        summary = pd.DataFrame(summary_rows).sort_values(["K", "loo_mae_a", "loo_mae_b"])
         summary.to_csv(out / "slp_regression_summary.csv", index=False)
         pd.concat(all_predictions, ignore_index=True).to_csv(
             out / "slp_regression_predictions.csv",
@@ -301,14 +324,13 @@ def analyze_jacobi(csv_path, out, metrics_path, min_bins, max_bins, make_plots):
     )
     winners.to_csv(out / "jacobi_winners_by_dataset.csv", index=False)
 
-    if {"K", "a", "b"}.issubset(df.columns):
-        best_by_dataset_k = (
-            df.sort_values(["dataset", "K", "mean_test_acc"], ascending=[True, True, False])
-            .groupby(["dataset", "K"])
-            .head(1)
-            .reset_index(drop=True)
-        )
-        best_by_dataset_k.to_csv(out / "jacobi_best_ab_by_dataset_k.csv", index=False)
+    best_by_dataset_k = (
+        df.sort_values(["dataset", "K", "mean_test_acc"], ascending=[True, True, False])
+        .groupby(["dataset", "K"])
+        .head(1)
+        .reset_index(drop=True)
+    )
+    best_by_dataset_k.to_csv(out / "jacobi_best_ab_by_dataset_k.csv", index=False)
 
     k_wins = (
         winners.groupby("K")
@@ -340,7 +362,7 @@ def analyze_jacobi(csv_path, out, metrics_path, min_bins, max_bins, make_plots):
         heatmaps = make_jacobi_heatmaps(df, out)
         print(f"\nWrote {len(heatmaps)} Jacobi heatmaps")
 
-    run_slp_regression(winners, metrics_path, out, min_bins, max_bins)
+    run_slp_regression(best_by_dataset_k, metrics_path, out, min_bins, max_bins)
 
 
 def infer_mode(input_path, requested_mode):
@@ -350,7 +372,7 @@ def infer_mode(input_path, requested_mode):
         return "train"
 
     cols = set(pd.read_csv(input_path, nrows=0).columns)
-    if {"a", "b", "mean_test_acc"}.issubset(cols):
+    if {"a", "b", "mean_test_acc"}.issubset(cols) or {"best_a", "best_b", "best_acc"}.issubset(cols):
         return "jacobi"
     return "train"
 
