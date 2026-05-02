@@ -1,0 +1,67 @@
+/n/home06/drooryck/spectral-profling-gnns/spectral/datasets.py:31: UserWarning: The WikiCS dataset now returns an undirected graph by default. Please explicitly specify 'is_undirected=False' to restore the old behavior.
+  wikics = WikiCS(root=os.path.join(data_dir, 'wikics'))
+device: cuda
+grid: 50 x 50 = 2500 configs
+K values: [4, 10]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+max task batch: 1000
+output directory: jacobi_ab_sweep_massive/AmazonRatings/array_9597474_15/20260501-170957
+progress log: jacobi_ab_sweep_massive/AmazonRatings/array_9597474_15/20260501-170957/progress.log
+
+=== [1/1] AmazonRatings: 24492 nodes, 186100 edges ===
+  K=4
+    chunk 1/25: 1000 seed/config tasks, 120.5s, epochs_ran=500
+    chunk 2/25: 1000 seed/config tasks, 120.2s, epochs_ran=500
+    chunk 3/25: 1000 seed/config tasks, 120.2s, epochs_ran=500
+    chunk 4/25: 1000 seed/config tasks, 120.2s, epochs_ran=500
+    chunk 5/25: 1000 seed/config tasks, 120.2s, epochs_ran=500
+    chunk 6/25: 1000 seed/config tasks, 120.2s, epochs_ran=500
+    chunk 7/25: 1000 seed/config tasks, 111.3s, epochs_ran=463
+    chunk 8/25: 1000 seed/config tasks, 120.2s, epochs_ran=500
+    chunk 9/25: 1000 seed/config tasks, 118.0s, epochs_ran=491
+    chunk 10/25: 1000 seed/config tasks, 109.9s, epochs_ran=457
+    chunk 11/25: 1000 seed/config tasks, 104.4s, epochs_ran=434
+    chunk 12/25: 1000 seed/config tasks, 106.0s, epochs_ran=441
+    chunk 13/25: 1000 seed/config tasks, 105.1s, epochs_ran=437
+    chunk 14/25: 1000 seed/config tasks, 96.4s, epochs_ran=401
+    chunk 15/25: 1000 seed/config tasks, 94.0s, epochs_ran=391
+    chunk 16/25: 1000 seed/config tasks, 90.4s, epochs_ran=376
+    chunk 17/25: 1000 seed/config tasks, 96.4s, epochs_ran=401
+    chunk 18/25: 1000 seed/config tasks, 83.4s, epochs_ran=347
+    chunk 19/25: 1000 seed/config tasks, 88.2s, epochs_ran=367
+    chunk 20/25: 1000 seed/config tasks, 99.5s, epochs_ran=414
+    chunk 21/25: 1000 seed/config tasks, 71.9s, epochs_ran=299
+    chunk 22/25: 1000 seed/config tasks, 93.1s, epochs_ran=387
+    chunk 23/25: 1000 seed/config tasks, 87.8s, epochs_ran=365
+    chunk 24/25: 1000 seed/config tasks, 94.8s, epochs_ran=394
+    chunk 25/25: 1000 seed/config tasks, 83.0s, epochs_ran=345
+  wrote 2500 summary rows to jacobi_ab_sweep_massive/AmazonRatings/array_9597474_15/20260501-170957/summary.csv
+  wrote 25000 detail rows to jacobi_ab_sweep_massive/AmazonRatings/array_9597474_15/20260501-170957/summary_details.csv
+  K=10
+    chunk 1/25: 1000 seed/config tasks, 283.7s, epochs_ran=500
+    chunk 2/25: 1000 seed/config tasks, 283.8s, epochs_ran=500
+    chunk 3/25: 1000 seed/config tasks, 283.8s, epochs_ran=500
+    chunk 4/25: 1000 seed/config tasks, 283.8s, epochs_ran=500
+    chunk 5/25: 1000 seed/config tasks, 273.0s, epochs_ran=481
+    chunk 6/25: 1000 seed/config tasks, 283.8s, epochs_ran=500
+    chunk 7/25: 1000 seed/config tasks, 248.1s, epochs_ran=437
+    chunk 8/25: 1000 seed/config tasks, 265.6s, epochs_ran=468
+    chunk 9/25: 1000 seed/config tasks, 229.3s, epochs_ran=404
+    chunk 10/25: 1000 seed/config tasks, 240.1s, epochs_ran=423
+    chunk 11/25: 1000 seed/config tasks, 224.2s, epochs_ran=395
+    chunk 12/25: 1000 seed/config tasks, 218.0s, epochs_ran=384
+    chunk 13/25: 1000 seed/config tasks, 283.8s, epochs_ran=500
+    chunk 14/25: 1000 seed/config tasks, 283.9s, epochs_ran=500
+    chunk 15/25: 1000 seed/config tasks, 273.6s, epochs_ran=482
+    chunk 16/25: 1000 seed/config tasks, 220.3s, epochs_ran=388
+    chunk 17/25: 1000 seed/config tasks, 256.0s, epochs_ran=451
+    chunk 18/25: 1000 seed/config tasks, 256.6s, epochs_ran=452
+    chunk 19/25: 1000 seed/config tasks, 281.6s, epochs_ran=496
+    chunk 20/25: 1000 seed/config tasks, 283.8s, epochs_ran=500
+    chunk 21/25: 1000 seed/config tasks, 283.9s, epochs_ran=500
+    chunk 22/25: 1000 seed/config tasks, 269.0s, epochs_ran=474
+    chunk 23/25: 1000 seed/config tasks, 283.6s, epochs_ran=500
+    chunk 24/25: 1000 seed/config tasks, 283.6s, epochs_ran=500
+    chunk 25/25: 1000 seed/config tasks, 283.6s, epochs_ran=500
+  wrote 5000 summary rows to jacobi_ab_sweep_massive/AmazonRatings/array_9597474_15/20260501-170957/summary.csv
+  wrote 50000 detail rows to jacobi_ab_sweep_massive/AmazonRatings/array_9597474_15/20260501-170957/summary_details.csv

@@ -1,0 +1,73 @@
+job_id=9597624
+array_job_id=9597474
+array_task_id=3
+dataset=Texas
+host=holygpu8a27502.rc.fas.harvard.edu
+out_dir=jacobi_ab_sweep_massive/Texas/array_9597474_3
+Fri May  1 16:52:37 EDT 2026
+NVIDIA A100-SXM4-80GB, 0, 81920 MiB
+device: cuda
+grid: 50 x 50 = 2500 configs
+K values: [4, 10]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+max task batch: 1000
+output directory: jacobi_ab_sweep_massive/Texas/array_9597474_3/20260501-165335
+progress log: jacobi_ab_sweep_massive/Texas/array_9597474_3/20260501-165335/progress.log
+
+=== [1/1] Texas: 183 nodes, 325 edges ===
+  K=4
+    chunk 1/25: 1000 seed/config tasks, 10.0s, epochs_ran=272
+    chunk 2/25: 1000 seed/config tasks, 5.5s, epochs_ran=230
+    chunk 3/25: 1000 seed/config tasks, 6.1s, epochs_ran=257
+    chunk 4/25: 1000 seed/config tasks, 5.2s, epochs_ran=222
+    chunk 5/25: 1000 seed/config tasks, 5.2s, epochs_ran=220
+    chunk 6/25: 1000 seed/config tasks, 5.6s, epochs_ran=238
+    chunk 7/25: 1000 seed/config tasks, 5.6s, epochs_ran=237
+    chunk 8/25: 1000 seed/config tasks, 6.7s, epochs_ran=285
+    chunk 9/25: 1000 seed/config tasks, 6.0s, epochs_ran=255
+    chunk 10/25: 1000 seed/config tasks, 7.0s, epochs_ran=297
+    chunk 11/25: 1000 seed/config tasks, 7.0s, epochs_ran=295
+    chunk 12/25: 1000 seed/config tasks, 6.5s, epochs_ran=276
+    chunk 13/25: 1000 seed/config tasks, 5.4s, epochs_ran=226
+    chunk 14/25: 1000 seed/config tasks, 5.5s, epochs_ran=234
+    chunk 15/25: 1000 seed/config tasks, 5.2s, epochs_ran=219
+    chunk 16/25: 1000 seed/config tasks, 6.1s, epochs_ran=259
+    chunk 17/25: 1000 seed/config tasks, 5.9s, epochs_ran=251
+    chunk 18/25: 1000 seed/config tasks, 5.0s, epochs_ran=211
+    chunk 19/25: 1000 seed/config tasks, 5.7s, epochs_ran=243
+    chunk 20/25: 1000 seed/config tasks, 5.2s, epochs_ran=219
+    chunk 21/25: 1000 seed/config tasks, 5.0s, epochs_ran=211
+    chunk 22/25: 1000 seed/config tasks, 5.4s, epochs_ran=227
+    chunk 23/25: 1000 seed/config tasks, 6.2s, epochs_ran=264
+    chunk 24/25: 1000 seed/config tasks, 5.9s, epochs_ran=248
+    chunk 25/25: 1000 seed/config tasks, 6.9s, epochs_ran=293
+  wrote 2500 summary rows to jacobi_ab_sweep_massive/Texas/array_9597474_3/20260501-165335/summary.csv
+  wrote 25000 detail rows to jacobi_ab_sweep_massive/Texas/array_9597474_3/20260501-165335/summary_details.csv
+  K=10
+    chunk 1/25: 1000 seed/config tasks, 11.1s, epochs_ran=282
+    chunk 2/25: 1000 seed/config tasks, 8.8s, epochs_ran=217
+    chunk 3/25: 1000 seed/config tasks, 9.6s, epochs_ran=241
+    chunk 4/25: 1000 seed/config tasks, 10.0s, epochs_ran=251
+    chunk 5/25: 1000 seed/config tasks, 8.8s, epochs_ran=222
+    chunk 6/25: 1000 seed/config tasks, 9.1s, epochs_ran=229
+    chunk 7/25: 1000 seed/config tasks, 10.0s, epochs_ran=251
+    chunk 8/25: 1000 seed/config tasks, 11.6s, epochs_ran=295
+    chunk 9/25: 1000 seed/config tasks, 8.6s, epochs_ran=218
+    chunk 10/25: 1000 seed/config tasks, 8.6s, epochs_ran=213
+    chunk 11/25: 1000 seed/config tasks, 8.9s, epochs_ran=214
+    chunk 12/25: 1000 seed/config tasks, 9.9s, epochs_ran=244
+    chunk 13/25: 1000 seed/config tasks, 10.5s, epochs_ran=261
+    chunk 14/25: 1000 seed/config tasks, 9.7s, epochs_ran=265
+    chunk 15/25: 1000 seed/config tasks, 9.7s, epochs_ran=254
+    chunk 16/25: 1000 seed/config tasks, 9.0s, epochs_ran=228
+    chunk 17/25: 1000 seed/config tasks, 9.6s, epochs_ran=243
+    chunk 18/25: 1000 seed/config tasks, 8.7s, epochs_ran=223
+    chunk 19/25: 1000 seed/config tasks, 4.7s, epochs_ran=244
+    chunk 20/25: 1000 seed/config tasks, 7.8s, epochs_ran=234
+    chunk 21/25: 1000 seed/config tasks, 11.6s, epochs_ran=297
+    chunk 22/25: 1000 seed/config tasks, 7.9s, epochs_ran=248
+    chunk 23/25: 1000 seed/config tasks, 7.8s, epochs_ran=233
+    chunk 24/25: 1000 seed/config tasks, 5.9s, epochs_ran=207
+    chunk 25/25: 1000 seed/config tasks, 9.0s, epochs_ran=228
+  wrote 5000 summary rows to jacobi_ab_sweep_massive/Texas/array_9597474_3/20260501-165335/summary.csv
+  wrote 50000 detail rows to jacobi_ab_sweep_massive/Texas/array_9597474_3/20260501-165335/summary_details.csv

@@ -1,0 +1,53 @@
+job_id=9598031
+array_job_id=9597474
+array_task_id=7
+dataset=CS
+host=holygpu8a27201.rc.fas.harvard.edu
+out_dir=jacobi_ab_sweep_massive/CS/array_9597474_7
+Fri May  1 16:58:40 EDT 2026
+NVIDIA A100-SXM4-80GB, 0, 81920 MiB
+device: cuda
+grid: 50 x 50 = 2500 configs
+K values: [4, 10]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+max task batch: 1000
+output directory: jacobi_ab_sweep_massive/CS/array_9597474_7/20260501-165925
+progress log: jacobi_ab_sweep_massive/CS/array_9597474_7/20260501-165925/progress.log
+
+=== [1/1] CS: 18333 nodes, 163788 edges ===
+  K=4
+    chunk 1/25: 1000 seed/config tasks, 454.7s, epochs_ran=390
+    chunk 2/25: 1000 seed/config tasks, 527.8s, epochs_ran=455
+    chunk 3/25: 1000 seed/config tasks, 579.7s, epochs_ran=500
+    chunk 4/25: 1000 seed/config tasks, 563.4s, epochs_ran=486
+    chunk 5/25: 1000 seed/config tasks, 579.6s, epochs_ran=500
+    chunk 6/25: 1000 seed/config tasks, 579.7s, epochs_ran=500
+    chunk 7/25: 1000 seed/config tasks, 566.9s, epochs_ran=489
+    chunk 8/25: 1000 seed/config tasks, 579.8s, epochs_ran=500
+    chunk 9/25: 1000 seed/config tasks, 579.8s, epochs_ran=500
+    chunk 10/25: 1000 seed/config tasks, 579.7s, epochs_ran=500
+    chunk 11/25: 1000 seed/config tasks, 579.7s, epochs_ran=500
+    chunk 12/25: 1000 seed/config tasks, 579.8s, epochs_ran=500
+    chunk 13/25: 1000 seed/config tasks, 579.7s, epochs_ran=500
+    chunk 14/25: 1000 seed/config tasks, 579.7s, epochs_ran=500
+    chunk 15/25: 1000 seed/config tasks, 579.7s, epochs_ran=500
+    chunk 16/25: 1000 seed/config tasks, 568.2s, epochs_ran=490
+    chunk 17/25: 1000 seed/config tasks, 579.7s, epochs_ran=500
+    chunk 18/25: 1000 seed/config tasks, 579.6s, epochs_ran=500
+    chunk 19/25: 1000 seed/config tasks, 579.6s, epochs_ran=500
+    chunk 20/25: 1000 seed/config tasks, 577.5s, epochs_ran=498
+    chunk 21/25: 1000 seed/config tasks, 538.1s, epochs_ran=464
+    chunk 22/25: 1000 seed/config tasks, 579.7s, epochs_ran=500
+    chunk 23/25: 1000 seed/config tasks, 579.6s, epochs_ran=500
+    chunk 24/25: 1000 seed/config tasks, 525.2s, epochs_ran=453
+    chunk 25/25: 1000 seed/config tasks, 579.6s, epochs_ran=500
+  wrote 2500 summary rows to jacobi_ab_sweep_massive/CS/array_9597474_7/20260501-165925/summary.csv
+  wrote 25000 detail rows to jacobi_ab_sweep_massive/CS/array_9597474_7/20260501-165925/summary_details.csv
+  K=10
+    chunk 1/25: 1000 seed/config tasks, 797.7s, epochs_ran=406
+    chunk 2/25: 1000 seed/config tasks, 974.5s, epochs_ran=496
+    chunk 3/25: 1000 seed/config tasks, 915.6s, epochs_ran=466
+    chunk 4/25: 1000 seed/config tasks, 958.7s, epochs_ran=488
+    chunk 5/25: 1000 seed/config tasks, 982.4s, epochs_ran=500
+    chunk 6/25: 1000 seed/config tasks, 982.5s, epochs_ran=500
+    chunk 7/25: 1000 seed/config tasks, 982.5s, epochs_ran=500

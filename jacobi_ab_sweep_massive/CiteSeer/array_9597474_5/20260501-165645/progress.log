@@ -1,0 +1,67 @@
+/n/home06/drooryck/spectral-profling-gnns/spectral/datasets.py:31: UserWarning: The WikiCS dataset now returns an undirected graph by default. Please explicitly specify 'is_undirected=False' to restore the old behavior.
+  wikics = WikiCS(root=os.path.join(data_dir, 'wikics'))
+device: cuda
+grid: 50 x 50 = 2500 configs
+K values: [4, 10]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+max task batch: 1000
+output directory: jacobi_ab_sweep_massive/CiteSeer/array_9597474_5/20260501-165645
+progress log: jacobi_ab_sweep_massive/CiteSeer/array_9597474_5/20260501-165645/progress.log
+
+=== [1/1] CiteSeer: 3327 nodes, 9104 edges ===
+  K=4
+    chunk 1/25: 1000 seed/config tasks, 29.6s, epochs_ran=453
+    chunk 2/25: 1000 seed/config tasks, 26.8s, epochs_ran=470
+    chunk 3/25: 1000 seed/config tasks, 28.5s, epochs_ran=500
+    chunk 4/25: 1000 seed/config tasks, 28.5s, epochs_ran=500
+    chunk 5/25: 1000 seed/config tasks, 28.5s, epochs_ran=500
+    chunk 6/25: 1000 seed/config tasks, 28.5s, epochs_ran=500
+    chunk 7/25: 1000 seed/config tasks, 28.5s, epochs_ran=500
+    chunk 8/25: 1000 seed/config tasks, 28.4s, epochs_ran=497
+    chunk 9/25: 1000 seed/config tasks, 27.9s, epochs_ran=488
+    chunk 10/25: 1000 seed/config tasks, 27.1s, epochs_ran=475
+    chunk 11/25: 1000 seed/config tasks, 28.5s, epochs_ran=500
+    chunk 12/25: 1000 seed/config tasks, 28.5s, epochs_ran=500
+    chunk 13/25: 1000 seed/config tasks, 28.5s, epochs_ran=500
+    chunk 14/25: 1000 seed/config tasks, 25.3s, epochs_ran=443
+    chunk 15/25: 1000 seed/config tasks, 23.8s, epochs_ran=416
+    chunk 16/25: 1000 seed/config tasks, 22.8s, epochs_ran=399
+    chunk 17/25: 1000 seed/config tasks, 19.5s, epochs_ran=341
+    chunk 18/25: 1000 seed/config tasks, 23.2s, epochs_ran=405
+    chunk 19/25: 1000 seed/config tasks, 18.8s, epochs_ran=328
+    chunk 20/25: 1000 seed/config tasks, 20.7s, epochs_ran=363
+    chunk 21/25: 1000 seed/config tasks, 12.9s, epochs_ran=225
+    chunk 22/25: 1000 seed/config tasks, 15.3s, epochs_ran=266
+    chunk 23/25: 1000 seed/config tasks, 13.3s, epochs_ran=232
+    chunk 24/25: 1000 seed/config tasks, 14.8s, epochs_ran=258
+    chunk 25/25: 1000 seed/config tasks, 12.2s, epochs_ran=212
+  wrote 2500 summary rows to jacobi_ab_sweep_massive/CiteSeer/array_9597474_5/20260501-165645/summary.csv
+  wrote 25000 detail rows to jacobi_ab_sweep_massive/CiteSeer/array_9597474_5/20260501-165645/summary_details.csv
+  K=10
+    chunk 1/25: 1000 seed/config tasks, 36.7s, epochs_ran=373
+    chunk 2/25: 1000 seed/config tasks, 49.1s, epochs_ran=500
+    chunk 3/25: 1000 seed/config tasks, 49.1s, epochs_ran=500
+    chunk 4/25: 1000 seed/config tasks, 49.1s, epochs_ran=500
+    chunk 5/25: 1000 seed/config tasks, 49.1s, epochs_ran=500
+    chunk 6/25: 1000 seed/config tasks, 44.3s, epochs_ran=451
+    chunk 7/25: 1000 seed/config tasks, 45.4s, epochs_ran=462
+    chunk 8/25: 1000 seed/config tasks, 49.1s, epochs_ran=500
+    chunk 9/25: 1000 seed/config tasks, 40.6s, epochs_ran=413
+    chunk 10/25: 1000 seed/config tasks, 39.7s, epochs_ran=404
+    chunk 11/25: 1000 seed/config tasks, 34.0s, epochs_ran=346
+    chunk 12/25: 1000 seed/config tasks, 35.8s, epochs_ran=364
+    chunk 13/25: 1000 seed/config tasks, 32.2s, epochs_ran=327
+    chunk 14/25: 1000 seed/config tasks, 27.6s, epochs_ran=280
+    chunk 15/25: 1000 seed/config tasks, 25.8s, epochs_ran=261
+    chunk 16/25: 1000 seed/config tasks, 21.1s, epochs_ran=214
+    chunk 17/25: 1000 seed/config tasks, 26.6s, epochs_ran=270
+    chunk 18/25: 1000 seed/config tasks, 22.4s, epochs_ran=227
+    chunk 19/25: 1000 seed/config tasks, 24.7s, epochs_ran=251
+    chunk 20/25: 1000 seed/config tasks, 29.2s, epochs_ran=297
+    chunk 21/25: 1000 seed/config tasks, 30.0s, epochs_ran=305
+    chunk 22/25: 1000 seed/config tasks, 31.2s, epochs_ran=317
+    chunk 23/25: 1000 seed/config tasks, 25.4s, epochs_ran=257
+    chunk 24/25: 1000 seed/config tasks, 35.5s, epochs_ran=361
+    chunk 25/25: 1000 seed/config tasks, 33.1s, epochs_ran=336
+  wrote 5000 summary rows to jacobi_ab_sweep_massive/CiteSeer/array_9597474_5/20260501-165645/summary.csv
+  wrote 50000 detail rows to jacobi_ab_sweep_massive/CiteSeer/array_9597474_5/20260501-165645/summary_details.csv

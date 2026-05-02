@@ -1,0 +1,73 @@
+job_id=9598817
+array_job_id=9597474
+array_task_id=10
+dataset=Wisconsin
+host=holygpu8a29305.rc.fas.harvard.edu
+out_dir=jacobi_ab_sweep_massive/Wisconsin/array_9597474_10
+Fri May  1 17:05:37 EDT 2026
+NVIDIA A100-SXM4-80GB, 0, 81920 MiB
+device: cuda
+grid: 50 x 50 = 2500 configs
+K values: [4, 10]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+max task batch: 1000
+output directory: jacobi_ab_sweep_massive/Wisconsin/array_9597474_10/20260501-170557
+progress log: jacobi_ab_sweep_massive/Wisconsin/array_9597474_10/20260501-170557/progress.log
+
+=== [1/1] Wisconsin: 251 nodes, 515 edges ===
+  K=4
+    chunk 1/25: 1000 seed/config tasks, 2.3s, epochs_ran=250
+    chunk 2/25: 1000 seed/config tasks, 1.9s, epochs_ran=262
+    chunk 3/25: 1000 seed/config tasks, 2.0s, epochs_ran=277
+    chunk 4/25: 1000 seed/config tasks, 2.0s, epochs_ran=272
+    chunk 5/25: 1000 seed/config tasks, 2.1s, epochs_ran=290
+    chunk 6/25: 1000 seed/config tasks, 2.2s, epochs_ran=297
+    chunk 7/25: 1000 seed/config tasks, 2.3s, epochs_ran=321
+    chunk 8/25: 1000 seed/config tasks, 2.5s, epochs_ran=337
+    chunk 9/25: 1000 seed/config tasks, 2.3s, epochs_ran=316
+    chunk 10/25: 1000 seed/config tasks, 2.3s, epochs_ran=318
+    chunk 11/25: 1000 seed/config tasks, 2.3s, epochs_ran=309
+    chunk 12/25: 1000 seed/config tasks, 2.3s, epochs_ran=312
+    chunk 13/25: 1000 seed/config tasks, 2.2s, epochs_ran=300
+    chunk 14/25: 1000 seed/config tasks, 2.1s, epochs_ran=281
+    chunk 15/25: 1000 seed/config tasks, 2.1s, epochs_ran=286
+    chunk 16/25: 1000 seed/config tasks, 2.4s, epochs_ran=332
+    chunk 17/25: 1000 seed/config tasks, 2.4s, epochs_ran=327
+    chunk 18/25: 1000 seed/config tasks, 2.4s, epochs_ran=333
+    chunk 19/25: 1000 seed/config tasks, 2.0s, epochs_ran=272
+    chunk 20/25: 1000 seed/config tasks, 2.1s, epochs_ran=284
+    chunk 21/25: 1000 seed/config tasks, 2.4s, epochs_ran=326
+    chunk 22/25: 1000 seed/config tasks, 2.8s, epochs_ran=381
+    chunk 23/25: 1000 seed/config tasks, 2.5s, epochs_ran=348
+    chunk 24/25: 1000 seed/config tasks, 2.1s, epochs_ran=283
+    chunk 25/25: 1000 seed/config tasks, 2.5s, epochs_ran=338
+  wrote 2500 summary rows to jacobi_ab_sweep_massive/Wisconsin/array_9597474_10/20260501-170557/summary.csv
+  wrote 25000 detail rows to jacobi_ab_sweep_massive/Wisconsin/array_9597474_10/20260501-170557/summary_details.csv
+  K=10
+    chunk 1/25: 1000 seed/config tasks, 4.4s, epochs_ran=275
+    chunk 2/25: 1000 seed/config tasks, 5.0s, epochs_ran=315
+    chunk 3/25: 1000 seed/config tasks, 5.0s, epochs_ran=318
+    chunk 4/25: 1000 seed/config tasks, 4.7s, epochs_ran=299
+    chunk 5/25: 1000 seed/config tasks, 5.1s, epochs_ran=323
+    chunk 6/25: 1000 seed/config tasks, 4.0s, epochs_ran=255
+    chunk 7/25: 1000 seed/config tasks, 5.6s, epochs_ran=354
+    chunk 8/25: 1000 seed/config tasks, 4.7s, epochs_ran=294
+    chunk 9/25: 1000 seed/config tasks, 4.3s, epochs_ran=269
+    chunk 10/25: 1000 seed/config tasks, 5.6s, epochs_ran=356
+    chunk 11/25: 1000 seed/config tasks, 5.0s, epochs_ran=314
+    chunk 12/25: 1000 seed/config tasks, 5.0s, epochs_ran=316
+    chunk 13/25: 1000 seed/config tasks, 5.3s, epochs_ran=338
+    chunk 14/25: 1000 seed/config tasks, 5.3s, epochs_ran=337
+    chunk 15/25: 1000 seed/config tasks, 5.4s, epochs_ran=340
+    chunk 16/25: 1000 seed/config tasks, 4.4s, epochs_ran=276
+    chunk 17/25: 1000 seed/config tasks, 5.2s, epochs_ran=330
+    chunk 18/25: 1000 seed/config tasks, 5.3s, epochs_ran=338
+    chunk 19/25: 1000 seed/config tasks, 5.3s, epochs_ran=334
+    chunk 20/25: 1000 seed/config tasks, 5.8s, epochs_ran=370
+    chunk 21/25: 1000 seed/config tasks, 5.3s, epochs_ran=334
+    chunk 22/25: 1000 seed/config tasks, 5.4s, epochs_ran=343
+    chunk 23/25: 1000 seed/config tasks, 5.4s, epochs_ran=342
+    chunk 24/25: 1000 seed/config tasks, 5.9s, epochs_ran=371
+    chunk 25/25: 1000 seed/config tasks, 5.7s, epochs_ran=363
+  wrote 5000 summary rows to jacobi_ab_sweep_massive/Wisconsin/array_9597474_10/20260501-170557/summary.csv
+  wrote 50000 detail rows to jacobi_ab_sweep_massive/Wisconsin/array_9597474_10/20260501-170557/summary_details.csv

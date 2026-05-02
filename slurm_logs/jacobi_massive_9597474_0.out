@@ -1,0 +1,73 @@
+job_id=9597505
+array_job_id=9597474
+array_task_id=0
+dataset=Cora
+host=holygpu8a27301.rc.fas.harvard.edu
+out_dir=jacobi_ab_sweep_massive/Cora/array_9597474_0
+Fri May  1 16:50:37 EDT 2026
+NVIDIA A100-SXM4-80GB, 0, 81920 MiB
+device: cuda
+grid: 50 x 50 = 2500 configs
+K values: [4, 10]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+max task batch: 1000
+output directory: jacobi_ab_sweep_massive/Cora/array_9597474_0/20260501-165129
+progress log: jacobi_ab_sweep_massive/Cora/array_9597474_0/20260501-165129/progress.log
+
+=== [1/1] Cora: 2708 nodes, 10556 edges ===
+  K=4
+    chunk 1/25: 1000 seed/config tasks, 20.8s, epochs_ran=444
+    chunk 2/25: 1000 seed/config tasks, 19.1s, epochs_ran=500
+    chunk 3/25: 1000 seed/config tasks, 19.1s, epochs_ran=500
+    chunk 4/25: 1000 seed/config tasks, 19.1s, epochs_ran=500
+    chunk 5/25: 1000 seed/config tasks, 19.2s, epochs_ran=500
+    chunk 6/25: 1000 seed/config tasks, 19.2s, epochs_ran=500
+    chunk 7/25: 1000 seed/config tasks, 19.2s, epochs_ran=500
+    chunk 8/25: 1000 seed/config tasks, 19.2s, epochs_ran=500
+    chunk 9/25: 1000 seed/config tasks, 19.2s, epochs_ran=500
+    chunk 10/25: 1000 seed/config tasks, 19.2s, epochs_ran=500
+    chunk 11/25: 1000 seed/config tasks, 19.2s, epochs_ran=500
+    chunk 12/25: 1000 seed/config tasks, 19.2s, epochs_ran=500
+    chunk 13/25: 1000 seed/config tasks, 19.2s, epochs_ran=500
+    chunk 14/25: 1000 seed/config tasks, 19.2s, epochs_ran=500
+    chunk 15/25: 1000 seed/config tasks, 19.1s, epochs_ran=497
+    chunk 16/25: 1000 seed/config tasks, 14.1s, epochs_ran=365
+    chunk 17/25: 1000 seed/config tasks, 13.2s, epochs_ran=342
+    chunk 18/25: 1000 seed/config tasks, 14.4s, epochs_ran=375
+    chunk 19/25: 1000 seed/config tasks, 10.5s, epochs_ran=272
+    chunk 20/25: 1000 seed/config tasks, 11.3s, epochs_ran=292
+    chunk 21/25: 1000 seed/config tasks, 10.4s, epochs_ran=268
+    chunk 22/25: 1000 seed/config tasks, 6.4s, epochs_ran=165
+    chunk 23/25: 1000 seed/config tasks, 7.1s, epochs_ran=184
+    chunk 24/25: 1000 seed/config tasks, 9.7s, epochs_ran=249
+    chunk 25/25: 1000 seed/config tasks, 7.3s, epochs_ran=187
+  wrote 2500 summary rows to jacobi_ab_sweep_massive/Cora/array_9597474_0/20260501-165129/summary.csv
+  wrote 25000 detail rows to jacobi_ab_sweep_massive/Cora/array_9597474_0/20260501-165129/summary_details.csv
+  K=10
+    chunk 1/25: 1000 seed/config tasks, 33.4s, epochs_ran=432
+    chunk 2/25: 1000 seed/config tasks, 38.8s, epochs_ran=500
+    chunk 3/25: 1000 seed/config tasks, 38.7s, epochs_ran=500
+    chunk 4/25: 1000 seed/config tasks, 38.7s, epochs_ran=500
+    chunk 5/25: 1000 seed/config tasks, 38.7s, epochs_ran=500
+    chunk 6/25: 1000 seed/config tasks, 38.7s, epochs_ran=500
+    chunk 7/25: 1000 seed/config tasks, 38.7s, epochs_ran=500
+    chunk 8/25: 1000 seed/config tasks, 38.7s, epochs_ran=500
+    chunk 9/25: 1000 seed/config tasks, 39.1s, epochs_ran=500
+    chunk 10/25: 1000 seed/config tasks, 38.6s, epochs_ran=500
+    chunk 11/25: 1000 seed/config tasks, 34.5s, epochs_ran=446
+    chunk 12/25: 1000 seed/config tasks, 37.4s, epochs_ran=483
+    chunk 13/25: 1000 seed/config tasks, 27.2s, epochs_ran=352
+    chunk 14/25: 1000 seed/config tasks, 29.9s, epochs_ran=386
+    chunk 15/25: 1000 seed/config tasks, 18.5s, epochs_ran=238
+    chunk 16/25: 1000 seed/config tasks, 19.3s, epochs_ran=249
+    chunk 17/25: 1000 seed/config tasks, 31.2s, epochs_ran=403
+    chunk 18/25: 1000 seed/config tasks, 21.8s, epochs_ran=281
+    chunk 19/25: 1000 seed/config tasks, 21.3s, epochs_ran=275
+    chunk 20/25: 1000 seed/config tasks, 24.9s, epochs_ran=322
+    chunk 21/25: 1000 seed/config tasks, 25.4s, epochs_ran=327
+    chunk 22/25: 1000 seed/config tasks, 28.2s, epochs_ran=365
+    chunk 23/25: 1000 seed/config tasks, 32.3s, epochs_ran=417
+    chunk 24/25: 1000 seed/config tasks, 30.8s, epochs_ran=398
+    chunk 25/25: 1000 seed/config tasks, 27.8s, epochs_ran=359
+  wrote 5000 summary rows to jacobi_ab_sweep_massive/Cora/array_9597474_0/20260501-165129/summary.csv
+  wrote 50000 detail rows to jacobi_ab_sweep_massive/Cora/array_9597474_0/20260501-165129/summary_details.csv

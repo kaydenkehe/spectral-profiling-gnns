@@ -1,0 +1,67 @@
+/n/home06/drooryck/spectral-profling-gnns/spectral/datasets.py:31: UserWarning: The WikiCS dataset now returns an undirected graph by default. Please explicitly specify 'is_undirected=False' to restore the old behavior.
+  wikics = WikiCS(root=os.path.join(data_dir, 'wikics'))
+device: cuda
+grid: 50 x 50 = 2500 configs
+K values: [4, 10]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+max task batch: 1000
+output directory: jacobi_ab_sweep_massive/Squirrel/array_9597474_13/20260501-170650
+progress log: jacobi_ab_sweep_massive/Squirrel/array_9597474_13/20260501-170650/progress.log
+
+=== [1/1] Squirrel: 2223 nodes, 46998 edges ===
+  K=4
+    chunk 1/25: 1000 seed/config tasks, 20.7s, epochs_ran=335
+    chunk 2/25: 1000 seed/config tasks, 24.2s, epochs_ran=391
+    chunk 3/25: 1000 seed/config tasks, 23.3s, epochs_ran=385
+    chunk 4/25: 1000 seed/config tasks, 22.5s, epochs_ran=371
+    chunk 5/25: 1000 seed/config tasks, 22.7s, epochs_ran=367
+    chunk 6/25: 1000 seed/config tasks, 24.7s, epochs_ran=432
+    chunk 7/25: 1000 seed/config tasks, 24.7s, epochs_ran=424
+    chunk 8/25: 1000 seed/config tasks, 25.8s, epochs_ran=442
+    chunk 9/25: 1000 seed/config tasks, 25.1s, epochs_ran=484
+    chunk 10/25: 1000 seed/config tasks, 23.5s, epochs_ran=422
+    chunk 11/25: 1000 seed/config tasks, 25.4s, epochs_ran=469
+    chunk 12/25: 1000 seed/config tasks, 27.0s, epochs_ran=472
+    chunk 13/25: 1000 seed/config tasks, 24.5s, epochs_ran=457
+    chunk 14/25: 1000 seed/config tasks, 27.6s, epochs_ran=500
+    chunk 15/25: 1000 seed/config tasks, 24.9s, epochs_ran=439
+    chunk 16/25: 1000 seed/config tasks, 26.5s, epochs_ran=477
+    chunk 17/25: 1000 seed/config tasks, 23.3s, epochs_ran=448
+    chunk 18/25: 1000 seed/config tasks, 26.6s, epochs_ran=461
+    chunk 19/25: 1000 seed/config tasks, 26.4s, epochs_ran=458
+    chunk 20/25: 1000 seed/config tasks, 28.0s, epochs_ran=500
+    chunk 21/25: 1000 seed/config tasks, 25.9s, epochs_ran=429
+    chunk 22/25: 1000 seed/config tasks, 23.6s, epochs_ran=444
+    chunk 23/25: 1000 seed/config tasks, 25.6s, epochs_ran=434
+    chunk 24/25: 1000 seed/config tasks, 26.4s, epochs_ran=454
+    chunk 25/25: 1000 seed/config tasks, 25.3s, epochs_ran=500
+  wrote 2500 summary rows to jacobi_ab_sweep_massive/Squirrel/array_9597474_13/20260501-170650/summary.csv
+  wrote 25000 detail rows to jacobi_ab_sweep_massive/Squirrel/array_9597474_13/20260501-170650/summary_details.csv
+  K=10
+    chunk 1/25: 1000 seed/config tasks, 45.1s, epochs_ran=481
+    chunk 2/25: 1000 seed/config tasks, 43.3s, epochs_ran=450
+    chunk 3/25: 1000 seed/config tasks, 42.7s, epochs_ran=419
+    chunk 4/25: 1000 seed/config tasks, 42.7s, epochs_ran=435
+    chunk 5/25: 1000 seed/config tasks, 40.4s, epochs_ran=402
+    chunk 6/25: 1000 seed/config tasks, 42.6s, epochs_ran=438
+    chunk 7/25: 1000 seed/config tasks, 48.3s, epochs_ran=500
+    chunk 8/25: 1000 seed/config tasks, 47.2s, epochs_ran=493
+    chunk 9/25: 1000 seed/config tasks, 44.4s, epochs_ran=461
+    chunk 10/25: 1000 seed/config tasks, 47.3s, epochs_ran=500
+    chunk 11/25: 1000 seed/config tasks, 47.7s, epochs_ran=500
+    chunk 12/25: 1000 seed/config tasks, 48.2s, epochs_ran=500
+    chunk 13/25: 1000 seed/config tasks, 49.2s, epochs_ran=500
+    chunk 14/25: 1000 seed/config tasks, 48.5s, epochs_ran=500
+    chunk 15/25: 1000 seed/config tasks, 49.4s, epochs_ran=500
+    chunk 16/25: 1000 seed/config tasks, 44.8s, epochs_ran=463
+    chunk 17/25: 1000 seed/config tasks, 46.3s, epochs_ran=475
+    chunk 18/25: 1000 seed/config tasks, 48.7s, epochs_ran=494
+    chunk 19/25: 1000 seed/config tasks, 47.7s, epochs_ran=500
+    chunk 20/25: 1000 seed/config tasks, 48.0s, epochs_ran=490
+    chunk 21/25: 1000 seed/config tasks, 47.8s, epochs_ran=500
+    chunk 22/25: 1000 seed/config tasks, 47.1s, epochs_ran=468
+    chunk 23/25: 1000 seed/config tasks, 45.7s, epochs_ran=460
+    chunk 24/25: 1000 seed/config tasks, 46.7s, epochs_ran=473
+    chunk 25/25: 1000 seed/config tasks, 47.4s, epochs_ran=500
+  wrote 5000 summary rows to jacobi_ab_sweep_massive/Squirrel/array_9597474_13/20260501-170650/summary.csv
+  wrote 50000 detail rows to jacobi_ab_sweep_massive/Squirrel/array_9597474_13/20260501-170650/summary_details.csv

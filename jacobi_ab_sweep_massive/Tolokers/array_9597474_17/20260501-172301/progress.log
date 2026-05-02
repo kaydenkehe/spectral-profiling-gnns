@@ -1,0 +1,67 @@
+/n/home06/drooryck/spectral-profling-gnns/spectral/datasets.py:31: UserWarning: The WikiCS dataset now returns an undirected graph by default. Please explicitly specify 'is_undirected=False' to restore the old behavior.
+  wikics = WikiCS(root=os.path.join(data_dir, 'wikics'))
+device: cuda
+grid: 50 x 50 = 2500 configs
+K values: [4, 10]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+max task batch: 1000
+output directory: jacobi_ab_sweep_massive/Tolokers/array_9597474_17/20260501-172301
+progress log: jacobi_ab_sweep_massive/Tolokers/array_9597474_17/20260501-172301/progress.log
+
+=== [1/1] Tolokers: 11758 nodes, 1038000 edges ===
+  K=4
+    chunk 1/25: 1000 seed/config tasks, 69.8s, epochs_ran=366
+    chunk 2/25: 1000 seed/config tasks, 60.7s, epochs_ran=321
+    chunk 3/25: 1000 seed/config tasks, 70.0s, epochs_ran=370
+    chunk 4/25: 1000 seed/config tasks, 59.8s, epochs_ran=316
+    chunk 5/25: 1000 seed/config tasks, 53.9s, epochs_ran=285
+    chunk 6/25: 1000 seed/config tasks, 64.1s, epochs_ran=339
+    chunk 7/25: 1000 seed/config tasks, 56.2s, epochs_ran=297
+    chunk 8/25: 1000 seed/config tasks, 71.5s, epochs_ran=378
+    chunk 9/25: 1000 seed/config tasks, 75.9s, epochs_ran=401
+    chunk 10/25: 1000 seed/config tasks, 52.0s, epochs_ran=275
+    chunk 11/25: 1000 seed/config tasks, 61.1s, epochs_ran=323
+    chunk 12/25: 1000 seed/config tasks, 53.2s, epochs_ran=281
+    chunk 13/25: 1000 seed/config tasks, 59.8s, epochs_ran=316
+    chunk 14/25: 1000 seed/config tasks, 61.5s, epochs_ran=325
+    chunk 15/25: 1000 seed/config tasks, 60.7s, epochs_ran=321
+    chunk 16/25: 1000 seed/config tasks, 61.9s, epochs_ran=327
+    chunk 17/25: 1000 seed/config tasks, 73.2s, epochs_ran=387
+    chunk 18/25: 1000 seed/config tasks, 72.6s, epochs_ran=384
+    chunk 19/25: 1000 seed/config tasks, 78.9s, epochs_ran=417
+    chunk 20/25: 1000 seed/config tasks, 77.5s, epochs_ran=410
+    chunk 21/25: 1000 seed/config tasks, 68.8s, epochs_ran=364
+    chunk 22/25: 1000 seed/config tasks, 77.9s, epochs_ran=412
+    chunk 23/25: 1000 seed/config tasks, 89.8s, epochs_ran=475
+    chunk 24/25: 1000 seed/config tasks, 75.7s, epochs_ran=400
+    chunk 25/25: 1000 seed/config tasks, 81.5s, epochs_ran=431
+  wrote 2500 summary rows to jacobi_ab_sweep_massive/Tolokers/array_9597474_17/20260501-172301/summary.csv
+  wrote 25000 detail rows to jacobi_ab_sweep_massive/Tolokers/array_9597474_17/20260501-172301/summary_details.csv
+  K=10
+    chunk 1/25: 1000 seed/config tasks, 232.5s, epochs_ran=500
+    chunk 2/25: 1000 seed/config tasks, 232.5s, epochs_ran=500
+    chunk 3/25: 1000 seed/config tasks, 230.2s, epochs_ran=495
+    chunk 4/25: 1000 seed/config tasks, 232.5s, epochs_ran=500
+    chunk 5/25: 1000 seed/config tasks, 228.3s, epochs_ran=491
+    chunk 6/25: 1000 seed/config tasks, 207.8s, epochs_ran=447
+    chunk 7/25: 1000 seed/config tasks, 225.5s, epochs_ran=485
+    chunk 8/25: 1000 seed/config tasks, 232.5s, epochs_ran=500
+    chunk 9/25: 1000 seed/config tasks, 232.5s, epochs_ran=500
+    chunk 10/25: 1000 seed/config tasks, 232.5s, epochs_ran=500
+    chunk 11/25: 1000 seed/config tasks, 232.5s, epochs_ran=500
+    chunk 12/25: 1000 seed/config tasks, 221.4s, epochs_ran=476
+    chunk 13/25: 1000 seed/config tasks, 232.5s, epochs_ran=500
+    chunk 14/25: 1000 seed/config tasks, 225.6s, epochs_ran=485
+    chunk 15/25: 1000 seed/config tasks, 232.5s, epochs_ran=500
+    chunk 16/25: 1000 seed/config tasks, 226.5s, epochs_ran=487
+    chunk 17/25: 1000 seed/config tasks, 232.5s, epochs_ran=500
+    chunk 18/25: 1000 seed/config tasks, 232.5s, epochs_ran=500
+    chunk 19/25: 1000 seed/config tasks, 232.5s, epochs_ran=500
+    chunk 20/25: 1000 seed/config tasks, 232.5s, epochs_ran=500
+    chunk 21/25: 1000 seed/config tasks, 218.6s, epochs_ran=470
+    chunk 22/25: 1000 seed/config tasks, 232.5s, epochs_ran=500
+    chunk 23/25: 1000 seed/config tasks, 232.5s, epochs_ran=500
+    chunk 24/25: 1000 seed/config tasks, 174.8s, epochs_ran=376
+    chunk 25/25: 1000 seed/config tasks, 221.8s, epochs_ran=477
+  wrote 5000 summary rows to jacobi_ab_sweep_massive/Tolokers/array_9597474_17/20260501-172301/summary.csv
+  wrote 50000 detail rows to jacobi_ab_sweep_massive/Tolokers/array_9597474_17/20260501-172301/summary_details.csv

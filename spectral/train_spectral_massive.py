@@ -1,6 +1,7 @@
 import argparse
 import csv
 import json
+import math
 import sys
 from datetime import datetime
 from itertools import product
@@ -10,14 +11,11 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from scipy.special import comb
 from torch_geometric.nn.conv.gcn_conv import gcn_norm
 from torch_geometric.utils import get_laplacian
 
 from datasets import build_datasets
 from jacobi_ab_sweep import Tee, write_csv
-from paper_faithful_harness import ChebNet as ExactChebNet
-from paper_faithful_harness import fit as fit_exact_model
 
 
 def values(x):
@@ -103,7 +101,7 @@ class BatchedBernNet(nn.Module):
         self.theta = nn.Parameter(torch.ones(tasks, self.K + 1))
         self.register_buffer(
             "binom",
-            torch.tensor([comb(self.K, k) for k in range(self.K + 1)], dtype=torch.float),
+            torch.tensor([math.comb(self.K, k) for k in range(self.K + 1)], dtype=torch.float),
         )
 
     def forward(self, x, L_sym):
@@ -123,6 +121,55 @@ class BatchedBernNet(nn.Module):
             scale = theta[:, k].view(-1, 1, 1) * self.binom[k] / (2 ** self.K)
             z = z + scale * term
         return z
+
+
+class BatchedChebLayer(nn.Module):
+    def __init__(self, tasks, in_dim, out_dim, k_val):
+        super().__init__()
+        self.K = k_val
+        self.weight = nn.Parameter(torch.empty(tasks, self.K, in_dim, out_dim))
+        self.bias = nn.Parameter(torch.zeros(tasks, out_dim))
+        init_xavier_slices_(self.weight)
+
+    def _linear(self, x, k):
+        return torch.einsum("tni,tio->tno", x, self.weight[:, k])
+
+    def forward(self, x, L_cheb):
+        tx_0 = x
+        tx_1 = x
+        out = self._linear(tx_0, 0)
+
+        if self.K > 1:
+            tx_1 = spmm_batched(L_cheb, x)
+            out = out + self._linear(tx_1, 1)
+
+        for k in range(2, self.K):
+            tx_2 = 2.0 * spmm_batched(L_cheb, tx_1) - tx_0
+            out = out + self._linear(tx_2, k)
+            tx_0, tx_1 = tx_1, tx_2
+
+        return out + self.bias.unsqueeze(1)
+
+
+class BatchedChebNet(nn.Module):
+    operator = "L_cheb"
+
+    def __init__(self, tasks, in_dim, hidden_dim, num_classes, k_val,
+                 dropout=0.5, dprate=0.0):
+        super().__init__()
+        self.dropout = dropout
+        self.dprate = dprate
+        self.conv1 = BatchedChebLayer(tasks, in_dim, hidden_dim, k_val)
+        self.conv2 = BatchedChebLayer(tasks, hidden_dim, num_classes, k_val)
+
+    def forward(self, x, L_cheb):
+        tasks = self.conv1.weight.size(0)
+        x = x.unsqueeze(0).expand(tasks, -1, -1)
+        x = F.dropout(x, p=self.dropout, training=self.training)
+        x = self.conv1(x, L_cheb)
+        x = F.relu(x)
+        x = F.dropout(x, p=self.dprate, training=self.training)
+        return self.conv2(x, L_cheb)
 
 
 class BatchedJacobiConv(nn.Module):
@@ -178,15 +225,11 @@ class BatchedJacobiConv(nn.Module):
 
 BATCHED_MODELS = {
     "GPRGNN": BatchedGPRGNN,
+    "ChebGNN": BatchedChebNet,
     "BernNet": BatchedBernNet,
     "JacobiConv": BatchedJacobiConv,
 }
-
-EXACT_MODELS = {
-    "ChebGNN": ExactChebNet,
-}
-
-MODELS = {**BATCHED_MODELS, **EXACT_MODELS}
+MODELS = BATCHED_MODELS
 
 
 class TaskAdam:
@@ -253,12 +296,26 @@ def make_operators(data, device):
     ei_lap, ew_lap = get_laplacian(data.edge_index, normalization="sym", num_nodes=n)
     L_sym = torch.sparse_coo_tensor(ei_lap, ew_lap.float(), (n, n)).coalesce().to(device)
 
+    ew_cheb = ew_lap.float().clone()
+    lambda_max = 2.0 * ew_cheb.max()
+    ew_cheb = (2.0 * ew_cheb) / lambda_max
+    ew_cheb.masked_fill_(ew_cheb == float("inf"), 0)
+    cheb_loop_mask = ei_lap[0] == ei_lap[1]
+    ew_cheb[cheb_loop_mask] -= 1.0
+    L_cheb = torch.sparse_coo_tensor(ei_lap, ew_cheb, (n, n)).coalesce().to(device)
+
     self_loop_mask = ei_lap[0] == ei_lap[1]
     ew_tilde = ew_lap.float().clone()
     ew_tilde[self_loop_mask] -= 1.0
     L_tilde = torch.sparse_coo_tensor(ei_lap, ew_tilde, (n, n)).coalesce().to(device)
 
-    return {"A_hat": A_hat, "A_norm": A_norm, "L_sym": L_sym, "L_tilde": L_tilde}
+    return {
+        "A_hat": A_hat,
+        "A_norm": A_norm,
+        "L_sym": L_sym,
+        "L_tilde": L_tilde,
+        "L_cheb": L_cheb,
+    }
 
 
 def masked_cross_entropy(logits, y, mask):
@@ -423,76 +480,6 @@ def append_result(rows, curve_rows, dataset_name, model_name, k_val, hidden_dim,
         curve_rows.append((row_id, history))
 
 
-def run_exact_model(dataset_name, model_name, ModelClass, graph, dataset,
-                    operators, args, device, rows, curve_rows, curves_dir,
-                    summary_path):
-    for k_val in args.k:
-        for hidden_dim in args.hidden:
-            for lr_value in values(args.lr):
-                for wd_value in values(args.weight_decay):
-                    for epoch_value in values(args.epochs):
-                        for patience_value in values(args.patience):
-                            print(
-                                f"  {dataset_name} | {model_name} | K={k_val} | "
-                                f"hidden={hidden_dim} | "
-                                f"lr={lr_value:g} | wd={wd_value:g} | "
-                                f"epochs={epoch_value} | patience={patience_value} | "
-                                "exact PyG serial",
-                                flush=True,
-                            )
-                            for seed in range(args.runs):
-                                masks = get_splits(graph, seed)
-                                model = ModelClass(
-                                    in_dim=graph.x.size(1),
-                                    hidden_dim=hidden_dim,
-                                    num_classes=dataset.num_classes,
-                                    k_val=k_val,
-                                    dropout=args.dropout,
-                                    dprate=args.dprate,
-                                )
-                                test_acc, history = fit_exact_model(
-                                    model,
-                                    graph,
-                                    masks,
-                                    operators,
-                                    lr=lr_value,
-                                    weight_decay=wd_value,
-                                    max_epochs=epoch_value,
-                                    patience=patience_value,
-                                    device=device,
-                                )
-                                best_val = max(history) if history else float("nan")
-                                append_result(
-                                    rows,
-                                    curve_rows,
-                                    dataset_name,
-                                    model_name,
-                                    k_val,
-                                    hidden_dim,
-                                    lr_value,
-                                    wd_value,
-                                    epoch_value,
-                                    patience_value,
-                                    seed,
-                                    best_val,
-                                    test_acc,
-                                    len(history),
-                                    history,
-                                    "exact_pyg_serial",
-                                    curves_dir,
-                                )
-                                print(
-                                    f"    seed {seed + 1}/{args.runs}: "
-                                    f"test={test_acc:.4f}, epochs_ran={len(history)}",
-                                    flush=True,
-                                )
-                                write_outputs(summary_path, rows, curves_dir, curve_rows)
-                                curve_rows.clear()
-                                del model
-                                if device.type == "cuda":
-                                    torch.cuda.empty_cache()
-
-
 def main():
     args = parse_args()
     unsupported = sorted(set(args.models) - set(MODELS))
@@ -545,23 +532,6 @@ def main():
         )
 
         for model_name in args.models:
-            if model_name in EXACT_MODELS:
-                run_exact_model(
-                    dataset_name,
-                    model_name,
-                    EXACT_MODELS[model_name],
-                    graph,
-                    dataset,
-                    operators,
-                    args,
-                    device,
-                    rows,
-                    curve_rows,
-                    curves_dir,
-                    summary_path,
-                )
-                continue
-
             ModelClass = BATCHED_MODELS[model_name]
             for k_val in args.k:
                 for hidden_dim in args.hidden:

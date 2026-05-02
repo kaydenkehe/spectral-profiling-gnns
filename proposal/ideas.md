@@ -13,9 +13,9 @@ Experiments:
     - On SBM: We can try to create block graphs where we want to compare FAGCN to MLP Or we can try creating graphs where we expect to have a clean MLP vs. HFGCN vs GCN.
     - We want to create synthetic examples that can validate RQ1, graphs where what architecture is optimal depends on shape of the SLP not just the h. Claude has some ideas on this, and Im sure we can too.
     - basically we can generate homophilic
-- Also we currently haven't done what we said in the proposal about 'induced subgraph of training points'.
+- Also we currently haven't done what we said in the proposal about 'induced subgraph of training points'. (Kayden working on this now.)
 - This paper (https://openreview.net/pdf?id=m7PIJWOdlY) that we cite for RQ1 proposes a new metric for homophily. Another way to spin our SLP is that some features of SLP are a novel, more fine-grained homophily metric. We would have to think about how to justify that claim exactly.
-- Ege: probably in spectral-profling-gnns/spectral we run the other set of experiments for spectral gnns. ANd we need to do the Chebyshev polynomial ideas.
+- Ege: probably in spectral-profling-gnns/spectral we run the other set of experiments for spectral gnns. ANd we need to do the Chebyshev polynomial ideas (maybe just bins for now).
 - I don't quite get the transductive message passing idea. 
 
 Draft write-up structure:
