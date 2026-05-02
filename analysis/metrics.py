@@ -8,6 +8,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import json
 import numpy as np
 import torch
+torch.backends.cuda.preferred_linalg_library('magma')
 from torch_geometric.datasets import (
     Planetoid, Amazon, Coauthor, WebKB, WikipediaNetwork,
     Actor, HeterophilousGraphDataset, WikiCS,
