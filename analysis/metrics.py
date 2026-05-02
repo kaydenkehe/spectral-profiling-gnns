@@ -132,7 +132,7 @@ with open('metrics.json', 'w') as f:
 
 # plot
 
-n_rows, n_cols = 2, 7
+n_rows, n_cols = 3, 7
 fig, axes = plt.subplots(n_rows, n_cols,
                          figsize=(3 * n_cols, 3 * n_rows),
                          sharex=True, sharey=True)
