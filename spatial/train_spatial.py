@@ -15,6 +15,8 @@ elif model == 'mlp':
     from mlp_harness import train_sweep
 elif model == 'hfgcn':
     from hfgcn_harness import train_sweep
+elif model == 'h2gcn':
+    from h2gcn_harness import train_sweep
 
 # setup dir
 
@@ -36,10 +38,18 @@ for dataset_name, configs in results.items():
         depth = config_key[0]
         hidden_dim = config_key[1]
         eps = config_key[2] if model == 'fagcn' else ''
+        if model == 'h2gcn':
+            dropout, wd, relu_flag = config_key[2], config_key[3], config_key[4]
+        else:
+            dropout, wd, relu_flag = '', '', ''
 
         for seed, (acc, history) in enumerate(zip(accs, val_histories)):
             eps_str = f"{eps}" if eps != '' else 'na'
-            row_id = f"{dataset_name}_L{depth}_H{hidden_dim}_eps{eps_str}_s{seed}"
+            if model == 'h2gcn':
+                extras = f"_d{dropout}_wd{wd}_relu{int(relu_flag)}"
+            else:
+                extras = ''
+            row_id = f"{dataset_name}_L{depth}_H{hidden_dim}_eps{eps_str}{extras}_s{seed}"
 
             rows.append({
                 'id': row_id,
@@ -48,6 +58,9 @@ for dataset_name, configs in results.items():
                 'depth': depth,
                 'hidden': hidden_dim,
                 'eps': eps_str,
+                'dropout': dropout,
+                'wd': wd,
+                'relu': relu_flag,
                 'seed': seed,
                 'test_acc': f"{acc:.4f}"
             })
@@ -60,7 +73,7 @@ for dataset_name, configs in results.items():
                     cw.writerow([epoch, f"{val_acc:.4f}"])
 
 # summary csv
-fieldnames = ['id', 'dataset', 'model', 'depth', 'hidden', 'eps', 'seed', 'test_acc']
+fieldnames = ['id', 'dataset', 'model', 'depth', 'hidden', 'eps', 'dropout', 'wd', 'relu', 'seed', 'test_acc']
 with open(run_dir / 'summary.csv', 'w', newline='') as f:
     writer = csv.DictWriter(f, fieldnames=fieldnames)
     writer.writeheader()
