@@ -1,0 +1,31 @@
+/n/home06/drooryck/spectral-profling-gnns/spectral/datasets.py:31: UserWarning: The WikiCS dataset now returns an undirected graph by default. Please explicitly specify 'is_undirected=False' to restore the old behavior.
+  wikics = WikiCS(root=os.path.join(data_dir, 'wikics'))
+Run directory: spectral_massive_slurm/Questions/array_9652978_18/paper_massive_20260502-111710
+Datasets: 1
+Sweep: models=['GPRGNN', 'ChebGNN', 'BernNet', 'JacobiConv'], k=[4, 10], hidden=[64, 128], runs=10, epochs=[500], patience=[50], lr=[0.01, 0.005, 0.001], weight_decay=[0.0005, 0.0001, 0.0], max_task_batch=90, device=cuda
+
+[1/1] Questions: 48921 nodes, 307080 edges, 2 classes
+  Questions | GPRGNN | K=4 | hidden=64 | epochs=500 | patience=50 | tasks 1-90/90
+  Questions | GPRGNN | K=4 | hidden=128 | epochs=500 | patience=50 | tasks 1-90/90
+  Questions | GPRGNN | K=10 | hidden=64 | epochs=500 | patience=50 | tasks 1-90/90
+  Questions | GPRGNN | K=10 | hidden=128 | epochs=500 | patience=50 | tasks 1-90/90
+  Questions | ChebGNN | K=4 | hidden=64 | epochs=500 | patience=50 | tasks 1-90/90
+  Questions | ChebGNN | K=4 | hidden=128 | epochs=500 | patience=50 | tasks 1-90/90
+  Questions | ChebGNN | K=10 | hidden=64 | epochs=500 | patience=50 | tasks 1-90/90
+  Questions | ChebGNN | K=10 | hidden=128 | epochs=500 | patience=50 | tasks 1-90/90
+Traceback (most recent call last):
+  File "/n/home06/drooryck/spectral-profling-gnns/spectral/train_spectral_massive.py", line 623, in <module>
+    main()
+  File "/n/home06/drooryck/spectral-profling-gnns/spectral/train_spectral_massive.py", line 578, in main
+    best_val, best_test, epochs_ran, histories = train_task_batch(
+                                                 ^^^^^^^^^^^^^^^^^
+  File "/n/home06/drooryck/spectral-profling-gnns/spectral/train_spectral_massive.py", line 366, in train_task_batch
+    loss.backward()
+  File "/n/home06/drooryck/spectral-profling-gnns/.venv/lib64/python3.12/site-packages/torch/_tensor.py", line 647, in backward
+    torch.autograd.backward(
+  File "/n/home06/drooryck/spectral-profling-gnns/.venv/lib64/python3.12/site-packages/torch/autograd/__init__.py", line 354, in backward
+    _engine_run_backward(
+  File "/n/home06/drooryck/spectral-profling-gnns/.venv/lib64/python3.12/site-packages/torch/autograd/graph.py", line 829, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 2.10 GiB. GPU 0 has a total capacity of 79.25 GiB of which 318.62 MiB is free. Including non-PyTorch memory, this process has 78.93 GiB memory in use. Of the allocated memory 75.15 GiB is allocated by PyTorch, and 3.28 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
