@@ -72,6 +72,8 @@ def compute_homophily(edge_index, labels):
 def compute_spectrum(edge_index, n):
     edge_index, edge_weight = get_laplacian(edge_index, normalization='sym', num_nodes=n)
     L = to_dense_adj(edge_index, edge_attr=edge_weight, max_num_nodes=n)[0]
+    if n * n > 2_000_000_000:        # cusolver/magma int32 ceiling
+        L = L.cpu()
     evals, evecs = torch.linalg.eigh(L)
 
     return evals, evecs
@@ -104,7 +106,7 @@ for d, g, name in zip(datasets, graphs, names):
     g = g.to(device)
 
     evals_f, evecs_f = compute_spectrum(g.edge_index, n)
-    cdf_f = compute_slp(evecs_f, g.y, C)
+    cdf_f = compute_slp(evecs_f, g.y.to(evecs_f.device), C)
     h = compute_homophily(g.edge_index, g.y)
 
     evals_np = evals_f.cpu().numpy()
