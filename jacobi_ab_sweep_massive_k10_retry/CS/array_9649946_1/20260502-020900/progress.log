@@ -1,0 +1,39 @@
+/n/home06/drooryck/spectral-profling-gnns/spectral/datasets.py:31: UserWarning: The WikiCS dataset now returns an undirected graph by default. Please explicitly specify 'is_undirected=False' to restore the old behavior.
+  wikics = WikiCS(root=os.path.join(data_dir, 'wikics'))
+device: cuda
+grid: 50 x 50 = 2500 configs
+K values: [10]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+max task batch: 1000
+output directory: jacobi_ab_sweep_massive_k10_retry/CS/array_9649946_1/20260502-020900
+progress log: jacobi_ab_sweep_massive_k10_retry/CS/array_9649946_1/20260502-020900/progress.log
+
+=== [1/1] CS: 18333 nodes, 163788 edges ===
+  K=10
+    chunk 1/25: 1000 seed/config tasks, 797.9s, epochs_ran=406
+    chunk 2/25: 1000 seed/config tasks, 974.0s, epochs_ran=496
+    chunk 3/25: 1000 seed/config tasks, 915.3s, epochs_ran=466
+    chunk 4/25: 1000 seed/config tasks, 958.5s, epochs_ran=488
+    chunk 5/25: 1000 seed/config tasks, 982.2s, epochs_ran=500
+    chunk 6/25: 1000 seed/config tasks, 982.1s, epochs_ran=500
+    chunk 7/25: 1000 seed/config tasks, 982.1s, epochs_ran=500
+    chunk 8/25: 1000 seed/config tasks, 982.1s, epochs_ran=500
+    chunk 9/25: 1000 seed/config tasks, 982.2s, epochs_ran=500
+    chunk 10/25: 1000 seed/config tasks, 981.7s, epochs_ran=500
+    chunk 11/25: 1000 seed/config tasks, 981.9s, epochs_ran=500
+    chunk 12/25: 1000 seed/config tasks, 981.9s, epochs_ran=500
+    chunk 13/25: 1000 seed/config tasks, 982.0s, epochs_ran=500
+    chunk 14/25: 1000 seed/config tasks, 981.9s, epochs_ran=500
+    chunk 15/25: 1000 seed/config tasks, 981.8s, epochs_ran=500
+    chunk 16/25: 1000 seed/config tasks, 981.9s, epochs_ran=500
+    chunk 17/25: 1000 seed/config tasks, 981.9s, epochs_ran=500
+    chunk 18/25: 1000 seed/config tasks, 981.8s, epochs_ran=500
+    chunk 19/25: 1000 seed/config tasks, 981.9s, epochs_ran=500
+    chunk 20/25: 1000 seed/config tasks, 981.9s, epochs_ran=500
+    chunk 21/25: 1000 seed/config tasks, 981.8s, epochs_ran=500
+    chunk 22/25: 1000 seed/config tasks, 981.9s, epochs_ran=500
+    chunk 23/25: 1000 seed/config tasks, 981.7s, epochs_ran=500
+    chunk 24/25: 1000 seed/config tasks, 981.7s, epochs_ran=500
+    chunk 25/25: 1000 seed/config tasks, 981.7s, epochs_ran=500
+  wrote 2500 summary rows to jacobi_ab_sweep_massive_k10_retry/CS/array_9649946_1/20260502-020900/summary.csv
+  wrote 25000 detail rows to jacobi_ab_sweep_massive_k10_retry/CS/array_9649946_1/20260502-020900/summary_details.csv

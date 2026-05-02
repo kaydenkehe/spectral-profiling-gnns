@@ -1,0 +1,39 @@
+/n/home06/drooryck/spectral-profling-gnns/spectral/datasets.py:31: UserWarning: The WikiCS dataset now returns an undirected graph by default. Please explicitly specify 'is_undirected=False' to restore the old behavior.
+  wikics = WikiCS(root=os.path.join(data_dir, 'wikics'))
+Run directory: spectral_massive_slurm/CS/array_9652978_7/paper_massive_20260502-080643
+Datasets: 1
+Sweep: models=['GPRGNN', 'ChebGNN', 'BernNet', 'JacobiConv'], k=[4, 10], hidden=[64, 128], runs=10, epochs=[500], patience=[50], lr=[0.01, 0.005, 0.001], weight_decay=[0.0005, 0.0001, 0.0], max_task_batch=90, device=cuda
+
+[1/1] CS: 18333 nodes, 163788 edges, 15 classes
+  CS | GPRGNN | K=4 | hidden=64 | epochs=500 | patience=50 | tasks 1-90/90
+Traceback (most recent call last):
+  File "/n/home06/drooryck/spectral-profling-gnns/spectral/train_spectral_massive.py", line 623, in <module>
+    main()
+  File "/n/home06/drooryck/spectral-profling-gnns/spectral/train_spectral_massive.py", line 578, in main
+    best_val, best_test, epochs_ran, histories = train_task_batch(
+                                                 ^^^^^^^^^^^^^^^^^
+  File "/n/home06/drooryck/spectral-profling-gnns/spectral/train_spectral_massive.py", line 354, in train_task_batch
+    logits = model(x, op)
+             ^^^^^^^^^^^^
+  File "/n/home06/drooryck/spectral-profling-gnns/.venv/lib64/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/n/home06/drooryck/spectral-profling-gnns/.venv/lib64/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/n/home06/drooryck/spectral-profling-gnns/spectral/train_spectral_massive.py", line 82, in forward
+    h = self.encoder(x, self.dropout, self.training)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/n/home06/drooryck/spectral-profling-gnns/.venv/lib64/python3.12/site-packages/torch/nn/modules/module.py", line 1773, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/n/home06/drooryck/spectral-profling-gnns/.venv/lib64/python3.12/site-packages/torch/nn/modules/module.py", line 1784, in _call_impl
+    return forward_call(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/n/home06/drooryck/spectral-profling-gnns/spectral/train_spectral_massive.py", line 58, in forward
+    h = F.dropout(h, p=dropout, training=training)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/n/home06/drooryck/spectral-profling-gnns/.venv/lib64/python3.12/site-packages/torch/nn/functional.py", line 1422, in dropout
+    _VF.dropout_(input, p, training) if inplace else _VF.dropout(input, p, training)
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 41.83 GiB. GPU 0 has a total capacity of 79.25 GiB of which 25.53 GiB is free. Including non-PyTorch memory, this process has 53.71 GiB memory in use. Of the allocated memory 11.65 GiB is allocated by PyTorch, and 41.56 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

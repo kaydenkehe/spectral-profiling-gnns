@@ -1,0 +1,39 @@
+/n/home06/drooryck/spectral-profling-gnns/spectral/datasets.py:31: UserWarning: The WikiCS dataset now returns an undirected graph by default. Please explicitly specify 'is_undirected=False' to restore the old behavior.
+  wikics = WikiCS(root=os.path.join(data_dir, 'wikics'))
+device: cuda
+grid: 50 x 50 = 2500 configs
+K values: [10]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+max task batch: 1000
+output directory: jacobi_ab_sweep_massive_k10_retry/RomanEmpire/array_9649946_3/20260502-020930
+progress log: jacobi_ab_sweep_massive_k10_retry/RomanEmpire/array_9649946_3/20260502-020930/progress.log
+
+=== [1/1] RomanEmpire: 22662 nodes, 65854 edges ===
+  K=10
+    chunk 1/25: 1000 seed/config tasks, 691.9s, epochs_ran=500
+    chunk 2/25: 1000 seed/config tasks, 685.7s, epochs_ran=500
+    chunk 3/25: 1000 seed/config tasks, 686.0s, epochs_ran=500
+    chunk 4/25: 1000 seed/config tasks, 685.8s, epochs_ran=500
+    chunk 5/25: 1000 seed/config tasks, 686.0s, epochs_ran=500
+    chunk 6/25: 1000 seed/config tasks, 685.7s, epochs_ran=500
+    chunk 7/25: 1000 seed/config tasks, 686.1s, epochs_ran=500
+    chunk 8/25: 1000 seed/config tasks, 685.7s, epochs_ran=500
+    chunk 9/25: 1000 seed/config tasks, 686.0s, epochs_ran=500
+    chunk 10/25: 1000 seed/config tasks, 685.6s, epochs_ran=500
+    chunk 11/25: 1000 seed/config tasks, 686.0s, epochs_ran=500
+    chunk 12/25: 1000 seed/config tasks, 685.6s, epochs_ran=500
+    chunk 13/25: 1000 seed/config tasks, 686.0s, epochs_ran=500
+    chunk 14/25: 1000 seed/config tasks, 685.6s, epochs_ran=500
+    chunk 15/25: 1000 seed/config tasks, 685.9s, epochs_ran=500
+    chunk 16/25: 1000 seed/config tasks, 685.7s, epochs_ran=500
+    chunk 17/25: 1000 seed/config tasks, 685.9s, epochs_ran=500
+    chunk 18/25: 1000 seed/config tasks, 685.7s, epochs_ran=500
+    chunk 19/25: 1000 seed/config tasks, 685.7s, epochs_ran=500
+    chunk 20/25: 1000 seed/config tasks, 685.7s, epochs_ran=500
+    chunk 21/25: 1000 seed/config tasks, 685.7s, epochs_ran=500
+    chunk 22/25: 1000 seed/config tasks, 685.7s, epochs_ran=500
+    chunk 23/25: 1000 seed/config tasks, 685.6s, epochs_ran=500
+    chunk 24/25: 1000 seed/config tasks, 685.7s, epochs_ran=500
+    chunk 25/25: 1000 seed/config tasks, 685.8s, epochs_ran=500
+  wrote 2500 summary rows to jacobi_ab_sweep_massive_k10_retry/RomanEmpire/array_9649946_3/20260502-020930/summary.csv
+  wrote 25000 detail rows to jacobi_ab_sweep_massive_k10_retry/RomanEmpire/array_9649946_3/20260502-020930/summary_details.csv

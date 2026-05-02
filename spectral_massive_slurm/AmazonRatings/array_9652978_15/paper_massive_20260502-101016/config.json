@@ -1,0 +1,43 @@
+{
+  "datasets": [
+    "AmazonRatings"
+  ],
+  "models": [
+    "GPRGNN",
+    "ChebGNN",
+    "BernNet",
+    "JacobiConv"
+  ],
+  "k": [
+    4,
+    10
+  ],
+  "hidden": [
+    64,
+    128
+  ],
+  "runs": 10,
+  "epochs": [
+    500
+  ],
+  "patience": [
+    50
+  ],
+  "lr": [
+    0.01,
+    0.005,
+    0.001
+  ],
+  "weight_decay": [
+    0.0005,
+    0.0001,
+    0.0
+  ],
+  "dropout": 0.5,
+  "dprate": 0.0,
+  "max_task_batch": 90,
+  "device": "cuda",
+  "out_dir": "spectral_massive_slurm/AmazonRatings/array_9652978_15",
+  "no_curves": false,
+  "init_seed": 0
+}
