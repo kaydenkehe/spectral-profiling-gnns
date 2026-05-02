@@ -17,3 +17,9 @@ Sweep: models=['GPRGNN', 'ChebGNN', 'BernNet', 'JacobiConv'], k=[4, 10], hidden=
   Tolokers | BernNet | K=4 | hidden=128 | epochs=500 | patience=50 | tasks 1-90/90
   Tolokers | BernNet | K=10 | hidden=64 | epochs=500 | patience=50 | tasks 1-90/90
   Tolokers | BernNet | K=10 | hidden=128 | epochs=500 | patience=50 | tasks 1-90/90
+  Tolokers | JacobiConv | K=4 | hidden=64 | epochs=500 | patience=50 | tasks 1-90/90
+  Tolokers | JacobiConv | K=4 | hidden=128 | epochs=500 | patience=50 | tasks 1-90/90
+  Tolokers | JacobiConv | K=10 | hidden=64 | epochs=500 | patience=50 | tasks 1-90/90
+  Tolokers | JacobiConv | K=10 | hidden=128 | epochs=500 | patience=50 | tasks 1-90/90
+
+Wrote run to spectral_massive_slurm/Tolokers/array_9652978_17/paper_massive_20260502-111417
