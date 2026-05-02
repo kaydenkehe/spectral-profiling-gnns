@@ -31,7 +31,7 @@ chameleon_dataset = FixedWikipediaNetwork(root=data_dir, name='Chameleon')
 citeseer = Planetoid(root=data_dir, name='CiteSeer')
 amazon_comp = Amazon(root=data_dir, name='Computers')
 coauthor_cs = Coauthor(root=data_dir, name='CS')
-coauthor_physics = Coauthor(root=data_dir, name='Physics')
+# coauthor_physics = Coauthor(root=data_dir, name='Physics')
 cornell = WebKB(root=data_dir, name='Cornell')
 wisconsin = WebKB(root=data_dir, name='Wisconsin')
 actor = Actor(root=os.path.join(data_dir, 'actor'))
@@ -41,13 +41,13 @@ roman_empire = HeterophilousGraphDataset(root=data_dir, name='Roman-empire')
 amazon_ratings = HeterophilousGraphDataset(root=data_dir, name='Amazon-ratings')
 minesweeper = HeterophilousGraphDataset(root=data_dir, name='Minesweeper', pre_transform=T.ToUndirected())
 tolokers = HeterophilousGraphDataset(root=data_dir, name='Tolokers', pre_transform=T.ToUndirected())
-questions = HeterophilousGraphDataset(root=data_dir, name='Questions', pre_transform=T.ToUndirected())
+# questions = HeterophilousGraphDataset(root=data_dir, name='Questions', pre_transform=T.ToUndirected())
 
 
-names = ['Cora', 'PubMed', 'Amazon Photo', 'Texas', 'Chameleon', 'CiteSeer', 'Amazon Computers', 'Coauthor CS', 'Coauthor Physics',
-         'Cornell', 'Wisconsin', 'Actor', 'WikiCS', 'Squirrel', 'Roman Empire', 'Amazon Ratings', 'Minesweeper', 'Tolokers', 'Questions']
-datasets = [cora_dataset, pubmed, amazon_dataset, texas_dataset, chameleon_dataset, citeseer, amazon_comp, coauthor_cs, coauthor_physics,
-            cornell, wisconsin, actor, wikics, squirrel, roman_empire, amazon_ratings, minesweeper, tolokers, questions]
+names = ['Cora', 'PubMed', 'Amazon Photo', 'Texas', 'Chameleon', 'CiteSeer', 'Amazon Computers', 'Coauthor CS',
+         'Cornell', 'Wisconsin', 'Actor', 'WikiCS', 'Squirrel', 'Roman Empire', 'Amazon Ratings', 'Minesweeper', 'Tolokers']
+datasets = [cora_dataset, pubmed, amazon_dataset, texas_dataset, chameleon_dataset, citeseer, amazon_comp, coauthor_cs,
+            cornell, wisconsin, actor, wikics, squirrel, roman_empire, amazon_ratings, minesweeper, tolokers]
 graphs = [dataset[0] for dataset in datasets]
 labels = [graph.y for graph in graphs]
 
