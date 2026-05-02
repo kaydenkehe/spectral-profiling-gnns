@@ -1,0 +1,67 @@
+/n/home06/drooryck/spectral-profling-gnns/spectral/datasets.py:31: UserWarning: The WikiCS dataset now returns an undirected graph by default. Please explicitly specify 'is_undirected=False' to restore the old behavior.
+  wikics = WikiCS(root=os.path.join(data_dir, 'wikics'))
+device: cuda
+grid: 50 x 50 = 2500 configs
+K values: [4, 10]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+max task batch: 1000
+output directory: jacobi_ab_sweep_massive/Cornell/array_9597474_9/20260501-170227
+progress log: jacobi_ab_sweep_massive/Cornell/array_9597474_9/20260501-170227/progress.log
+
+=== [1/1] Cornell: 183 nodes, 298 edges ===
+  K=4
+    chunk 1/25: 1000 seed/config tasks, 4.6s, epochs_ran=268
+    chunk 2/25: 1000 seed/config tasks, 2.3s, epochs_ran=324
+    chunk 3/25: 1000 seed/config tasks, 2.0s, epochs_ran=282
+    chunk 4/25: 1000 seed/config tasks, 2.4s, epochs_ran=337
+    chunk 5/25: 1000 seed/config tasks, 2.0s, epochs_ran=275
+    chunk 6/25: 1000 seed/config tasks, 1.8s, epochs_ran=248
+    chunk 7/25: 1000 seed/config tasks, 1.8s, epochs_ran=252
+    chunk 8/25: 1000 seed/config tasks, 1.9s, epochs_ran=267
+    chunk 9/25: 1000 seed/config tasks, 1.9s, epochs_ran=256
+    chunk 10/25: 1000 seed/config tasks, 2.0s, epochs_ran=278
+    chunk 11/25: 1000 seed/config tasks, 1.7s, epochs_ran=241
+    chunk 12/25: 1000 seed/config tasks, 1.9s, epochs_ran=266
+    chunk 13/25: 1000 seed/config tasks, 1.7s, epochs_ran=236
+    chunk 14/25: 1000 seed/config tasks, 1.7s, epochs_ran=230
+    chunk 15/25: 1000 seed/config tasks, 1.8s, epochs_ran=253
+    chunk 16/25: 1000 seed/config tasks, 1.9s, epochs_ran=256
+    chunk 17/25: 1000 seed/config tasks, 1.8s, epochs_ran=251
+    chunk 18/25: 1000 seed/config tasks, 1.9s, epochs_ran=268
+    chunk 19/25: 1000 seed/config tasks, 3.0s, epochs_ran=416
+    chunk 20/25: 1000 seed/config tasks, 2.0s, epochs_ran=268
+    chunk 21/25: 1000 seed/config tasks, 2.0s, epochs_ran=269
+    chunk 22/25: 1000 seed/config tasks, 1.8s, epochs_ran=250
+    chunk 23/25: 1000 seed/config tasks, 1.7s, epochs_ran=233
+    chunk 24/25: 1000 seed/config tasks, 1.8s, epochs_ran=243
+    chunk 25/25: 1000 seed/config tasks, 1.7s, epochs_ran=234
+  wrote 2500 summary rows to jacobi_ab_sweep_massive/Cornell/array_9597474_9/20260501-170227/summary.csv
+  wrote 25000 detail rows to jacobi_ab_sweep_massive/Cornell/array_9597474_9/20260501-170227/summary_details.csv
+  K=10
+    chunk 1/25: 1000 seed/config tasks, 3.6s, epochs_ran=232
+    chunk 2/25: 1000 seed/config tasks, 4.2s, epochs_ran=268
+    chunk 3/25: 1000 seed/config tasks, 4.3s, epochs_ran=277
+    chunk 4/25: 1000 seed/config tasks, 4.6s, epochs_ran=291
+    chunk 5/25: 1000 seed/config tasks, 3.8s, epochs_ran=244
+    chunk 6/25: 1000 seed/config tasks, 4.5s, epochs_ran=285
+    chunk 7/25: 1000 seed/config tasks, 4.0s, epochs_ran=254
+    chunk 8/25: 1000 seed/config tasks, 4.1s, epochs_ran=258
+    chunk 9/25: 1000 seed/config tasks, 4.8s, epochs_ran=303
+    chunk 10/25: 1000 seed/config tasks, 4.1s, epochs_ran=260
+    chunk 11/25: 1000 seed/config tasks, 4.1s, epochs_ran=256
+    chunk 12/25: 1000 seed/config tasks, 3.7s, epochs_ran=232
+    chunk 13/25: 1000 seed/config tasks, 4.5s, epochs_ran=289
+    chunk 14/25: 1000 seed/config tasks, 4.3s, epochs_ran=272
+    chunk 15/25: 1000 seed/config tasks, 4.6s, epochs_ran=291
+    chunk 16/25: 1000 seed/config tasks, 4.2s, epochs_ran=269
+    chunk 17/25: 1000 seed/config tasks, 4.0s, epochs_ran=254
+    chunk 18/25: 1000 seed/config tasks, 4.3s, epochs_ran=276
+    chunk 19/25: 1000 seed/config tasks, 4.2s, epochs_ran=265
+    chunk 20/25: 1000 seed/config tasks, 4.8s, epochs_ran=309
+    chunk 21/25: 1000 seed/config tasks, 5.1s, epochs_ran=326
+    chunk 22/25: 1000 seed/config tasks, 4.3s, epochs_ran=274
+    chunk 23/25: 1000 seed/config tasks, 4.6s, epochs_ran=292
+    chunk 24/25: 1000 seed/config tasks, 4.3s, epochs_ran=277
+    chunk 25/25: 1000 seed/config tasks, 4.1s, epochs_ran=260
+  wrote 5000 summary rows to jacobi_ab_sweep_massive/Cornell/array_9597474_9/20260501-170227/summary.csv
+  wrote 50000 detail rows to jacobi_ab_sweep_massive/Cornell/array_9597474_9/20260501-170227/summary_details.csv

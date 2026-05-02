@@ -1,0 +1,37 @@
+{
+  "datasets": [
+    "RomanEmpire"
+  ],
+  "a_min": -0.99,
+  "a_max": 4.0,
+  "b_min": -0.99,
+  "b_max": 4.0,
+  "step": 0.1,
+  "K": [
+    4,
+    10
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "epochs": 500,
+  "patience": 50,
+  "lr": 0.01,
+  "weight_decay": 0.0005,
+  "dropout": 0.5,
+  "dprate": 0.0,
+  "max_task_batch": 1000,
+  "device": "cuda",
+  "out_dir": "jacobi_ab_sweep_massive/RomanEmpire/array_9597474_14",
+  "out": "summary.csv",
+  "init_seed": 0
+}

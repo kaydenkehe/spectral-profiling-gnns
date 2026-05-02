@@ -1,0 +1,73 @@
+job_id=9597474
+array_job_id=9597474
+array_task_id=18
+dataset=Questions
+host=holygpu8a27502.rc.fas.harvard.edu
+out_dir=jacobi_ab_sweep_massive/Questions/array_9597474_18
+Fri May  1 17:36:47 EDT 2026
+NVIDIA A100-SXM4-80GB, 0, 81920 MiB
+device: cuda
+grid: 50 x 50 = 2500 configs
+K values: [4, 10]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+max task batch: 1000
+output directory: jacobi_ab_sweep_massive/Questions/array_9597474_18/20260501-173710
+progress log: jacobi_ab_sweep_massive/Questions/array_9597474_18/20260501-173710/progress.log
+
+=== [1/1] Questions: 48921 nodes, 307080 edges ===
+  K=4
+    chunk 1/25: 1000 seed/config tasks, 88.2s, epochs_ran=435
+    chunk 2/25: 1000 seed/config tasks, 96.5s, epochs_ran=478
+    chunk 3/25: 1000 seed/config tasks, 75.8s, epochs_ran=376
+    chunk 4/25: 1000 seed/config tasks, 76.4s, epochs_ran=377
+    chunk 5/25: 1000 seed/config tasks, 73.0s, epochs_ran=362
+    chunk 6/25: 1000 seed/config tasks, 75.4s, epochs_ran=374
+    chunk 7/25: 1000 seed/config tasks, 72.9s, epochs_ran=361
+    chunk 8/25: 1000 seed/config tasks, 75.2s, epochs_ran=373
+    chunk 9/25: 1000 seed/config tasks, 82.3s, epochs_ran=408
+    chunk 10/25: 1000 seed/config tasks, 80.0s, epochs_ran=397
+    chunk 11/25: 1000 seed/config tasks, 70.4s, epochs_ran=349
+    chunk 12/25: 1000 seed/config tasks, 74.0s, epochs_ran=367
+    chunk 13/25: 1000 seed/config tasks, 77.6s, epochs_ran=385
+    chunk 14/25: 1000 seed/config tasks, 71.8s, epochs_ran=356
+    chunk 15/25: 1000 seed/config tasks, 73.8s, epochs_ran=366
+    chunk 16/25: 1000 seed/config tasks, 69.8s, epochs_ran=346
+    chunk 17/25: 1000 seed/config tasks, 95.8s, epochs_ran=475
+    chunk 18/25: 1000 seed/config tasks, 63.4s, epochs_ran=314
+    chunk 19/25: 1000 seed/config tasks, 68.2s, epochs_ran=338
+    chunk 20/25: 1000 seed/config tasks, 74.5s, epochs_ran=369
+    chunk 21/25: 1000 seed/config tasks, 65.8s, epochs_ran=326
+    chunk 22/25: 1000 seed/config tasks, 71.4s, epochs_ran=354
+    chunk 23/25: 1000 seed/config tasks, 65.4s, epochs_ran=324
+    chunk 24/25: 1000 seed/config tasks, 70.1s, epochs_ran=347
+    chunk 25/25: 1000 seed/config tasks, 79.7s, epochs_ran=395
+  wrote 2500 summary rows to jacobi_ab_sweep_massive/Questions/array_9597474_18/20260501-173710/summary.csv
+  wrote 25000 detail rows to jacobi_ab_sweep_massive/Questions/array_9597474_18/20260501-173710/summary_details.csv
+  K=10
+    chunk 1/25: 1000 seed/config tasks, 195.7s, epochs_ran=419
+    chunk 2/25: 1000 seed/config tasks, 180.2s, epochs_ran=386
+    chunk 3/25: 1000 seed/config tasks, 198.9s, epochs_ran=426
+    chunk 4/25: 1000 seed/config tasks, 198.4s, epochs_ran=425
+    chunk 5/25: 1000 seed/config tasks, 168.1s, epochs_ran=360
+    chunk 6/25: 1000 seed/config tasks, 178.8s, epochs_ran=383
+    chunk 7/25: 1000 seed/config tasks, 190.5s, epochs_ran=408
+    chunk 8/25: 1000 seed/config tasks, 181.6s, epochs_ran=389
+    chunk 9/25: 1000 seed/config tasks, 183.9s, epochs_ran=394
+    chunk 10/25: 1000 seed/config tasks, 173.2s, epochs_ran=371
+    chunk 11/25: 1000 seed/config tasks, 168.5s, epochs_ran=361
+    chunk 12/25: 1000 seed/config tasks, 178.3s, epochs_ran=382
+    chunk 13/25: 1000 seed/config tasks, 177.4s, epochs_ran=380
+    chunk 14/25: 1000 seed/config tasks, 199.5s, epochs_ran=427
+    chunk 15/25: 1000 seed/config tasks, 168.6s, epochs_ran=361
+    chunk 16/25: 1000 seed/config tasks, 167.7s, epochs_ran=359
+    chunk 17/25: 1000 seed/config tasks, 172.3s, epochs_ran=369
+    chunk 18/25: 1000 seed/config tasks, 165.3s, epochs_ran=354
+    chunk 19/25: 1000 seed/config tasks, 176.0s, epochs_ran=377
+    chunk 20/25: 1000 seed/config tasks, 181.6s, epochs_ran=389
+    chunk 21/25: 1000 seed/config tasks, 156.0s, epochs_ran=334
+    chunk 22/25: 1000 seed/config tasks, 153.1s, epochs_ran=328
+    chunk 23/25: 1000 seed/config tasks, 157.3s, epochs_ran=337
+    chunk 24/25: 1000 seed/config tasks, 154.5s, epochs_ran=331
+    chunk 25/25: 1000 seed/config tasks, 150.8s, epochs_ran=323
+  wrote 5000 summary rows to jacobi_ab_sweep_massive/Questions/array_9597474_18/20260501-173710/summary.csv
+  wrote 50000 detail rows to jacobi_ab_sweep_massive/Questions/array_9597474_18/20260501-173710/summary_details.csv

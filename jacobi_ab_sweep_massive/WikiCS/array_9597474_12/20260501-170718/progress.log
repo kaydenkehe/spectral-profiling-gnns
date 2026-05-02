@@ -1,0 +1,67 @@
+/n/home06/drooryck/spectral-profling-gnns/spectral/datasets.py:31: UserWarning: The WikiCS dataset now returns an undirected graph by default. Please explicitly specify 'is_undirected=False' to restore the old behavior.
+  wikics = WikiCS(root=os.path.join(data_dir, 'wikics'))
+device: cuda
+grid: 50 x 50 = 2500 configs
+K values: [4, 10]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+max task batch: 1000
+output directory: jacobi_ab_sweep_massive/WikiCS/array_9597474_12/20260501-170718
+progress log: jacobi_ab_sweep_massive/WikiCS/array_9597474_12/20260501-170718/progress.log
+
+=== [1/1] WikiCS: 11701 nodes, 431726 edges ===
+  K=4
+    chunk 1/25: 1000 seed/config tasks, 240.9s, epochs_ran=500
+    chunk 2/25: 1000 seed/config tasks, 238.6s, epochs_ran=500
+    chunk 3/25: 1000 seed/config tasks, 238.4s, epochs_ran=500
+    chunk 4/25: 1000 seed/config tasks, 238.4s, epochs_ran=500
+    chunk 5/25: 1000 seed/config tasks, 238.4s, epochs_ran=500
+    chunk 6/25: 1000 seed/config tasks, 238.5s, epochs_ran=500
+    chunk 7/25: 1000 seed/config tasks, 238.4s, epochs_ran=500
+    chunk 8/25: 1000 seed/config tasks, 238.5s, epochs_ran=500
+    chunk 9/25: 1000 seed/config tasks, 238.4s, epochs_ran=500
+    chunk 10/25: 1000 seed/config tasks, 238.5s, epochs_ran=500
+    chunk 11/25: 1000 seed/config tasks, 212.2s, epochs_ran=445
+    chunk 12/25: 1000 seed/config tasks, 238.4s, epochs_ran=500
+    chunk 13/25: 1000 seed/config tasks, 205.1s, epochs_ran=430
+    chunk 14/25: 1000 seed/config tasks, 220.9s, epochs_ran=463
+    chunk 15/25: 1000 seed/config tasks, 218.5s, epochs_ran=458
+    chunk 16/25: 1000 seed/config tasks, 186.0s, epochs_ran=390
+    chunk 17/25: 1000 seed/config tasks, 163.1s, epochs_ran=342
+    chunk 18/25: 1000 seed/config tasks, 181.7s, epochs_ran=381
+    chunk 19/25: 1000 seed/config tasks, 174.1s, epochs_ran=365
+    chunk 20/25: 1000 seed/config tasks, 235.7s, epochs_ran=494
+    chunk 21/25: 1000 seed/config tasks, 181.2s, epochs_ran=380
+    chunk 22/25: 1000 seed/config tasks, 193.6s, epochs_ran=406
+    chunk 23/25: 1000 seed/config tasks, 195.5s, epochs_ran=410
+    chunk 24/25: 1000 seed/config tasks, 172.2s, epochs_ran=361
+    chunk 25/25: 1000 seed/config tasks, 218.0s, epochs_ran=457
+  wrote 2500 summary rows to jacobi_ab_sweep_massive/WikiCS/array_9597474_12/20260501-170718/summary.csv
+  wrote 25000 detail rows to jacobi_ab_sweep_massive/WikiCS/array_9597474_12/20260501-170718/summary_details.csv
+  K=10
+    chunk 1/25: 1000 seed/config tasks, 581.1s, epochs_ran=500
+    chunk 2/25: 1000 seed/config tasks, 581.0s, epochs_ran=500
+    chunk 3/25: 1000 seed/config tasks, 580.9s, epochs_ran=500
+    chunk 4/25: 1000 seed/config tasks, 581.1s, epochs_ran=500
+    chunk 5/25: 1000 seed/config tasks, 581.1s, epochs_ran=500
+    chunk 6/25: 1000 seed/config tasks, 581.1s, epochs_ran=500
+    chunk 7/25: 1000 seed/config tasks, 581.1s, epochs_ran=500
+    chunk 8/25: 1000 seed/config tasks, 580.9s, epochs_ran=500
+    chunk 9/25: 1000 seed/config tasks, 581.0s, epochs_ran=500
+    chunk 10/25: 1000 seed/config tasks, 580.9s, epochs_ran=500
+    chunk 11/25: 1000 seed/config tasks, 581.1s, epochs_ran=500
+    chunk 12/25: 1000 seed/config tasks, 581.1s, epochs_ran=500
+    chunk 13/25: 1000 seed/config tasks, 567.0s, epochs_ran=488
+    chunk 14/25: 1000 seed/config tasks, 495.0s, epochs_ran=426
+    chunk 15/25: 1000 seed/config tasks, 565.8s, epochs_ran=487
+    chunk 16/25: 1000 seed/config tasks, 549.6s, epochs_ran=473
+    chunk 17/25: 1000 seed/config tasks, 580.8s, epochs_ran=500
+    chunk 18/25: 1000 seed/config tasks, 580.8s, epochs_ran=500
+    chunk 19/25: 1000 seed/config tasks, 580.9s, epochs_ran=500
+    chunk 20/25: 1000 seed/config tasks, 581.0s, epochs_ran=500
+    chunk 21/25: 1000 seed/config tasks, 581.0s, epochs_ran=500
+    chunk 22/25: 1000 seed/config tasks, 581.1s, epochs_ran=500
+    chunk 23/25: 1000 seed/config tasks, 581.0s, epochs_ran=500
+    chunk 24/25: 1000 seed/config tasks, 580.9s, epochs_ran=500
+    chunk 25/25: 1000 seed/config tasks, 581.0s, epochs_ran=500
+  wrote 5000 summary rows to jacobi_ab_sweep_massive/WikiCS/array_9597474_12/20260501-170718/summary.csv
+  wrote 50000 detail rows to jacobi_ab_sweep_massive/WikiCS/array_9597474_12/20260501-170718/summary_details.csv

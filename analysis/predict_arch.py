@@ -1,6 +1,7 @@
 import json
 import numpy as np
 import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import LeaveOneOut
 from sklearn.preprocessing import StandardScaler
@@ -62,16 +63,32 @@ def loocv(X, y):
         correct += int(clf.predict(sc.transform(X[te]))[0] == y[te][0])
     return correct / len(y)
 
+def tree_loocv(X, y):
+    preds = []
+    for tr, te in LeaveOneOut().split(X):
+        clf = DecisionTreeClassifier(max_depth=2, random_state=0).fit(X[tr], y[tr])
+        preds.append(clf.predict(X[te])[0])
+    return np.array(preds)
+
 y = feat['model'].to_numpy()
 
 acc_h = loocv(feat[['h_class']].to_numpy(), y)
 acc_slp = loocv(feat[['pi_05', 'pi_10', 'pi_15']].to_numpy(), y)
 acc_both = loocv(feat[['h_class', 'pi_05', 'pi_10', 'pi_15']].to_numpy(), y)
+tree_h_preds = tree_loocv(feat[['h_class']].to_numpy(), y)
+tree_slp_preds = tree_loocv(feat[['pi_05', 'pi_10', 'pi_15']].to_numpy(), y)
 
 print(f'class-homophily baseline:    LOOCV acc = {acc_h:.3f}')
 print(f'slp 3-quantile features:     LOOCV acc = {acc_slp:.3f}')
 print(f'homophily + slp (combined):  LOOCV acc = {acc_both:.3f}')
+print(f'homophily tree baseline:     LOOCV acc = {(tree_h_preds == y).mean():.3f}')
+print(f'slp tree baseline:           LOOCV acc = {(tree_slp_preds == y).mean():.3f}')
 print()
 counts = pd.Series(y).value_counts()
 print(f'class distribution: {dict(counts)}')
 print(f'majority-class baseline:     {counts.max() / counts.sum():.3f}')
+print()
+out = feat[['dataset', 'h_class', 'pi_05', 'pi_10', 'pi_15', 'model']].copy()
+out['pred_h_tree'] = tree_h_preds
+out['pred_slp_tree'] = tree_slp_preds
+print(out.sort_values('h_class', ascending=False).to_string(index=False))

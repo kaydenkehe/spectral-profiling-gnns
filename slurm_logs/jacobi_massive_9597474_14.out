@@ -1,0 +1,66 @@
+job_id=9598930
+array_job_id=9597474
+array_task_id=14
+dataset=RomanEmpire
+host=holygpu8a25205.rc.fas.harvard.edu
+out_dir=jacobi_ab_sweep_massive/RomanEmpire/array_9597474_14
+Fri May  1 17:07:34 EDT 2026
+NVIDIA A100-SXM4-80GB, 0, 81920 MiB
+device: cuda
+grid: 50 x 50 = 2500 configs
+K values: [4, 10]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+max task batch: 1000
+output directory: jacobi_ab_sweep_massive/RomanEmpire/array_9597474_14/20260501-170824
+progress log: jacobi_ab_sweep_massive/RomanEmpire/array_9597474_14/20260501-170824/progress.log
+
+=== [1/1] RomanEmpire: 22662 nodes, 65854 edges ===
+  K=4
+    chunk 1/25: 1000 seed/config tasks, 296.6s, epochs_ran=500
+    chunk 2/25: 1000 seed/config tasks, 293.8s, epochs_ran=500
+    chunk 3/25: 1000 seed/config tasks, 293.8s, epochs_ran=500
+    chunk 4/25: 1000 seed/config tasks, 293.8s, epochs_ran=500
+    chunk 5/25: 1000 seed/config tasks, 293.9s, epochs_ran=500
+    chunk 6/25: 1000 seed/config tasks, 293.7s, epochs_ran=500
+    chunk 7/25: 1000 seed/config tasks, 293.9s, epochs_ran=500
+    chunk 8/25: 1000 seed/config tasks, 293.8s, epochs_ran=500
+    chunk 9/25: 1000 seed/config tasks, 293.8s, epochs_ran=500
+    chunk 10/25: 1000 seed/config tasks, 293.8s, epochs_ran=500
+    chunk 11/25: 1000 seed/config tasks, 294.0s, epochs_ran=500
+    chunk 12/25: 1000 seed/config tasks, 293.9s, epochs_ran=500
+    chunk 13/25: 1000 seed/config tasks, 294.0s, epochs_ran=500
+    chunk 14/25: 1000 seed/config tasks, 293.9s, epochs_ran=500
+    chunk 15/25: 1000 seed/config tasks, 294.0s, epochs_ran=500
+    chunk 16/25: 1000 seed/config tasks, 294.0s, epochs_ran=500
+    chunk 17/25: 1000 seed/config tasks, 294.1s, epochs_ran=500
+    chunk 18/25: 1000 seed/config tasks, 294.0s, epochs_ran=500
+    chunk 19/25: 1000 seed/config tasks, 294.0s, epochs_ran=500
+    chunk 20/25: 1000 seed/config tasks, 294.0s, epochs_ran=500
+    chunk 21/25: 1000 seed/config tasks, 294.0s, epochs_ran=500
+    chunk 22/25: 1000 seed/config tasks, 293.9s, epochs_ran=500
+    chunk 23/25: 1000 seed/config tasks, 294.0s, epochs_ran=500
+    chunk 24/25: 1000 seed/config tasks, 293.9s, epochs_ran=500
+    chunk 25/25: 1000 seed/config tasks, 294.0s, epochs_ran=500
+  wrote 2500 summary rows to jacobi_ab_sweep_massive/RomanEmpire/array_9597474_14/20260501-170824/summary.csv
+  wrote 25000 detail rows to jacobi_ab_sweep_massive/RomanEmpire/array_9597474_14/20260501-170824/summary_details.csv
+  K=10
+    chunk 1/25: 1000 seed/config tasks, 684.7s, epochs_ran=500
+    chunk 2/25: 1000 seed/config tasks, 684.5s, epochs_ran=500
+    chunk 3/25: 1000 seed/config tasks, 684.6s, epochs_ran=500
+    chunk 4/25: 1000 seed/config tasks, 684.2s, epochs_ran=500
+    chunk 5/25: 1000 seed/config tasks, 684.5s, epochs_ran=500
+    chunk 6/25: 1000 seed/config tasks, 684.3s, epochs_ran=500
+    chunk 7/25: 1000 seed/config tasks, 684.8s, epochs_ran=500
+    chunk 8/25: 1000 seed/config tasks, 684.6s, epochs_ran=500
+    chunk 9/25: 1000 seed/config tasks, 684.8s, epochs_ran=500
+    chunk 10/25: 1000 seed/config tasks, 684.4s, epochs_ran=500
+    chunk 11/25: 1000 seed/config tasks, 684.5s, epochs_ran=500
+    chunk 12/25: 1000 seed/config tasks, 684.2s, epochs_ran=500
+    chunk 13/25: 1000 seed/config tasks, 684.6s, epochs_ran=500
+    chunk 14/25: 1000 seed/config tasks, 684.3s, epochs_ran=500
+    chunk 15/25: 1000 seed/config tasks, 684.5s, epochs_ran=500
+    chunk 16/25: 1000 seed/config tasks, 684.2s, epochs_ran=500
+    chunk 17/25: 1000 seed/config tasks, 684.4s, epochs_ran=500
+    chunk 18/25: 1000 seed/config tasks, 684.2s, epochs_ran=500
+    chunk 19/25: 1000 seed/config tasks, 684.4s, epochs_ran=500
+    chunk 20/25: 1000 seed/config tasks, 684.2s, epochs_ran=500

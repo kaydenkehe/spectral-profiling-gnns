@@ -1,0 +1,73 @@
+job_id=9597506
+array_job_id=9597474
+array_task_id=1
+dataset=PubMed
+host=holygpu8a29305.rc.fas.harvard.edu
+out_dir=jacobi_ab_sweep_massive/PubMed/array_9597474_1
+Fri May  1 16:50:37 EDT 2026
+NVIDIA A100-SXM4-80GB, 0, 81920 MiB
+device: cuda
+grid: 50 x 50 = 2500 configs
+K values: [4, 10]
+seeds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+max task batch: 1000
+output directory: jacobi_ab_sweep_massive/PubMed/array_9597474_1/20260501-165200
+progress log: jacobi_ab_sweep_massive/PubMed/array_9597474_1/20260501-165200/progress.log
+
+=== [1/1] PubMed: 19717 nodes, 88648 edges ===
+  K=4
+    chunk 1/25: 1000 seed/config tasks, 50.8s, epochs_ran=450
+    chunk 2/25: 1000 seed/config tasks, 50.5s, epochs_ran=477
+    chunk 3/25: 1000 seed/config tasks, 52.9s, epochs_ran=500
+    chunk 4/25: 1000 seed/config tasks, 53.0s, epochs_ran=500
+    chunk 5/25: 1000 seed/config tasks, 52.9s, epochs_ran=500
+    chunk 6/25: 1000 seed/config tasks, 52.9s, epochs_ran=500
+    chunk 7/25: 1000 seed/config tasks, 53.0s, epochs_ran=500
+    chunk 8/25: 1000 seed/config tasks, 53.0s, epochs_ran=500
+    chunk 9/25: 1000 seed/config tasks, 45.9s, epochs_ran=433
+    chunk 10/25: 1000 seed/config tasks, 52.9s, epochs_ran=500
+    chunk 11/25: 1000 seed/config tasks, 45.8s, epochs_ran=433
+    chunk 12/25: 1000 seed/config tasks, 40.1s, epochs_ran=379
+    chunk 13/25: 1000 seed/config tasks, 49.0s, epochs_ran=463
+    chunk 14/25: 1000 seed/config tasks, 38.7s, epochs_ran=365
+    chunk 15/25: 1000 seed/config tasks, 42.7s, epochs_ran=403
+    chunk 16/25: 1000 seed/config tasks, 37.6s, epochs_ran=355
+    chunk 17/25: 1000 seed/config tasks, 29.6s, epochs_ran=279
+    chunk 18/25: 1000 seed/config tasks, 27.2s, epochs_ran=257
+    chunk 19/25: 1000 seed/config tasks, 17.9s, epochs_ran=169
+    chunk 20/25: 1000 seed/config tasks, 22.7s, epochs_ran=214
+    chunk 21/25: 1000 seed/config tasks, 17.1s, epochs_ran=161
+    chunk 22/25: 1000 seed/config tasks, 21.4s, epochs_ran=202
+    chunk 23/25: 1000 seed/config tasks, 19.0s, epochs_ran=179
+    chunk 24/25: 1000 seed/config tasks, 19.1s, epochs_ran=180
+    chunk 25/25: 1000 seed/config tasks, 14.2s, epochs_ran=134
+  wrote 2500 summary rows to jacobi_ab_sweep_massive/PubMed/array_9597474_1/20260501-165200/summary.csv
+  wrote 25000 detail rows to jacobi_ab_sweep_massive/PubMed/array_9597474_1/20260501-165200/summary_details.csv
+  K=10
+    chunk 1/25: 1000 seed/config tasks, 120.4s, epochs_ran=500
+    chunk 2/25: 1000 seed/config tasks, 120.3s, epochs_ran=500
+    chunk 3/25: 1000 seed/config tasks, 120.4s, epochs_ran=500
+    chunk 4/25: 1000 seed/config tasks, 120.3s, epochs_ran=500
+    chunk 5/25: 1000 seed/config tasks, 120.3s, epochs_ran=500
+    chunk 6/25: 1000 seed/config tasks, 120.4s, epochs_ran=500
+    chunk 7/25: 1000 seed/config tasks, 120.3s, epochs_ran=500
+    chunk 8/25: 1000 seed/config tasks, 107.3s, epochs_ran=446
+    chunk 9/25: 1000 seed/config tasks, 102.0s, epochs_ran=424
+    chunk 10/25: 1000 seed/config tasks, 86.9s, epochs_ran=361
+    chunk 11/25: 1000 seed/config tasks, 97.7s, epochs_ran=406
+    chunk 12/25: 1000 seed/config tasks, 86.9s, epochs_ran=361
+    chunk 13/25: 1000 seed/config tasks, 73.2s, epochs_ran=304
+    chunk 14/25: 1000 seed/config tasks, 63.1s, epochs_ran=262
+    chunk 15/25: 1000 seed/config tasks, 54.9s, epochs_ran=228
+    chunk 16/25: 1000 seed/config tasks, 30.8s, epochs_ran=128
+    chunk 17/25: 1000 seed/config tasks, 32.5s, epochs_ran=135
+    chunk 18/25: 1000 seed/config tasks, 40.4s, epochs_ran=168
+    chunk 19/25: 1000 seed/config tasks, 32.7s, epochs_ran=136
+    chunk 20/25: 1000 seed/config tasks, 30.3s, epochs_ran=126
+    chunk 21/25: 1000 seed/config tasks, 38.5s, epochs_ran=160
+    chunk 22/25: 1000 seed/config tasks, 42.6s, epochs_ran=177
+    chunk 23/25: 1000 seed/config tasks, 40.0s, epochs_ran=166
+    chunk 24/25: 1000 seed/config tasks, 38.8s, epochs_ran=161
+    chunk 25/25: 1000 seed/config tasks, 77.7s, epochs_ran=323
+  wrote 5000 summary rows to jacobi_ab_sweep_massive/PubMed/array_9597474_1/20260501-165200/summary.csv
+  wrote 50000 detail rows to jacobi_ab_sweep_massive/PubMed/array_9597474_1/20260501-165200/summary_details.csv
