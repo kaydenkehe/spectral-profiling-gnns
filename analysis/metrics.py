@@ -72,7 +72,7 @@ def compute_homophily(edge_index, labels):
 def compute_spectrum(edge_index, n):
     edge_index, edge_weight = get_laplacian(edge_index, normalization='sym', num_nodes=n)
     L = to_dense_adj(edge_index, edge_attr=edge_weight, max_num_nodes=n)[0]
-    if n * n > 2_000_000_000:        # cusolver/magma int32 ceiling
+    if n * n > 400_000_000:          # GPU eigh fails (cusolver int32 / magma workspace) above this
         L = L.cpu()
     evals, evecs = torch.linalg.eigh(L)
 

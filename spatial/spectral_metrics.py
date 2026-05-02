@@ -48,6 +48,7 @@ out_path = Path(__file__).resolve().parent / 'metrics.json'
 lambd_grid = np.linspace(0, 2, num=50)
 
 results = {}
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 datasets = build_datasets()
 for name, d in datasets:
@@ -62,6 +63,9 @@ for name, d in datasets:
     )
     sub_y = g.y[train_mask]
     n_sub = int(train_mask.sum().item())
+
+    sub_ei = sub_ei.to(device)
+    sub_y = sub_y.to(device)
 
     evals, evecs = compute_spectrum(sub_ei, n_sub)
     cdf = compute_slp(evecs, sub_y, d.num_classes)
