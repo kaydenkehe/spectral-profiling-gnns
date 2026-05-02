@@ -140,7 +140,7 @@ axes_flat = axes.flatten()
 for ax, (name, r) in zip(axes_flat, results.items()):
     evals_np, cdf_np = full[name]
     ax.step(evals_np, cdf_np, where='post', label='full', linewidth=1.5)
-    ax.set_title(f'{name} (h={r['homophily']:.2f})', fontsize=10)
+    ax.set_title(f'{name} (h={r["homophily"]:.2f})', fontsize=10)
     ax.set_xlim(0, 2)
     ax.set_ylim(0, 1.02)
     ax.grid(alpha=0.3)
