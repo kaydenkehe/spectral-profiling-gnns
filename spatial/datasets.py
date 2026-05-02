@@ -24,7 +24,7 @@ def build_datasets():
     citeseer = Planetoid(root=data_dir, name='CiteSeer')
     amazon_comp = Amazon(root=data_dir, name='Computers')
     coauthor_cs = Coauthor(root=data_dir, name='CS')
-    coauthor_physics = Coauthor(root=data_dir, name='Physics')
+#     coauthor_physics = Coauthor(root=data_dir, name='Physics')
     cornell = WebKB(root=data_dir, name='Cornell')
     wisconsin = WebKB(root=data_dir, name='Wisconsin')
     actor = Actor(root=os.path.join(data_dir, 'actor'))
@@ -34,7 +34,7 @@ def build_datasets():
     amazon_ratings = HeterophilousGraphDataset(root=data_dir, name='Amazon-ratings')
     minesweeper = HeterophilousGraphDataset(root=data_dir, name='Minesweeper', pre_transform=T.ToUndirected())
     tolokers = HeterophilousGraphDataset(root=data_dir, name='Tolokers', pre_transform=T.ToUndirected())
-    questions = HeterophilousGraphDataset(root=data_dir, name='Questions', pre_transform=T.ToUndirected())
+#     questions = HeterophilousGraphDataset(root=data_dir, name='Questions', pre_transform=T.ToUndirected())
 
     return [
         ('Cora', cora_dataset),
@@ -45,7 +45,7 @@ def build_datasets():
         ('CiteSeer', citeseer),
         ('Computers', amazon_comp),
         ('CS', coauthor_cs),
-        ('Physics', coauthor_physics),
+#         ('Physics', coauthor_physics),
         ('Cornell', cornell),
         ('Wisconsin', wisconsin),
         ('Actor', actor),
@@ -55,6 +55,6 @@ def build_datasets():
         ('AmazonRatings', amazon_ratings),
         ('Minesweeper', minesweeper),
         ('Tolokers', tolokers),
-        ('Questions', questions),
+#         ('Questions', questions),
 ]
 
