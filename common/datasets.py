@@ -3,6 +3,7 @@ import numpy as np
 import urllib.request
 import torch
 from torch_geometric.data import Data, Dataset
+from torch_geometric.utils import to_undirected
 
 
 class FixedWikipediaNetwork(Dataset):
@@ -37,6 +38,7 @@ class FixedWikipediaNetwork(Dataset):
         node_features = torch.from_numpy(data['node_features']).float()
         node_labels = torch.from_numpy(data['node_labels']).long()
         edges = torch.from_numpy(data['edges']).long().t().contiguous()
+        edges = to_undirected(edges, num_nodes=node_features.size(0))
         
         # Use the first split (index 0)
         train_mask = torch.from_numpy(data['train_masks'][0]).bool()
