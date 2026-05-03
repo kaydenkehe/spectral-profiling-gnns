@@ -1,7 +1,6 @@
 import json
 import numpy as np
 import pandas as pd
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import LeaveOneOut
 from sklearn.preprocessing import StandardScaler
@@ -16,12 +15,12 @@ from sklearn.preprocessing import StandardScaler
 KEEP = {'gcn', 'hfgcn', 'mlp'}
 
 # load empirical winners from the spatial sweep
-best = pd.read_csv('../spatial/runs/best_spatial.csv')
+best = pd.read_csv('/n/home06/drooryck/spectral-profling-gnns/spatial/runs/best_spatial.csv')
 best = best[best['model'].isin(KEEP)]
 winners = best.loc[best.groupby('dataset')['mean'].idxmax(), ['dataset', 'model']]
 
-# load slp + scalar homophily from analysis/metrics.json
-with open('metrics.json') as f:
+# load train-subgraph slp + class-balanced homophily from spatial/metrics.json
+with open('/n/home06/drooryck/spectral-profling-gnns/spatial/metrics.json') as f:
     metrics = json.load(f)
 
 NAME_MAP = {
@@ -41,7 +40,7 @@ def slp_at(cdf, lam):
 rows = []
 for display_name, m in metrics.items():
     rows.append({
-        'dataset': NAME_MAP[display_name],
+        'dataset': NAME_MAP.get(display_name, display_name),
         'h_class': m.get('class_homophily', m.get('homophily')),
         'pi_05': slp_at(m['cdf'], 0.5),
         'pi_10': slp_at(m['cdf'], 1.0),
@@ -63,32 +62,16 @@ def loocv(X, y):
         correct += int(clf.predict(sc.transform(X[te]))[0] == y[te][0])
     return correct / len(y)
 
-def tree_loocv(X, y):
-    preds = []
-    for tr, te in LeaveOneOut().split(X):
-        clf = DecisionTreeClassifier(max_depth=2, random_state=0).fit(X[tr], y[tr])
-        preds.append(clf.predict(X[te])[0])
-    return np.array(preds)
-
 y = feat['model'].to_numpy()
 
 acc_h = loocv(feat[['h_class']].to_numpy(), y)
 acc_slp = loocv(feat[['pi_05', 'pi_10', 'pi_15']].to_numpy(), y)
-acc_both = loocv(feat[['h_class', 'pi_05', 'pi_10', 'pi_15']].to_numpy(), y)
-tree_h_preds = tree_loocv(feat[['h_class']].to_numpy(), y)
-tree_slp_preds = tree_loocv(feat[['pi_05', 'pi_10', 'pi_15']].to_numpy(), y)
 
-print(f'class-homophily baseline:    LOOCV acc = {acc_h:.3f}')
-print(f'slp 3-quantile features:     LOOCV acc = {acc_slp:.3f}')
-print(f'homophily + slp (combined):  LOOCV acc = {acc_both:.3f}')
-print(f'homophily tree baseline:     LOOCV acc = {(tree_h_preds == y).mean():.3f}')
-print(f'slp tree baseline:           LOOCV acc = {(tree_slp_preds == y).mean():.3f}')
-print()
 counts = pd.Series(y).value_counts()
 print(f'class distribution: {dict(counts)}')
 print(f'majority-class baseline:     {counts.max() / counts.sum():.3f}')
+print(f'class-homophily baseline:    LOOCV acc = {acc_h:.3f}')
+print(f'slp 3-quantile features:     LOOCV acc = {acc_slp:.3f}')
 print()
 out = feat[['dataset', 'h_class', 'pi_05', 'pi_10', 'pi_15', 'model']].copy()
-out['pred_h_tree'] = tree_h_preds
-out['pred_slp_tree'] = tree_slp_preds
 print(out.sort_values('h_class', ascending=False).to_string(index=False))

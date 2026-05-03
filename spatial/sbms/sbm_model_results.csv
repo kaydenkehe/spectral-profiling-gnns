@@ -1,0 +1,301 @@
+dataset,family,model,config,seed,test_acc
+SBM_er_no_alignment_seed0,er_no_alignment,mlp,"(2, 32)",0,0.7100
+SBM_er_no_alignment_seed0,er_no_alignment,mlp,"(2, 32)",1,0.7200
+SBM_er_no_alignment_seed0,er_no_alignment,mlp,"(2, 32)",2,0.7100
+SBM_er_no_alignment_seed1,er_no_alignment,mlp,"(2, 32)",0,0.7000
+SBM_er_no_alignment_seed1,er_no_alignment,mlp,"(2, 32)",1,0.6900
+SBM_er_no_alignment_seed1,er_no_alignment,mlp,"(2, 32)",2,0.7100
+SBM_er_no_alignment_seed2,er_no_alignment,mlp,"(2, 32)",0,0.6400
+SBM_er_no_alignment_seed2,er_no_alignment,mlp,"(2, 32)",1,0.6800
+SBM_er_no_alignment_seed2,er_no_alignment,mlp,"(2, 32)",2,0.6300
+SBM_er_no_alignment_seed3,er_no_alignment,mlp,"(2, 32)",0,0.6900
+SBM_er_no_alignment_seed3,er_no_alignment,mlp,"(2, 32)",1,0.6500
+SBM_er_no_alignment_seed3,er_no_alignment,mlp,"(2, 32)",2,0.6100
+SBM_er_no_alignment_seed4,er_no_alignment,mlp,"(2, 32)",0,0.6900
+SBM_er_no_alignment_seed4,er_no_alignment,mlp,"(2, 32)",1,0.6500
+SBM_er_no_alignment_seed4,er_no_alignment,mlp,"(2, 32)",2,0.6500
+SBM_homophilic_seed0,homophilic,mlp,"(2, 32)",0,0.7100
+SBM_homophilic_seed0,homophilic,mlp,"(2, 32)",1,0.7200
+SBM_homophilic_seed0,homophilic,mlp,"(2, 32)",2,0.7100
+SBM_homophilic_seed1,homophilic,mlp,"(2, 32)",0,0.7000
+SBM_homophilic_seed1,homophilic,mlp,"(2, 32)",1,0.6900
+SBM_homophilic_seed1,homophilic,mlp,"(2, 32)",2,0.7100
+SBM_homophilic_seed2,homophilic,mlp,"(2, 32)",0,0.6400
+SBM_homophilic_seed2,homophilic,mlp,"(2, 32)",1,0.6800
+SBM_homophilic_seed2,homophilic,mlp,"(2, 32)",2,0.6300
+SBM_homophilic_seed3,homophilic,mlp,"(2, 32)",0,0.6900
+SBM_homophilic_seed3,homophilic,mlp,"(2, 32)",1,0.6500
+SBM_homophilic_seed3,homophilic,mlp,"(2, 32)",2,0.6100
+SBM_homophilic_seed4,homophilic,mlp,"(2, 32)",0,0.6900
+SBM_homophilic_seed4,homophilic,mlp,"(2, 32)",1,0.6500
+SBM_homophilic_seed4,homophilic,mlp,"(2, 32)",2,0.6500
+SBM_mixed_seed0,mixed,mlp,"(2, 32)",0,0.7100
+SBM_mixed_seed0,mixed,mlp,"(2, 32)",1,0.7200
+SBM_mixed_seed0,mixed,mlp,"(2, 32)",2,0.7100
+SBM_mixed_seed1,mixed,mlp,"(2, 32)",0,0.7000
+SBM_mixed_seed1,mixed,mlp,"(2, 32)",1,0.6900
+SBM_mixed_seed1,mixed,mlp,"(2, 32)",2,0.7100
+SBM_mixed_seed2,mixed,mlp,"(2, 32)",0,0.6400
+SBM_mixed_seed2,mixed,mlp,"(2, 32)",1,0.6800
+SBM_mixed_seed2,mixed,mlp,"(2, 32)",2,0.6300
+SBM_mixed_seed3,mixed,mlp,"(2, 32)",0,0.6900
+SBM_mixed_seed3,mixed,mlp,"(2, 32)",1,0.6500
+SBM_mixed_seed3,mixed,mlp,"(2, 32)",2,0.6100
+SBM_mixed_seed4,mixed,mlp,"(2, 32)",0,0.6900
+SBM_mixed_seed4,mixed,mlp,"(2, 32)",1,0.6500
+SBM_mixed_seed4,mixed,mlp,"(2, 32)",2,0.6500
+SBM_paired_heterophilic_seed0,paired_heterophilic,mlp,"(2, 32)",0,0.7100
+SBM_paired_heterophilic_seed0,paired_heterophilic,mlp,"(2, 32)",1,0.7200
+SBM_paired_heterophilic_seed0,paired_heterophilic,mlp,"(2, 32)",2,0.7100
+SBM_paired_heterophilic_seed1,paired_heterophilic,mlp,"(2, 32)",0,0.7000
+SBM_paired_heterophilic_seed1,paired_heterophilic,mlp,"(2, 32)",1,0.6900
+SBM_paired_heterophilic_seed1,paired_heterophilic,mlp,"(2, 32)",2,0.7100
+SBM_paired_heterophilic_seed2,paired_heterophilic,mlp,"(2, 32)",0,0.6400
+SBM_paired_heterophilic_seed2,paired_heterophilic,mlp,"(2, 32)",1,0.6800
+SBM_paired_heterophilic_seed2,paired_heterophilic,mlp,"(2, 32)",2,0.6300
+SBM_paired_heterophilic_seed3,paired_heterophilic,mlp,"(2, 32)",0,0.6900
+SBM_paired_heterophilic_seed3,paired_heterophilic,mlp,"(2, 32)",1,0.6500
+SBM_paired_heterophilic_seed3,paired_heterophilic,mlp,"(2, 32)",2,0.6100
+SBM_paired_heterophilic_seed4,paired_heterophilic,mlp,"(2, 32)",0,0.6900
+SBM_paired_heterophilic_seed4,paired_heterophilic,mlp,"(2, 32)",1,0.6500
+SBM_paired_heterophilic_seed4,paired_heterophilic,mlp,"(2, 32)",2,0.6500
+SBM_er_no_alignment_seed0,er_no_alignment,gcn,"(2, 32)",0,0.5200
+SBM_er_no_alignment_seed0,er_no_alignment,gcn,"(2, 32)",1,0.5100
+SBM_er_no_alignment_seed0,er_no_alignment,gcn,"(2, 32)",2,0.4600
+SBM_er_no_alignment_seed1,er_no_alignment,gcn,"(2, 32)",0,0.5400
+SBM_er_no_alignment_seed1,er_no_alignment,gcn,"(2, 32)",1,0.5100
+SBM_er_no_alignment_seed1,er_no_alignment,gcn,"(2, 32)",2,0.5200
+SBM_er_no_alignment_seed2,er_no_alignment,gcn,"(2, 32)",0,0.4100
+SBM_er_no_alignment_seed2,er_no_alignment,gcn,"(2, 32)",1,0.4300
+SBM_er_no_alignment_seed2,er_no_alignment,gcn,"(2, 32)",2,0.4700
+SBM_er_no_alignment_seed3,er_no_alignment,gcn,"(2, 32)",0,0.3100
+SBM_er_no_alignment_seed3,er_no_alignment,gcn,"(2, 32)",1,0.3700
+SBM_er_no_alignment_seed3,er_no_alignment,gcn,"(2, 32)",2,0.4100
+SBM_er_no_alignment_seed4,er_no_alignment,gcn,"(2, 32)",0,0.4800
+SBM_er_no_alignment_seed4,er_no_alignment,gcn,"(2, 32)",1,0.5000
+SBM_er_no_alignment_seed4,er_no_alignment,gcn,"(2, 32)",2,0.4900
+SBM_homophilic_seed0,homophilic,gcn,"(2, 32)",0,1.0000
+SBM_homophilic_seed0,homophilic,gcn,"(2, 32)",1,0.9800
+SBM_homophilic_seed0,homophilic,gcn,"(2, 32)",2,1.0000
+SBM_homophilic_seed1,homophilic,gcn,"(2, 32)",0,1.0000
+SBM_homophilic_seed1,homophilic,gcn,"(2, 32)",1,0.9800
+SBM_homophilic_seed1,homophilic,gcn,"(2, 32)",2,0.9900
+SBM_homophilic_seed2,homophilic,gcn,"(2, 32)",0,1.0000
+SBM_homophilic_seed2,homophilic,gcn,"(2, 32)",1,0.9900
+SBM_homophilic_seed2,homophilic,gcn,"(2, 32)",2,1.0000
+SBM_homophilic_seed3,homophilic,gcn,"(2, 32)",0,1.0000
+SBM_homophilic_seed3,homophilic,gcn,"(2, 32)",1,1.0000
+SBM_homophilic_seed3,homophilic,gcn,"(2, 32)",2,1.0000
+SBM_homophilic_seed4,homophilic,gcn,"(2, 32)",0,0.9700
+SBM_homophilic_seed4,homophilic,gcn,"(2, 32)",1,0.9700
+SBM_homophilic_seed4,homophilic,gcn,"(2, 32)",2,1.0000
+SBM_mixed_seed0,mixed,gcn,"(2, 32)",0,0.9900
+SBM_mixed_seed0,mixed,gcn,"(2, 32)",1,1.0000
+SBM_mixed_seed0,mixed,gcn,"(2, 32)",2,0.9900
+SBM_mixed_seed1,mixed,gcn,"(2, 32)",0,1.0000
+SBM_mixed_seed1,mixed,gcn,"(2, 32)",1,0.9900
+SBM_mixed_seed1,mixed,gcn,"(2, 32)",2,0.9900
+SBM_mixed_seed2,mixed,gcn,"(2, 32)",0,0.9800
+SBM_mixed_seed2,mixed,gcn,"(2, 32)",1,0.9800
+SBM_mixed_seed2,mixed,gcn,"(2, 32)",2,0.9900
+SBM_mixed_seed3,mixed,gcn,"(2, 32)",0,1.0000
+SBM_mixed_seed3,mixed,gcn,"(2, 32)",1,1.0000
+SBM_mixed_seed3,mixed,gcn,"(2, 32)",2,1.0000
+SBM_mixed_seed4,mixed,gcn,"(2, 32)",0,0.9700
+SBM_mixed_seed4,mixed,gcn,"(2, 32)",1,1.0000
+SBM_mixed_seed4,mixed,gcn,"(2, 32)",2,1.0000
+SBM_paired_heterophilic_seed0,paired_heterophilic,gcn,"(2, 32)",0,0.9900
+SBM_paired_heterophilic_seed0,paired_heterophilic,gcn,"(2, 32)",1,0.9800
+SBM_paired_heterophilic_seed0,paired_heterophilic,gcn,"(2, 32)",2,1.0000
+SBM_paired_heterophilic_seed1,paired_heterophilic,gcn,"(2, 32)",0,1.0000
+SBM_paired_heterophilic_seed1,paired_heterophilic,gcn,"(2, 32)",1,0.9800
+SBM_paired_heterophilic_seed1,paired_heterophilic,gcn,"(2, 32)",2,0.9900
+SBM_paired_heterophilic_seed2,paired_heterophilic,gcn,"(2, 32)",0,1.0000
+SBM_paired_heterophilic_seed2,paired_heterophilic,gcn,"(2, 32)",1,0.9800
+SBM_paired_heterophilic_seed2,paired_heterophilic,gcn,"(2, 32)",2,0.9800
+SBM_paired_heterophilic_seed3,paired_heterophilic,gcn,"(2, 32)",0,0.9900
+SBM_paired_heterophilic_seed3,paired_heterophilic,gcn,"(2, 32)",1,0.9900
+SBM_paired_heterophilic_seed3,paired_heterophilic,gcn,"(2, 32)",2,0.9800
+SBM_paired_heterophilic_seed4,paired_heterophilic,gcn,"(2, 32)",0,0.9900
+SBM_paired_heterophilic_seed4,paired_heterophilic,gcn,"(2, 32)",1,1.0000
+SBM_paired_heterophilic_seed4,paired_heterophilic,gcn,"(2, 32)",2,0.9400
+SBM_er_no_alignment_seed0,er_no_alignment,hfgcn,"(2, 32)",0,0.6000
+SBM_er_no_alignment_seed0,er_no_alignment,hfgcn,"(2, 32)",1,0.5800
+SBM_er_no_alignment_seed0,er_no_alignment,hfgcn,"(2, 32)",2,0.6200
+SBM_er_no_alignment_seed1,er_no_alignment,hfgcn,"(2, 32)",0,0.6500
+SBM_er_no_alignment_seed1,er_no_alignment,hfgcn,"(2, 32)",1,0.6500
+SBM_er_no_alignment_seed1,er_no_alignment,hfgcn,"(2, 32)",2,0.6700
+SBM_er_no_alignment_seed2,er_no_alignment,hfgcn,"(2, 32)",0,0.5700
+SBM_er_no_alignment_seed2,er_no_alignment,hfgcn,"(2, 32)",1,0.5900
+SBM_er_no_alignment_seed2,er_no_alignment,hfgcn,"(2, 32)",2,0.6000
+SBM_er_no_alignment_seed3,er_no_alignment,hfgcn,"(2, 32)",0,0.6400
+SBM_er_no_alignment_seed3,er_no_alignment,hfgcn,"(2, 32)",1,0.6100
+SBM_er_no_alignment_seed3,er_no_alignment,hfgcn,"(2, 32)",2,0.6400
+SBM_er_no_alignment_seed4,er_no_alignment,hfgcn,"(2, 32)",0,0.6600
+SBM_er_no_alignment_seed4,er_no_alignment,hfgcn,"(2, 32)",1,0.6600
+SBM_er_no_alignment_seed4,er_no_alignment,hfgcn,"(2, 32)",2,0.6000
+SBM_homophilic_seed0,homophilic,hfgcn,"(2, 32)",0,0.2100
+SBM_homophilic_seed0,homophilic,hfgcn,"(2, 32)",1,0.2600
+SBM_homophilic_seed0,homophilic,hfgcn,"(2, 32)",2,0.1700
+SBM_homophilic_seed1,homophilic,hfgcn,"(2, 32)",0,0.2000
+SBM_homophilic_seed1,homophilic,hfgcn,"(2, 32)",1,0.3100
+SBM_homophilic_seed1,homophilic,hfgcn,"(2, 32)",2,0.2600
+SBM_homophilic_seed2,homophilic,hfgcn,"(2, 32)",0,0.1900
+SBM_homophilic_seed2,homophilic,hfgcn,"(2, 32)",1,0.2000
+SBM_homophilic_seed2,homophilic,hfgcn,"(2, 32)",2,0.1300
+SBM_homophilic_seed3,homophilic,hfgcn,"(2, 32)",0,0.2200
+SBM_homophilic_seed3,homophilic,hfgcn,"(2, 32)",1,0.2400
+SBM_homophilic_seed3,homophilic,hfgcn,"(2, 32)",2,0.1600
+SBM_homophilic_seed4,homophilic,hfgcn,"(2, 32)",0,0.1200
+SBM_homophilic_seed4,homophilic,hfgcn,"(2, 32)",1,0.2700
+SBM_homophilic_seed4,homophilic,hfgcn,"(2, 32)",2,0.1700
+SBM_mixed_seed0,mixed,hfgcn,"(2, 32)",0,0.5100
+SBM_mixed_seed0,mixed,hfgcn,"(2, 32)",1,0.6000
+SBM_mixed_seed0,mixed,hfgcn,"(2, 32)",2,0.5400
+SBM_mixed_seed1,mixed,hfgcn,"(2, 32)",0,0.5300
+SBM_mixed_seed1,mixed,hfgcn,"(2, 32)",1,0.5300
+SBM_mixed_seed1,mixed,hfgcn,"(2, 32)",2,0.5300
+SBM_mixed_seed2,mixed,hfgcn,"(2, 32)",0,0.5100
+SBM_mixed_seed2,mixed,hfgcn,"(2, 32)",1,0.4700
+SBM_mixed_seed2,mixed,hfgcn,"(2, 32)",2,0.5500
+SBM_mixed_seed3,mixed,hfgcn,"(2, 32)",0,0.5100
+SBM_mixed_seed3,mixed,hfgcn,"(2, 32)",1,0.5000
+SBM_mixed_seed3,mixed,hfgcn,"(2, 32)",2,0.5000
+SBM_mixed_seed4,mixed,hfgcn,"(2, 32)",0,0.5300
+SBM_mixed_seed4,mixed,hfgcn,"(2, 32)",1,0.5400
+SBM_mixed_seed4,mixed,hfgcn,"(2, 32)",2,0.5300
+SBM_paired_heterophilic_seed0,paired_heterophilic,hfgcn,"(2, 32)",0,0.9700
+SBM_paired_heterophilic_seed0,paired_heterophilic,hfgcn,"(2, 32)",1,0.9700
+SBM_paired_heterophilic_seed0,paired_heterophilic,hfgcn,"(2, 32)",2,0.9500
+SBM_paired_heterophilic_seed1,paired_heterophilic,hfgcn,"(2, 32)",0,0.9400
+SBM_paired_heterophilic_seed1,paired_heterophilic,hfgcn,"(2, 32)",1,0.9200
+SBM_paired_heterophilic_seed1,paired_heterophilic,hfgcn,"(2, 32)",2,0.9000
+SBM_paired_heterophilic_seed2,paired_heterophilic,hfgcn,"(2, 32)",0,0.9500
+SBM_paired_heterophilic_seed2,paired_heterophilic,hfgcn,"(2, 32)",1,0.9600
+SBM_paired_heterophilic_seed2,paired_heterophilic,hfgcn,"(2, 32)",2,0.9500
+SBM_paired_heterophilic_seed3,paired_heterophilic,hfgcn,"(2, 32)",0,0.9600
+SBM_paired_heterophilic_seed3,paired_heterophilic,hfgcn,"(2, 32)",1,0.9300
+SBM_paired_heterophilic_seed3,paired_heterophilic,hfgcn,"(2, 32)",2,0.9200
+SBM_paired_heterophilic_seed4,paired_heterophilic,hfgcn,"(2, 32)",0,0.9200
+SBM_paired_heterophilic_seed4,paired_heterophilic,hfgcn,"(2, 32)",1,0.8900
+SBM_paired_heterophilic_seed4,paired_heterophilic,hfgcn,"(2, 32)",2,0.9000
+SBM_er_no_alignment_seed0,er_no_alignment,fagcn,"(2, 32, 0.3)",0,0.7600
+SBM_er_no_alignment_seed0,er_no_alignment,fagcn,"(2, 32, 0.3)",1,0.6500
+SBM_er_no_alignment_seed0,er_no_alignment,fagcn,"(2, 32, 0.3)",2,0.6700
+SBM_er_no_alignment_seed1,er_no_alignment,fagcn,"(2, 32, 0.3)",0,0.7200
+SBM_er_no_alignment_seed1,er_no_alignment,fagcn,"(2, 32, 0.3)",1,0.7100
+SBM_er_no_alignment_seed1,er_no_alignment,fagcn,"(2, 32, 0.3)",2,0.7100
+SBM_er_no_alignment_seed2,er_no_alignment,fagcn,"(2, 32, 0.3)",0,0.6700
+SBM_er_no_alignment_seed2,er_no_alignment,fagcn,"(2, 32, 0.3)",1,0.6200
+SBM_er_no_alignment_seed2,er_no_alignment,fagcn,"(2, 32, 0.3)",2,0.5900
+SBM_er_no_alignment_seed3,er_no_alignment,fagcn,"(2, 32, 0.3)",0,0.5800
+SBM_er_no_alignment_seed3,er_no_alignment,fagcn,"(2, 32, 0.3)",1,0.6500
+SBM_er_no_alignment_seed3,er_no_alignment,fagcn,"(2, 32, 0.3)",2,0.6700
+SBM_er_no_alignment_seed4,er_no_alignment,fagcn,"(2, 32, 0.3)",0,0.6700
+SBM_er_no_alignment_seed4,er_no_alignment,fagcn,"(2, 32, 0.3)",1,0.6500
+SBM_er_no_alignment_seed4,er_no_alignment,fagcn,"(2, 32, 0.3)",2,0.6000
+SBM_homophilic_seed0,homophilic,fagcn,"(2, 32, 0.3)",0,0.9800
+SBM_homophilic_seed0,homophilic,fagcn,"(2, 32, 0.3)",1,0.9500
+SBM_homophilic_seed0,homophilic,fagcn,"(2, 32, 0.3)",2,0.9700
+SBM_homophilic_seed1,homophilic,fagcn,"(2, 32, 0.3)",0,0.9900
+SBM_homophilic_seed1,homophilic,fagcn,"(2, 32, 0.3)",1,0.9600
+SBM_homophilic_seed1,homophilic,fagcn,"(2, 32, 0.3)",2,0.9900
+SBM_homophilic_seed2,homophilic,fagcn,"(2, 32, 0.3)",0,0.9600
+SBM_homophilic_seed2,homophilic,fagcn,"(2, 32, 0.3)",1,0.9000
+SBM_homophilic_seed2,homophilic,fagcn,"(2, 32, 0.3)",2,0.9600
+SBM_homophilic_seed3,homophilic,fagcn,"(2, 32, 0.3)",0,0.9600
+SBM_homophilic_seed3,homophilic,fagcn,"(2, 32, 0.3)",1,0.9800
+SBM_homophilic_seed3,homophilic,fagcn,"(2, 32, 0.3)",2,0.9800
+SBM_homophilic_seed4,homophilic,fagcn,"(2, 32, 0.3)",0,0.9700
+SBM_homophilic_seed4,homophilic,fagcn,"(2, 32, 0.3)",1,0.9600
+SBM_homophilic_seed4,homophilic,fagcn,"(2, 32, 0.3)",2,0.9900
+SBM_mixed_seed0,mixed,fagcn,"(2, 32, 0.3)",0,0.9500
+SBM_mixed_seed0,mixed,fagcn,"(2, 32, 0.3)",1,0.8900
+SBM_mixed_seed0,mixed,fagcn,"(2, 32, 0.3)",2,0.9200
+SBM_mixed_seed1,mixed,fagcn,"(2, 32, 0.3)",0,0.9600
+SBM_mixed_seed1,mixed,fagcn,"(2, 32, 0.3)",1,0.9500
+SBM_mixed_seed1,mixed,fagcn,"(2, 32, 0.3)",2,0.9600
+SBM_mixed_seed2,mixed,fagcn,"(2, 32, 0.3)",0,0.9500
+SBM_mixed_seed2,mixed,fagcn,"(2, 32, 0.3)",1,0.9000
+SBM_mixed_seed2,mixed,fagcn,"(2, 32, 0.3)",2,0.9200
+SBM_mixed_seed3,mixed,fagcn,"(2, 32, 0.3)",0,0.9400
+SBM_mixed_seed3,mixed,fagcn,"(2, 32, 0.3)",1,0.9300
+SBM_mixed_seed3,mixed,fagcn,"(2, 32, 0.3)",2,0.9500
+SBM_mixed_seed4,mixed,fagcn,"(2, 32, 0.3)",0,0.9700
+SBM_mixed_seed4,mixed,fagcn,"(2, 32, 0.3)",1,0.9300
+SBM_mixed_seed4,mixed,fagcn,"(2, 32, 0.3)",2,0.9800
+SBM_paired_heterophilic_seed0,paired_heterophilic,fagcn,"(2, 32, 0.3)",0,0.9400
+SBM_paired_heterophilic_seed0,paired_heterophilic,fagcn,"(2, 32, 0.3)",1,0.9700
+SBM_paired_heterophilic_seed0,paired_heterophilic,fagcn,"(2, 32, 0.3)",2,0.9500
+SBM_paired_heterophilic_seed1,paired_heterophilic,fagcn,"(2, 32, 0.3)",0,0.9900
+SBM_paired_heterophilic_seed1,paired_heterophilic,fagcn,"(2, 32, 0.3)",1,0.9700
+SBM_paired_heterophilic_seed1,paired_heterophilic,fagcn,"(2, 32, 0.3)",2,0.9700
+SBM_paired_heterophilic_seed2,paired_heterophilic,fagcn,"(2, 32, 0.3)",0,0.9400
+SBM_paired_heterophilic_seed2,paired_heterophilic,fagcn,"(2, 32, 0.3)",1,0.9400
+SBM_paired_heterophilic_seed2,paired_heterophilic,fagcn,"(2, 32, 0.3)",2,0.9200
+SBM_paired_heterophilic_seed3,paired_heterophilic,fagcn,"(2, 32, 0.3)",0,0.9500
+SBM_paired_heterophilic_seed3,paired_heterophilic,fagcn,"(2, 32, 0.3)",1,0.9600
+SBM_paired_heterophilic_seed3,paired_heterophilic,fagcn,"(2, 32, 0.3)",2,0.9700
+SBM_paired_heterophilic_seed4,paired_heterophilic,fagcn,"(2, 32, 0.3)",0,0.9800
+SBM_paired_heterophilic_seed4,paired_heterophilic,fagcn,"(2, 32, 0.3)",1,0.9500
+SBM_paired_heterophilic_seed4,paired_heterophilic,fagcn,"(2, 32, 0.3)",2,0.9600
+SBM_er_no_alignment_seed0,er_no_alignment,h2gcn,"(2, 64, 0.5, 0.0005, True)",0,0.7000
+SBM_er_no_alignment_seed0,er_no_alignment,h2gcn,"(2, 64, 0.5, 0.0005, True)",1,0.6900
+SBM_er_no_alignment_seed0,er_no_alignment,h2gcn,"(2, 64, 0.5, 0.0005, True)",2,0.6800
+SBM_er_no_alignment_seed1,er_no_alignment,h2gcn,"(2, 64, 0.5, 0.0005, True)",0,0.7100
+SBM_er_no_alignment_seed1,er_no_alignment,h2gcn,"(2, 64, 0.5, 0.0005, True)",1,0.7000
+SBM_er_no_alignment_seed1,er_no_alignment,h2gcn,"(2, 64, 0.5, 0.0005, True)",2,0.6500
+SBM_er_no_alignment_seed2,er_no_alignment,h2gcn,"(2, 64, 0.5, 0.0005, True)",0,0.6900
+SBM_er_no_alignment_seed2,er_no_alignment,h2gcn,"(2, 64, 0.5, 0.0005, True)",1,0.7000
+SBM_er_no_alignment_seed2,er_no_alignment,h2gcn,"(2, 64, 0.5, 0.0005, True)",2,0.6800
+SBM_er_no_alignment_seed3,er_no_alignment,h2gcn,"(2, 64, 0.5, 0.0005, True)",0,0.6600
+SBM_er_no_alignment_seed3,er_no_alignment,h2gcn,"(2, 64, 0.5, 0.0005, True)",1,0.5800
+SBM_er_no_alignment_seed3,er_no_alignment,h2gcn,"(2, 64, 0.5, 0.0005, True)",2,0.6300
+SBM_er_no_alignment_seed4,er_no_alignment,h2gcn,"(2, 64, 0.5, 0.0005, True)",0,0.6700
+SBM_er_no_alignment_seed4,er_no_alignment,h2gcn,"(2, 64, 0.5, 0.0005, True)",1,0.6500
+SBM_er_no_alignment_seed4,er_no_alignment,h2gcn,"(2, 64, 0.5, 0.0005, True)",2,0.6600
+SBM_homophilic_seed0,homophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",0,0.9900
+SBM_homophilic_seed0,homophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",1,0.9500
+SBM_homophilic_seed0,homophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",2,0.9500
+SBM_homophilic_seed1,homophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",0,0.9900
+SBM_homophilic_seed1,homophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",1,0.9900
+SBM_homophilic_seed1,homophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",2,0.9900
+SBM_homophilic_seed2,homophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",0,0.9900
+SBM_homophilic_seed2,homophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",1,0.9900
+SBM_homophilic_seed2,homophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",2,0.9800
+SBM_homophilic_seed3,homophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",0,1.0000
+SBM_homophilic_seed3,homophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",1,0.9900
+SBM_homophilic_seed3,homophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",2,0.9900
+SBM_homophilic_seed4,homophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",0,0.9800
+SBM_homophilic_seed4,homophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",1,1.0000
+SBM_homophilic_seed4,homophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",2,0.9700
+SBM_mixed_seed0,mixed,h2gcn,"(2, 64, 0.5, 0.0005, True)",0,1.0000
+SBM_mixed_seed0,mixed,h2gcn,"(2, 64, 0.5, 0.0005, True)",1,0.9600
+SBM_mixed_seed0,mixed,h2gcn,"(2, 64, 0.5, 0.0005, True)",2,0.9700
+SBM_mixed_seed1,mixed,h2gcn,"(2, 64, 0.5, 0.0005, True)",0,0.9800
+SBM_mixed_seed1,mixed,h2gcn,"(2, 64, 0.5, 0.0005, True)",1,0.9800
+SBM_mixed_seed1,mixed,h2gcn,"(2, 64, 0.5, 0.0005, True)",2,0.9700
+SBM_mixed_seed2,mixed,h2gcn,"(2, 64, 0.5, 0.0005, True)",0,0.9600
+SBM_mixed_seed2,mixed,h2gcn,"(2, 64, 0.5, 0.0005, True)",1,0.9800
+SBM_mixed_seed2,mixed,h2gcn,"(2, 64, 0.5, 0.0005, True)",2,0.9800
+SBM_mixed_seed3,mixed,h2gcn,"(2, 64, 0.5, 0.0005, True)",0,0.9600
+SBM_mixed_seed3,mixed,h2gcn,"(2, 64, 0.5, 0.0005, True)",1,1.0000
+SBM_mixed_seed3,mixed,h2gcn,"(2, 64, 0.5, 0.0005, True)",2,1.0000
+SBM_mixed_seed4,mixed,h2gcn,"(2, 64, 0.5, 0.0005, True)",0,0.9300
+SBM_mixed_seed4,mixed,h2gcn,"(2, 64, 0.5, 0.0005, True)",1,1.0000
+SBM_mixed_seed4,mixed,h2gcn,"(2, 64, 0.5, 0.0005, True)",2,0.9400
+SBM_paired_heterophilic_seed0,paired_heterophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",0,0.9700
+SBM_paired_heterophilic_seed0,paired_heterophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",1,0.9600
+SBM_paired_heterophilic_seed0,paired_heterophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",2,0.9500
+SBM_paired_heterophilic_seed1,paired_heterophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",0,1.0000
+SBM_paired_heterophilic_seed1,paired_heterophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",1,1.0000
+SBM_paired_heterophilic_seed1,paired_heterophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",2,0.9800
+SBM_paired_heterophilic_seed2,paired_heterophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",0,0.9600
+SBM_paired_heterophilic_seed2,paired_heterophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",1,0.9700
+SBM_paired_heterophilic_seed2,paired_heterophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",2,0.9700
+SBM_paired_heterophilic_seed3,paired_heterophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",0,0.9900
+SBM_paired_heterophilic_seed3,paired_heterophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",1,0.9900
+SBM_paired_heterophilic_seed3,paired_heterophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",2,0.9700
+SBM_paired_heterophilic_seed4,paired_heterophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",0,0.9400
+SBM_paired_heterophilic_seed4,paired_heterophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",1,1.0000
+SBM_paired_heterophilic_seed4,paired_heterophilic,h2gcn,"(2, 64, 0.5, 0.0005, True)",2,0.9800

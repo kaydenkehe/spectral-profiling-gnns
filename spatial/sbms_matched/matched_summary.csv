@@ -1,0 +1,11 @@
+family,seed,homophily,num_edges
+uniform_mid,0,0.4150,20230
+uniform_mid,1,0.4189,19832
+uniform_mid,2,0.4209,20280
+uniform_mid,3,0.4167,20002
+uniform_mid,4,0.4228,19788
+mixed,0,0.4219,19396
+mixed,1,0.4213,19342
+mixed,2,0.4214,19878
+mixed,3,0.4173,19180
+mixed,4,0.4195,19604
