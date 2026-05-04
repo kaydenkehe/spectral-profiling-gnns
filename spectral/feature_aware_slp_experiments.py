@@ -34,9 +34,12 @@ def load_runtime_dependencies():
     global mean_squared_error, r2_score, make_pipeline, StandardScaler
     global Parallel, delayed, get_laplacian, to_undirected
 
+    print("[startup] importing pandas", flush=True)
     import pandas as pd_module  # pylint: disable=import-outside-toplevel
+    print("[startup] importing torch", flush=True)
     import torch as torch_module  # pylint: disable=import-outside-toplevel
     import torch.nn.functional as functional_module  # pylint: disable=import-outside-toplevel
+    print("[startup] importing sklearn", flush=True)
     from sklearn.linear_model import (  # pylint: disable=import-outside-toplevel
         LogisticRegression as LogisticRegressionClass,
         Ridge as RidgeClass,
@@ -49,11 +52,14 @@ def load_runtime_dependencies():
     )
     from sklearn.pipeline import make_pipeline as make_pipeline_fn  # pylint: disable=import-outside-toplevel
     from sklearn.preprocessing import StandardScaler as StandardScalerClass  # pylint: disable=import-outside-toplevel
+    print("[startup] importing joblib", flush=True)
     from joblib import Parallel as ParallelClass, delayed as delayed_fn  # pylint: disable=import-outside-toplevel
+    print("[startup] importing torch_geometric.utils", flush=True)
     from torch_geometric.utils import (  # pylint: disable=import-outside-toplevel
         get_laplacian as get_laplacian_fn,
         to_undirected as to_undirected_fn,
     )
+    print("[startup] imports complete", flush=True)
 
     pd = pd_module
     torch = torch_module
@@ -103,6 +109,8 @@ FEATURE_FAMILIES = [
     "label_slp",
     "label_slp_homophily",
     "feature_energy",
+    "feature_density",
+    "label_slp_feature_density",
     "label_feature_product",
     "label_feature_gap",
     "band_cka",
@@ -256,8 +264,14 @@ def to_dense_feature_matrix(x):
     return x.float()
 
 
-def compute_homophily(edge_index, labels):
-    num_classes = int(labels.max().item()) + 1
+def compute_homophily(edge_index, labels, node_mask=None, num_classes=None):
+    if node_mask is not None:
+        src, dst = edge_index
+        edge_index = edge_index[:, node_mask[src] & node_mask[dst]]
+    if edge_index.numel() == 0:
+        return 0.0
+    if num_classes is None:
+        num_classes = int(labels.max().item()) + 1
     src, dst = edge_index
     idx = labels[src] * num_classes + labels[dst]
     co = torch.bincount(idx, minlength=num_classes * num_classes).reshape(
@@ -299,6 +313,49 @@ def normalized_laplacian_sparse(edge_index, num_nodes, dtype, device):
 def centered_one_hot(labels, num_classes):
     y = F.one_hot(labels, num_classes=num_classes).float()
     return y - y.mean(dim=0, keepdim=True)
+
+
+def train_centered_one_hot(labels, num_classes, train_mask):
+    y = F.one_hot(labels, num_classes=num_classes).float()
+    out = torch.zeros_like(y)
+    if train_mask.any():
+        out[train_mask] = y[train_mask] - y[train_mask].mean(dim=0, keepdim=True)
+    return out
+
+
+def random_train_mask(num_nodes, seed, train_r=0.6):
+    generator = torch.Generator()
+    generator.manual_seed(int(seed))
+    perm = torch.randperm(num_nodes, generator=generator)
+    mask = torch.zeros(num_nodes, dtype=torch.bool)
+    mask[perm[:int(train_r * num_nodes)]] = True
+    return mask
+
+
+def native_or_random_train_mask(data, seed):
+    if hasattr(data, "train_mask") and data.train_mask is not None:
+        train_mask = data.train_mask
+        if train_mask.dim() == 2:
+            return train_mask[:, int(seed) % train_mask.size(1)].cpu().bool()
+        return train_mask.cpu().bool()
+    return random_train_mask(int(data.num_nodes), seed)
+
+
+def train_masks_for_label_scope(data, seeds, split_mode):
+    if split_mode == "paper_random":
+        return [random_train_mask(int(data.num_nodes), seed) for seed in seeds]
+    if split_mode == "jacobi_native_or_random":
+        return [native_or_random_train_mask(data, seed) for seed in seeds]
+    raise ValueError(f"unknown label split mode: {split_mode}")
+
+
+def label_signals(labels, num_classes, label_scope, train_masks, device, dtype):
+    if label_scope == "full":
+        return [centered_one_hot(labels, num_classes).to(device=device, dtype=dtype)]
+    return [
+        train_centered_one_hot(labels, num_classes, mask).to(device=device, dtype=dtype)
+        for mask in train_masks
+    ]
 
 
 def normalized_label_energy(evecs, y_centered):
@@ -417,6 +474,12 @@ def feature_component_name(feature_family, feature_index, n_bins):
         return "homophily", -1
     if feature_family == "feature_energy":
         return "feature_energy_mass", feature_index
+    if feature_family == "feature_density":
+        return "feature_spectral_density", feature_index
+    if feature_family == "label_slp_feature_density":
+        if feature_index < n_bins:
+            return "label_slp_mass", feature_index
+        return "feature_spectral_density", feature_index - n_bins
     if feature_family == "label_feature_product":
         return "label_feature_product", feature_index
     if feature_family == "label_feature_gap":
@@ -427,6 +490,7 @@ def feature_component_name(feature_family, feature_index, n_bins):
         spans = [
             ("label_slp_mass", n_bins),
             ("feature_energy_mass", n_bins),
+            ("feature_spectral_density", n_bins),
             ("label_feature_product", n_bins),
             ("label_feature_gap", n_bins),
             ("band_cka", n_bins),
@@ -442,46 +506,53 @@ def feature_component_name(feature_family, feature_index, n_bins):
     return f"{feature_family}_{feature_index}", -1
 
 
-def compute_exact_profiles(edge_index, num_nodes, x_centered, y_centered, bins, dtype, device):
+def compute_exact_profiles(edge_index, num_nodes, x_centered, y_centered_list, bins, dtype, device):
     lap = normalized_laplacian_dense(edge_index, num_nodes, dtype).to(device)
     evals, evecs = torch.linalg.eigh(lap)
 
-    label_energy = normalized_label_energy(evecs, y_centered)
     feat_energy, projected_x = feature_energy(evecs, x_centered)
-    projected_y = label_projection(evecs, y_centered)
     evals_np = evals.cpu().numpy()
 
     profiles = {}
     for n_bins in bins:
-        label_mass = aggregate_by_bins(evals_np, label_energy, n_bins)
         feature_mass = aggregate_by_bins(evals_np, feat_energy, n_bins)
-        cka = []
+        label_masses = []
+        ckas = []
         edges = bin_edges(n_bins)
+        bin_masks = []
         for bin_idx in range(n_bins):
             left, right = edges[bin_idx], edges[bin_idx + 1]
             if bin_idx == n_bins - 1:
                 mask_np = (evals_np >= left) & (evals_np <= right)
             else:
                 mask_np = (evals_np >= left) & (evals_np < right)
-            mask = torch.as_tensor(mask_np, device=device, dtype=torch.bool)
-            cka.append(linear_cka_from_projected(projected_x[mask], projected_y[mask]))
+            bin_masks.append(torch.as_tensor(mask_np, device=device, dtype=torch.bool))
+        for y_centered in y_centered_list:
+            label_energy = normalized_label_energy(evecs, y_centered)
+            projected_y = label_projection(evecs, y_centered)
+            label_masses.append(aggregate_by_bins(evals_np, label_energy, n_bins))
+            ckas.append(np.asarray([
+                linear_cka_from_projected(projected_x[mask], projected_y[mask])
+                for mask in bin_masks
+            ], dtype=float))
         profiles[n_bins] = {
-            "label_mass": label_mass,
+            "label_mass": np.mean(label_masses, axis=0),
             "feature_mass": feature_mass,
-            "band_cka": np.asarray(cka, dtype=float),
+            "band_cka": np.mean(ckas, axis=0),
         }
 
-    del lap, evals, evecs, projected_x, projected_y
+    del lap, evals, evecs, projected_x
     return profiles
 
 
-def compute_chebyshev_profiles(edge_index, num_nodes, x_centered, y_centered, bins,
+def compute_chebyshev_profiles(edge_index, num_nodes, x_centered, y_centered_list, bins,
                                dtype, device, order, use_jackson):
     lap = normalized_laplacian_sparse(edge_index, num_nodes, dtype, device)
-    signal = torch.cat([x_centered, y_centered], dim=1)
+    signal = torch.cat([x_centered, *y_centered_list], dim=1)
     x_width = x_centered.size(1)
+    y_width = y_centered_list[0].size(1)
     x_denom = torch.sum(x_centered ** 2)
-    y_denom = torch.sum(y_centered ** 2)
+    y_denoms = [torch.sum(y_centered ** 2) for y_centered in y_centered_list]
 
     profiles = {}
     for n_bins in bins:
@@ -498,11 +569,17 @@ def compute_chebyshev_profiles(edge_index, num_nodes, x_centered, y_centered, bi
             )
             projected = chebyshev_filter_signal(lap, signal, coeffs)
             projected_x = projected[:, :x_width]
-            projected_y = projected[:, x_width:]
             feature_mass.append(normalized_overlap(x_centered, projected_x, x_denom))
-            label_mass.append(normalized_overlap(y_centered, projected_y, y_denom))
-            cka.append(linear_cka_from_projected(projected_x, projected_y))
-            del projected, projected_x, projected_y
+            label_bin_mass = []
+            label_bin_cka = []
+            for idx, y_centered in enumerate(y_centered_list):
+                start = x_width + idx * y_width
+                projected_y = projected[:, start:start + y_width]
+                label_bin_mass.append(normalized_overlap(y_centered, projected_y, y_denoms[idx]))
+                label_bin_cka.append(linear_cka_from_projected(projected_x, projected_y))
+            label_mass.append(float(np.mean(label_bin_mass)))
+            cka.append(float(np.mean(label_bin_cka)))
+            del projected, projected_x
 
         profiles[n_bins] = {
             "label_mass": np.asarray(label_mass, dtype=float),
@@ -549,7 +626,8 @@ def metric_compute_device(requested_device, method_used):
 
 
 def compute_dataset_metrics(dataset_name, dataset, bins, dtype, device, max_dense_elements,
-                            spectral_method, chebyshev_order, chebyshev_jackson):
+                            spectral_method, chebyshev_order, chebyshev_jackson,
+                            label_scope, label_seeds, label_split_mode):
     data = dataset[0]
     num_nodes = int(data.num_nodes)
     method_used = select_spectral_method(spectral_method, num_nodes, max_dense_elements)
@@ -567,19 +645,49 @@ def compute_dataset_metrics(dataset_name, dataset, bins, dtype, device, max_dens
 
     graph = data.cpu()
     x = to_dense_feature_matrix(graph.x).to(device=compute_device, dtype=dtype)
-    y = graph.y.to(compute_device)
     edge_index = graph.edge_index.to(compute_device)
 
     x_centered = x - x.mean(dim=0, keepdim=True)
-    y_centered = centered_one_hot(y, dataset.num_classes).to(device=compute_device, dtype=dtype)
+    train_masks = (
+        train_masks_for_label_scope(graph, label_seeds, label_split_mode)
+        if label_scope == "train"
+        else []
+    )
+    y_centered_list = label_signals(
+        graph.y,
+        dataset.num_classes,
+        label_scope,
+        train_masks,
+        compute_device,
+        dtype,
+    )
 
-    homophily = compute_homophily(graph.edge_index, graph.y)
+    if label_scope == "train":
+        homophily = float(np.mean([
+            compute_homophily(
+                graph.edge_index,
+                graph.y,
+                node_mask=mask,
+                num_classes=int(dataset.num_classes),
+            )
+            for mask in train_masks
+        ]))
+    else:
+        homophily = compute_homophily(
+            graph.edge_index,
+            graph.y,
+            num_classes=int(dataset.num_classes),
+        )
     metadata = {
         "num_nodes": num_nodes,
         "num_edges": int(graph.edge_index.size(1)),
         "num_features": int(x.size(1)),
         "num_classes": int(dataset.num_classes),
         "homophily": float(homophily),
+        "label_scope": label_scope,
+        "label_split_mode": label_split_mode if label_scope == "train" else "",
+        "label_seeds": values_to_arg_string(label_seeds) if label_scope == "train" else "",
+        "label_seed_count": len(label_seeds) if label_scope == "train" else 0,
         "spectral_method": method_used,
         "requested_device": device.type,
         "compute_device": compute_device.type,
@@ -594,7 +702,7 @@ def compute_dataset_metrics(dataset_name, dataset, bins, dtype, device, max_dens
                 edge_index,
                 num_nodes,
                 x_centered,
-                y_centered,
+                y_centered_list,
                 bins,
                 dtype,
                 compute_device,
@@ -606,13 +714,13 @@ def compute_dataset_metrics(dataset_name, dataset, bins, dtype, device, max_dens
             metadata["compute_device"] = "cpu"
             metadata["device_fallback_reason"] = f"mps_exact_failed: {exc}"
             x_centered = x_centered.cpu()
-            y_centered = y_centered.cpu()
+            y_centered_list = [y_centered.cpu() for y_centered in y_centered_list]
             edge_index = edge_index.cpu()
             profiles = compute_exact_profiles(
                 edge_index,
                 num_nodes,
                 x_centered,
-                y_centered,
+                y_centered_list,
                 bins,
                 dtype,
                 compute_device,
@@ -622,7 +730,7 @@ def compute_dataset_metrics(dataset_name, dataset, bins, dtype, device, max_dens
             edge_index,
             num_nodes,
             x_centered,
-            y_centered,
+            y_centered_list,
             bins,
             dtype,
             compute_device,
@@ -637,10 +745,12 @@ def compute_dataset_metrics(dataset_name, dataset, bins, dtype, device, max_dens
     for n_bins in bins:
         label_mass = profiles[n_bins]["label_mass"]
         feature_mass = profiles[n_bins]["feature_mass"]
+        edges = bin_edges(n_bins)
+        bin_widths = np.diff(edges)
+        feature_density = feature_mass / np.maximum(bin_widths, 1e-12)
         product = label_mass * feature_mass
         gap = np.abs(label_mass - feature_mass)
         cka = profiles[n_bins]["band_cka"]
-        edges = bin_edges(n_bins)
 
         meta_vec = np.array([
             math.log1p(metadata["num_nodes"]),
@@ -654,12 +764,18 @@ def compute_dataset_metrics(dataset_name, dataset, bins, dtype, device, max_dens
         feature_vectors[(dataset_name, n_bins, "label_slp")] = label_mass
         feature_vectors[(dataset_name, n_bins, "label_slp_homophily")] = np.r_[label_mass, homophily]
         feature_vectors[(dataset_name, n_bins, "feature_energy")] = feature_mass
+        feature_vectors[(dataset_name, n_bins, "feature_density")] = feature_density
+        feature_vectors[(dataset_name, n_bins, "label_slp_feature_density")] = np.r_[
+            label_mass,
+            feature_density,
+        ]
         feature_vectors[(dataset_name, n_bins, "label_feature_product")] = product
         feature_vectors[(dataset_name, n_bins, "label_feature_gap")] = gap
         feature_vectors[(dataset_name, n_bins, "band_cka")] = cka
         feature_vectors[(dataset_name, n_bins, "combined")] = np.r_[
             label_mass,
             feature_mass,
+            feature_density,
             product,
             gap,
             cka,
@@ -693,7 +809,7 @@ def compute_dataset_metrics(dataset_name, dataset, bins, dtype, device, max_dens
                     **metadata,
                 })
 
-    del profiles, x_centered, y_centered
+    del profiles, x_centered, y_centered_list
     if compute_device.type == "cuda":
         torch.cuda.empty_cache()
     elif compute_device.type == "mps" and hasattr(torch, "mps"):
@@ -1384,6 +1500,25 @@ def parse_args():
         help="Disable Jackson damping for approximate Chebyshev band projectors.",
     )
     parser.set_defaults(chebyshev_jackson=True)
+    parser.add_argument(
+        "--label-scope",
+        choices=["full", "train"],
+        default="full",
+        help="full uses all labels; train reconstructs seed train masks and averages label metrics over them.",
+    )
+    parser.add_argument(
+        "--label-split-mode",
+        choices=["paper_random", "jacobi_native_or_random"],
+        default="paper_random",
+        help="paper_random matches train_spectral_massive.py; jacobi_native_or_random matches jacobi_ab_sweep.py.",
+    )
+    parser.add_argument(
+        "--label-seeds",
+        nargs="+",
+        type=int,
+        default=None,
+        help="Seeds used for train-label SLP. Defaults to 0..expected-runs-1.",
+    )
     parser.add_argument("--max-val-pairs", type=int, default=None)
     parser.add_argument("--max-test-pairs", type=int, default=None)
     parser.add_argument(
@@ -1413,6 +1548,7 @@ def parse_args():
 
 def main():
     args = parse_args()
+    print("[startup] parsed args", flush=True)
     load_runtime_dependencies()
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     paper_root = resolve_repo_path(args.paper_root)
@@ -1424,8 +1560,12 @@ def main():
         print("[device] MPS does not support float64 well; using float32", flush=True)
         dtype = torch.float32
     datasets = [canonical_dataset_name(name) for name in args.datasets]
+    label_seeds = args.label_seeds
+    if label_seeds is None:
+        label_seeds = list(range(args.expected_runs))
 
     config = vars(args).copy()
+    config["resolved_label_seeds"] = label_seeds
     config["resolved_paper_root"] = str(paper_root)
     config["resolved_jacobi_root"] = str(jacobi_root)
     config["resolved_out_dir"] = str(out_dir)
@@ -1482,6 +1622,9 @@ def main():
                 spectral_method=args.spectral_method,
                 chebyshev_order=args.chebyshev_order,
                 chebyshev_jackson=args.chebyshev_jackson,
+                label_scope=args.label_scope,
+                label_seeds=label_seeds,
+                label_split_mode=args.label_split_mode,
             )
             metric_rows.extend(rows)
             feature_vectors.update(vectors)
