@@ -6,6 +6,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import json
+import pickle
 import numpy as np
 import torch
 torch.backends.cuda.preferred_linalg_library('magma')
@@ -15,7 +16,7 @@ from torch_geometric.datasets import (
 )
 import torch_geometric.transforms as T
 import torch.nn.functional as F
-from torch_geometric.utils import get_laplacian, to_dense_adj, subgraph
+from torch_geometric.utils import get_laplacian, to_dense_adj, to_undirected
 from common.datasets import FixedWikipediaNetwork
 import matplotlib.pyplot as plt
 
@@ -70,6 +71,7 @@ def compute_homophily(edge_index, labels):
 # compute spectra
 
 def compute_spectrum(edge_index, n):
+    edge_index = to_undirected(edge_index, num_nodes=n)
     edge_index, edge_weight = get_laplacian(edge_index, normalization='sym', num_nodes=n)
     L = to_dense_adj(edge_index, edge_attr=edge_weight, max_num_nodes=n)[0]
     if n * n > 400_000_000:          # GPU eigh fails (cusolver int32 / magma workspace) above this
@@ -89,9 +91,35 @@ def compute_slp(evecs, labels, num_classes):
     Y_norm = torch.norm(Y_tilde, dim=0) ** 2 + 1e-8
     pi_c = proj / Y_norm
     pi = pi_c.mean(dim=1)
+    pi = pi / pi.sum().clamp(min=1e-12)
     cdf = torch.cumsum(pi, dim=0)
 
     return cdf
+
+
+def draw_doodle(ax):
+    import matplotlib.patches as mpatches
+
+    ax.set_axis_off()
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.set_aspect('equal')
+
+    # 2x2 venn-style overlapping "blobs" labelled L K / E D
+    blobs = [
+        ('L', 0.35, 0.65),
+        ('K', 0.65, 0.65),
+        ('E', 0.35, 0.35),
+        ('D', 0.65, 0.35),
+    ]
+    radius = 0.22
+    for letter, x, y in blobs:
+        circ = mpatches.Circle((x, y), radius,
+                               facecolor='white', edgecolor='black',
+                               linewidth=1.8, zorder=2)
+        ax.add_patch(circ)
+        ax.text(x, y, letter, ha='center', va='center',
+                fontsize=22, color='black', zorder=3)
 
 # compute metrics, write to json
 
@@ -100,17 +128,31 @@ results = {}
 full = {}
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
+# cache the raw spectra so re-plotting is cheap
+cache_path = 'spectra_cache_undirected_v2.pkl'
+cache = {}
+if os.path.exists(cache_path):
+    with open(cache_path, 'rb') as f:
+        cache = pickle.load(f)
+
 for d, g, name in zip(datasets, graphs, names):
     C = d.num_classes
     n = g.num_nodes
-    g = g.to(device)
-
-    evals_f, evecs_f = compute_spectrum(g.edge_index, n)
-    cdf_f = compute_slp(evecs_f, g.y.to(evecs_f.device), C)
+    num_edges = g.edge_index.size(1)
     h = compute_homophily(g.edge_index, g.y)
 
-    evals_np = evals_f.cpu().numpy()
-    cdf_np = cdf_f.cpu().numpy()
+    if name in cache:
+        evals_np, cdf_np = cache[name]
+    else:
+        g = g.to(device)
+        evals_f, evecs_f = compute_spectrum(g.edge_index, n)
+        cdf_f = compute_slp(evecs_f, g.y.to(evecs_f.device), C)
+        evals_np = evals_f.cpu().numpy()
+        cdf_np = cdf_f.cpu().numpy()
+        cache[name] = (evals_np, cdf_np)
+        with open(cache_path, 'wb') as f:
+            pickle.dump(cache, f)
+
     full[name] = (evals_np, cdf_np)
 
     # gives number of evals <= each lambd in the grid,
@@ -123,7 +165,7 @@ for d, g, name in zip(datasets, graphs, names):
     results[name] = {
         'num_classes': C,
         'num_nodes': n,
-        'num_edges': g.edge_index.size(1),
+        'num_edges': num_edges,
         'homophily': h,
         'eigenvalues': lambd_grid.tolist(),
         'cdf': profile.tolist(),
@@ -133,12 +175,21 @@ for d, g, name in zip(datasets, graphs, names):
 with open('metrics.json', 'w') as f:
     json.dump(results, f)
 
+# Full per-graph eigenvalues + CDFs (large): use for high-quality figures / reuse without recomputing eigh
+spectra_npz = 'full_spectra_all_graphs.npz'
+payload = {}
+for name, (ev, cd) in full.items():
+    key = name.replace(' ', '_').replace('-', '_')
+    payload[f'evals__{key}'] = ev
+    payload[f'cdf__{key}'] = cd
+np.savez_compressed(spectra_npz, **payload)
+
 # plot
 
-n_rows, n_cols = 3, 7
+n_rows, n_cols = 3, 6
 fig, axes = plt.subplots(n_rows, n_cols,
-                         figsize=(3 * n_cols, 3 * n_rows),
-                         sharex=True, sharey=True)
+                         figsize=(3.5 * n_cols, 3.2 * n_rows),
+                         sharex=False, sharey=False)
 axes_flat = axes.flatten()
 
 for ax, (name, r) in zip(axes_flat, results.items()):
@@ -149,18 +200,31 @@ for ax, (name, r) in zip(axes_flat, results.items()):
     ax.set_ylim(0, 1.02)
     ax.grid(alpha=0.3)
 
-for ax in axes_flat[len(results):]:
-    ax.set_visible(False)
+for i, ax in enumerate(axes_flat[len(results):]):
+    if i == 0:
+        draw_doodle(ax)
+    else:
+        ax.set_visible(False)
 
-for ax in axes[-1, :]:
+# only edge plots get tick labels and axis labels
+for ax in axes_flat:
+    ax.tick_params(labelbottom=False, labelleft=False)
+
+# bottom row of actual data plots gets x-axis labels
+# (row 2, cols 0-4 -- col 5 is the doodle)
+for ax in axes[-1, :-1]:
+    ax.tick_params(labelbottom=True)
     ax.set_xlabel(r'$\lambda^*$')
+
+# left column gets y-axis labels
 for ax in axes[:, 0]:
+    ax.tick_params(labelleft=True)
     ax.set_ylabel(r'$\Pi(\lambda^*)$')
 
 axes_flat[n_cols - 1].legend(loc='lower right', fontsize=8)
 fig.tight_layout()
 plt.savefig('metrics.png', dpi=150)
-plt.show()
+plt.close(fig)
 
 
 

@@ -15,7 +15,7 @@ from torch_geometric.nn.conv.gcn_conv import gcn_norm
 from torch_geometric.utils import get_laplacian
 
 from datasets import build_datasets
-from jacobi_ab_sweep import Tee, write_csv
+from jacobi_ab_sweep import DEFAULT_MASK_DIR, Tee, load_spatial_masks, write_csv
 
 
 def values(x):
@@ -269,7 +269,7 @@ class TaskAdam:
             p.data.add_(lr_view * update, alpha=-1.0)
 
 
-def get_splits(data, seed, train_r=0.6, val_r=0.2):
+def get_splits(data, seed, train_r=0.8, val_r=0.1):
     torch.manual_seed(seed)
     np.random.seed(seed)
     n = data.num_nodes
@@ -422,6 +422,9 @@ def parse_args():
     p.add_argument("--out-dir", default="runs")
     p.add_argument("--no-curves", action="store_true")
     p.add_argument("--init-seed", type=int, default=0)
+    p.add_argument("--train-r", type=float, default=0.8)
+    p.add_argument("--val-r", type=float, default=0.1)
+    p.add_argument("--mask-dir", type=Path, default=DEFAULT_MASK_DIR)
     return p.parse_args()
 
 
@@ -502,7 +505,7 @@ def main():
     sys.stderr = Tee(sys.stderr, log_file)
 
     with open(run_dir / "config.json", "w") as f:
-        json.dump(vars(args), f, indent=2)
+        json.dump({key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()}, f, indent=2)
 
     datasets = select_datasets(args.datasets)
     rows = []
@@ -514,7 +517,7 @@ def main():
         f"Sweep: models={args.models}, k={args.k}, hidden={args.hidden}, runs={args.runs}, "
         f"epochs={args.epochs}, patience={args.patience}, lr={args.lr}, "
         f"weight_decay={args.weight_decay}, max_task_batch={args.max_task_batch}, "
-        f"device={args.device}",
+        f"device={args.device}, mask_dir={args.mask_dir}",
         flush=True,
     )
 
@@ -523,7 +526,7 @@ def main():
         operators = make_operators(graph, device)
         x = graph.x.to(device)
         y = graph.y.to(device)
-        split_masks = [get_splits(graph, seed) for seed in range(args.runs)]
+        split_masks = [load_spatial_masks(dataset_name, args.mask_dir) for _ in range(args.runs)]
 
         print(
             f"\n[{dataset_idx}/{len(datasets)}] {dataset_name}: "

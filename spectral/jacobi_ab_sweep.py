@@ -15,6 +15,9 @@ from torch_geometric.nn.conv.gcn_conv import gcn_norm
 
 from datasets import build_datasets
 
+REPO_ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_MASK_DIR = REPO_ROOT / "spatial" / "masks"
+
 
 class Tee:
     def __init__(self, *streams):
@@ -109,23 +112,11 @@ class BatchedJacobiConv(nn.Module):
         return z
 
 
-def get_split_masks(data, split_idx=0):
-    if hasattr(data, "train_mask") and data.train_mask is not None:
-        def select_mask(mask):
-            if mask.dim() == 2:
-                return mask[:, split_idx % mask.size(1)]
-            return mask
-
-        return (
-            select_mask(data.train_mask),
-            select_mask(data.val_mask),
-            select_mask(data.test_mask),
-        )
-
+def get_split_masks(data, split_idx=0, train_r=0.8, val_r=0.1):
     n = data.num_nodes
     perm = torch.randperm(n)
-    n_train = int(0.6 * n)
-    n_val = int(0.2 * n)
+    n_train = int(train_r * n)
+    n_val = int(val_r * n)
     train_mask = torch.zeros(n, dtype=torch.bool)
     val_mask = torch.zeros(n, dtype=torch.bool)
     test_mask = torch.zeros(n, dtype=torch.bool)
@@ -133,6 +124,14 @@ def get_split_masks(data, split_idx=0):
     val_mask[perm[n_train:n_train + n_val]] = True
     test_mask[perm[n_train + n_val:]] = True
     return train_mask, val_mask, test_mask
+
+
+def load_spatial_masks(dataset_name, mask_dir=DEFAULT_MASK_DIR):
+    mask_path = Path(mask_dir) / f"{dataset_name}.pt"
+    if not mask_path.exists():
+        raise FileNotFoundError(f"Spatial mask file not found for {dataset_name}: {mask_path}")
+    masks = torch.load(mask_path, map_location="cpu")
+    return masks["train_mask"].bool(), masks["val_mask"].bool(), masks["test_mask"].bool()
 
 
 def build_A_norm(data, device):

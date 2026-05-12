@@ -12,7 +12,7 @@ from torch_geometric.datasets import (
     Planetoid, Amazon, Coauthor, WebKB, WikipediaNetwork,
     Actor, HeterophilousGraphDataset,
 )
-from torch_geometric.utils import get_laplacian, to_dense_adj
+from torch_geometric.utils import get_laplacian, to_dense_adj, to_undirected
 
 # collect graphs
 
@@ -58,6 +58,7 @@ def compute_slp(evecs, labels, num_classes):
     Y_norm = torch.norm(Y_tilde, dim=0) ** 2 + 1e-8
     pi_c = proj / Y_norm
     pi = pi_c.mean(dim=1)
+    pi = pi / pi.sum().clamp(min=1e-12)
     cdf = torch.cumsum(pi, dim=0)
  
     return cdf
@@ -65,13 +66,22 @@ def compute_slp(evecs, labels, num_classes):
 # --- METHODS ---
 
 # full eigh computation
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+
 def full_eigh(edge_index, labels, num_classes, n):
+    edge_index = to_undirected(edge_index, num_nodes=n)
     edge_index, edge_weight = get_laplacian(edge_index, normalization='sym', num_nodes=n)
     L = to_dense_adj(edge_index, edge_attr=edge_weight, max_num_nodes=n)[0]
+    if n * n > 400_000_000:
+        L = L.cpu()
+    else:
+        L = L.to(device)
     evals, evecs = torch.linalg.eigh(L)
-    cdf = compute_slp(evecs, labels, num_classes)
- 
+    cdf = compute_slp(evecs, labels.to(evecs.device), num_classes)
+
     return evals.cpu().numpy(), cdf.cpu().numpy()
+
 
 methods = {
     'full_eigh': full_eigh,
@@ -144,7 +154,7 @@ for ax in axes[:, 0]:
 axes_flat[n_cols - 1].legend(loc='lower right', fontsize=8)
 fig.tight_layout()
 plt.savefig('slp_comparison.png', dpi=150)
-plt.show()
+plt.close(fig)
 
 
 

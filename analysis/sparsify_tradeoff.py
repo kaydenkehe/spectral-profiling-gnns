@@ -18,7 +18,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-os.environ.setdefault("MPLCONFIGDIR", "/private/tmp/spectral-profiling-matplotlib")
+os.environ.setdefault("MPLCONFIGDIR", "/tmp/spectral-profiling-matplotlib")
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
@@ -537,26 +537,31 @@ def plot_cdf_comparison(cdf_curves: list[dict[str, object]], path: Path) -> None
         if dataset not in datasets:
             datasets.append(dataset)
 
+    n_cols = min(3, len(datasets))
+    n_rows = int(np.ceil(len(datasets) / n_cols))
     fig, axes = plt.subplots(
-        1,
-        len(datasets),
-        figsize=(5.5 * len(datasets), 4.2),
+        n_rows,
+        n_cols,
+        figsize=(4.0 * n_cols + 1.4, 3.0 * n_rows),
         squeeze=False,
+        sharex=True,
         sharey=True,
-        constrained_layout=True,
     )
 
-    for ax, dataset_name in zip(axes.ravel(), datasets):
+    legend_handles = {}
+    axes_flat = axes.ravel()
+    for index, (ax, dataset_name) in enumerate(zip(axes_flat, datasets)):
         curves = [curve for curve in cdf_curves if curve["dataset"] == dataset_name]
         first = curves[0]
-        ax.step(
+        (line,) = ax.step(
             first["true_eigenvalues"],
             first["true_cdf"],
             where="post",
             color="black",
             linewidth=2.0,
-            label=f"true ({first['ground_truth_key']})",
+            label="true SLP",
         )
+        legend_handles.setdefault(line.get_label(), line)
 
         eps_values = sorted(
             {float(curve["epsilon"]) for curve in curves if not np.isnan(float(curve["epsilon"]))}
@@ -576,7 +581,7 @@ def plot_cdf_comparison(cdf_curves: list[dict[str, object]], path: Path) -> None
                 color = color_lookup[epsilon]
                 label = f"eps={epsilon:.2g}, steps={steps}"
 
-            ax.step(
+            (line,) = ax.step(
                 curve["approx_eigenvalues"],
                 curve["approx_cdf"],
                 where="post",
@@ -585,16 +590,29 @@ def plot_cdf_comparison(cdf_curves: list[dict[str, object]], path: Path) -> None
                 alpha=0.78,
                 label=label,
             )
+            legend_handles.setdefault(line.get_label(), line)
 
         ax.set_title(dataset_name)
-        ax.set_xlabel("lambda")
         ax.set_xlim(0.0, 2.0)
         ax.set_ylim(0.0, 1.02)
         ax.grid(alpha=0.25)
-        if ax is axes.ravel()[0]:
+        if index // n_cols == n_rows - 1:
+            ax.set_xlabel("lambda")
+        if index % n_cols == 0:
             ax.set_ylabel("SLP CDF")
-        if len(curves) <= 12:
-            ax.legend(fontsize=7, loc="lower right")
+
+    for ax in axes_flat[len(datasets) :]:
+        ax.set_visible(False)
+
+    fig.legend(
+        legend_handles.values(),
+        legend_handles.keys(),
+        loc="center left",
+        bbox_to_anchor=(0.84, 0.5),
+        fontsize=8,
+        frameon=True,
+    )
+    fig.subplots_adjust(left=0.07, right=0.82, bottom=0.09, top=0.92, wspace=0.12, hspace=0.28)
 
     fig.savefig(path, dpi=180, bbox_inches="tight")
     plt.close(fig)

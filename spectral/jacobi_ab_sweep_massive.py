@@ -13,9 +13,11 @@ import torch.nn.functional as F
 from datasets import build_datasets
 from jacobi_ab_sweep import (
     BatchedJacobiConv,
+    DEFAULT_MASK_DIR,
     Tee,
     build_A_norm,
     get_split_masks,
+    load_spatial_masks,
     write_csv,
 )
 
@@ -132,6 +134,9 @@ def parse_args():
         help="Summary CSV filename written inside the timestamped output directory.",
     )
     p.add_argument("--init-seed", type=int, default=0)
+    p.add_argument("--train-r", type=float, default=0.8)
+    p.add_argument("--val-r", type=float, default=0.1)
+    p.add_argument("--mask-dir", type=Path, default=DEFAULT_MASK_DIR)
     return p.parse_args()
 
 
@@ -180,13 +185,14 @@ def main():
     selected_datasets = select_datasets(args.datasets)
 
     with open(config_path, "w") as f:
-        json.dump(vars(args), f, indent=2)
+        json.dump({key: str(value) if isinstance(value, Path) else value for key, value in vars(args).items()}, f, indent=2)
 
     print(f"device: {device}", flush=True)
     print(f"grid: {len(a_vals)} x {len(b_vals)} = {len(ab_pairs)} configs", flush=True)
     print(f"K values: {args.K}", flush=True)
     print(f"seeds: {args.seeds}", flush=True)
     print(f"max task batch: {args.max_task_batch}", flush=True)
+    print(f"spatial masks: {args.mask_dir}", flush=True)
     print(f"output directory: {run_dir}", flush=True)
     print(f"progress log: {log_path}", flush=True)
 
@@ -205,11 +211,8 @@ def main():
             flush=True,
         )
 
-        seed_masks = {}
-        for seed in args.seeds:
-            torch.manual_seed(seed)
-            np.random.seed(seed)
-            seed_masks[seed] = get_split_masks(data, split_idx=seed % 10)
+        spatial_masks = load_spatial_masks(ds_name, args.mask_dir)
+        seed_masks = {seed: spatial_masks for seed in args.seeds}
 
         for K in args.K:
             print(f"  K={K}", flush=True)

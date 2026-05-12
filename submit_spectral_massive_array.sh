@@ -13,7 +13,9 @@ set -euo pipefail
 
 REPO_DIR="/n/home06/drooryck/spectral-profling-gnns"
 UV_BIN="/n/home06/drooryck/.local/bin/uv"
-OUT_ROOT="${OUT_ROOT:-spectral_massive_slurm}"
+OUT_ROOT="${OUT_ROOT:-spectral_massive_spatial_masks_slurm}"
+MAX_TASK_BATCH="${MAX_TASK_BATCH:-90}"
+export PYTORCH_CUDA_ALLOC_CONF="${PYTORCH_CUDA_ALLOC_CONF:-expandable_segments:True}"
 
 DATASETS=(
   Cora
@@ -63,6 +65,7 @@ PYTHONUNBUFFERED=1 "$UV_BIN" run python spectral/train_spectral_massive.py \
   --patience 50 \
   --lr 0.01 0.005 0.001 \
   --weight-decay 0.0005 0.0001 0.0 \
+  --mask-dir spatial/masks \
   --device cuda \
-  --max-task-batch 90 \
+  --max-task-batch "$MAX_TASK_BATCH" \
   --out-dir "$RUN_OUT_DIR"

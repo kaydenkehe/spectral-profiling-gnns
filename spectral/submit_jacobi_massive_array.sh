@@ -13,7 +13,7 @@ set -euo pipefail
 
 REPO_DIR="/n/home06/drooryck/spectral-profling-gnns"
 UV_BIN="/n/home06/drooryck/.local/bin/uv"
-OUT_ROOT="${OUT_ROOT:-jacobi_ab_sweep_massive}"
+OUT_ROOT="${OUT_ROOT:-jacobi_ab_sweep_spatial_masks_massive}"
 
 DATASETS=(
   Cora
@@ -64,5 +64,6 @@ PYTHONUNBUFFERED=1 "$UV_BIN" run python spectral/jacobi_ab_sweep_massive.py \
   --seeds 0 1 2 3 4 5 6 7 8 9 \
   --epochs 500 \
   --patience 50 \
+  --mask-dir spatial/masks \
   --device cuda \
   --out-dir "$RUN_OUT_DIR"
