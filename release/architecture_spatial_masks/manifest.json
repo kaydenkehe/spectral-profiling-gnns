@@ -1,0 +1,110 @@
+{
+  "kind": "architecture_spatial_masks",
+  "datasets": {
+    "Cora": {
+      "rows": 1440,
+      "expected_rows": 1440,
+      "summary": "spectral_massive_spatial_masks_retry_20260511-232502/Cora/array_12503816_0/paper_massive_20260511-233248/summary.csv"
+    },
+    "PubMed": {
+      "rows": 1440,
+      "expected_rows": 1440,
+      "summary": "spectral_massive_spatial_masks_retry_20260511-232502/PubMed/array_12503816_1/paper_massive_20260511-234917/summary.csv"
+    },
+    "Photo": {
+      "rows": 1440,
+      "expected_rows": 1440,
+      "summary": "spectral_massive_spatial_masks_retry_20260511-232502/Photo/array_12503816_2/paper_massive_20260511-235226/summary.csv"
+    },
+    "Texas": {
+      "rows": 1440,
+      "expected_rows": 1440,
+      "summary": "spectral_massive_spatial_masks_retry_20260511-232502/Texas/array_12503816_3/paper_massive_20260511-235615/summary.csv"
+    },
+    "Chameleon": {
+      "rows": 1440,
+      "expected_rows": 1440,
+      "summary": "spectral_massive_spatial_masks_retry_20260511-232502/Chameleon/array_12503816_4/paper_massive_20260511-235816/summary.csv"
+    },
+    "CiteSeer": {
+      "rows": 1440,
+      "expected_rows": 1440,
+      "summary": "spectral_massive_spatial_masks_retry_20260511-232502/CiteSeer/array_12503816_5/paper_massive_20260512-000718/summary.csv"
+    },
+    "Computers": {
+      "rows": 1440,
+      "expected_rows": 1440,
+      "summary": "spectral_massive_spatial_masks_retry_20260511-232502/Computers/array_12503816_6/paper_massive_20260512-005251/summary.csv"
+    },
+    "CS": {
+      "dataset": "CS",
+      "rows": 1320,
+      "expected_rows": 1440,
+      "complete": false,
+      "sources": [
+        "spectral_massive_spatial_masks_retry_anygpu_b15_20260512-105259/CS/array_12565533_7/paper_massive_20260512-122445/summary.csv",
+        "spectral_massive_spatial_masks_cs_missing_b10_20260512-145509/bern/paper_massive_20260512-153542/summary.csv",
+        "spectral_massive_spatial_masks_cs_missing_b10_20260512-145509/jacobi/paper_massive_20260512-154137/summary.csv",
+        "spectral_massive_spatial_masks_cs_missing_b10_20260512-145509/cheb_k10/paper_massive_20260512-153502/summary.csv"
+      ],
+      "note": "Incomplete until Cheb K=10 patch finishes; re-run this script after job completion."
+    },
+    "Physics": {
+      "rows": 360,
+      "note": "incomplete run (OOM); not part of full 1440 grid",
+      "summary": "spectral_massive_spatial_masks_retry_anygpu_b15_20260512-105259/Physics/array_12565533_8/paper_massive_20260512-122642/summary.csv"
+    },
+    "Cornell": {
+      "rows": 1440,
+      "expected_rows": 1440,
+      "summary": "spectral_massive_spatial_masks_retry_20260511-232502/Cornell/array_12503816_9/paper_massive_20260512-005725/summary.csv"
+    },
+    "Wisconsin": {
+      "rows": 1440,
+      "expected_rows": 1440,
+      "summary": "spectral_massive_spatial_masks_retry_20260511-232502/Wisconsin/array_12503816_10/paper_massive_20260512-005921/summary.csv"
+    },
+    "Actor": {
+      "rows": 1440,
+      "expected_rows": 1440,
+      "summary": "spectral_massive_spatial_masks_retry_20260511-232502/Actor/array_12503816_11/paper_massive_20260512-010218/summary.csv"
+    },
+    "WikiCS": {
+      "rows": 1440,
+      "expected_rows": 1440,
+      "summary": "spectral_massive_spatial_masks_retry_20260511-232502/WikiCS/array_12503816_12/paper_massive_20260512-012936/summary.csv"
+    },
+    "Squirrel": {
+      "rows": 1440,
+      "expected_rows": 1440,
+      "summary": "spectral_massive_spatial_masks_retry_20260511-232502/Squirrel/array_12503816_13/paper_massive_20260512-013023/summary.csv"
+    },
+    "RomanEmpire": {
+      "rows": 1440,
+      "expected_rows": 1440,
+      "summary": "spectral_massive_spatial_masks_retry_20260511-232502/RomanEmpire/array_12503816_14/paper_massive_20260512-024330/summary.csv"
+    },
+    "AmazonRatings": {
+      "rows": 1440,
+      "expected_rows": 1440,
+      "summary": "spectral_massive_spatial_masks_retry_20260511-232502/AmazonRatings/array_12503816_15/paper_massive_20260512-031935/summary.csv"
+    },
+    "Minesweeper": {
+      "rows": 1440,
+      "expected_rows": 1440,
+      "summary": "spectral_massive_spatial_masks_retry_20260511-232502/Minesweeper/array_12503816_16/paper_massive_20260512-032428/summary.csv"
+    },
+    "Tolokers": {
+      "rows": 1440,
+      "expected_rows": 1440,
+      "summary": "spectral_massive_spatial_masks_retry_20260511-232502/Tolokers/array_12503816_17/paper_massive_20260512-033313/summary.csv"
+    },
+    "Questions": {
+      "rows": 1440,
+      "expected_rows": 1440,
+      "summary": "spectral_massive_spatial_masks_retry_anygpu_b15_20260512-105259/Questions/array_12565533_18/paper_massive_20260512-123438/summary.csv"
+    }
+  },
+  "git_revision": "73f0911a8ccfd6d72bae965cafe020d29eb1e51d",
+  "summary_all_rows": 25800
+}

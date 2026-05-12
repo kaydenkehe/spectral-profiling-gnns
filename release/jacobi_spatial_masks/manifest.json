@@ -1,0 +1,130 @@
+{
+  "kind": "jacobi_spatial_masks",
+  "datasets": {
+    "Actor": {
+      "rows_summary": 5000,
+      "sources": [
+        "jacobi_ab_sweep_spatial_masks_retry_20260511-232502/Actor/array_12503821_11/20260512-041132/summary.csv"
+      ]
+    },
+    "AmazonRatings": {
+      "rows_summary": 5000,
+      "sources": [
+        "jacobi_ab_sweep_spatial_masks_retry_20260511-232502/AmazonRatings/array_12503821_15/20260512-041626/summary.csv"
+      ]
+    },
+    "CS": {
+      "rows_summary": 5000,
+      "expected_summary": 5000,
+      "sources": [
+        "jacobi_ab_sweep_spatial_masks_retry_20260511-232502/CS/array_12503821_7/20260512-033717/summary.csv",
+        "jacobi_ab_sweep_spatial_masks_retry_k10_long_20260512-105141/CS/array_12565458_7/20260512-112156/summary.csv"
+      ],
+      "merge": "May11 (K=4 grid) + May12 k10_long (K=10 grid)"
+    },
+    "Chameleon": {
+      "rows_summary": 5000,
+      "sources": [
+        "jacobi_ab_sweep_spatial_masks_retry_20260511-232502/Chameleon/array_12503821_4/20260512-013905/summary.csv"
+      ]
+    },
+    "CiteSeer": {
+      "rows_summary": 5000,
+      "sources": [
+        "jacobi_ab_sweep_spatial_masks_retry_20260511-232502/CiteSeer/array_12503821_5/20260512-031545/summary.csv"
+      ]
+    },
+    "Computers": {
+      "rows_summary": 5000,
+      "expected_summary": 5000,
+      "sources": [
+        "jacobi_ab_sweep_spatial_masks_retry_20260511-232502/Computers/array_12503821_6/20260512-032726/summary.csv",
+        "jacobi_ab_sweep_spatial_masks_retry_k10_long_20260512-105141/Computers/array_12565458_6/20260512-110457/summary.csv"
+      ],
+      "merge": "May11 (K=4 grid) + May12 k10_long (K=10 grid)"
+    },
+    "Cora": {
+      "rows_summary": 5000,
+      "sources": [
+        "jacobi_ab_sweep_spatial_masks_retry_20260511-232502/Cora/array_12503821_0/20260512-010029/summary.csv"
+      ]
+    },
+    "Cornell": {
+      "rows_summary": 5000,
+      "sources": [
+        "jacobi_ab_sweep_spatial_masks_retry_20260511-232502/Cornell/array_12503821_9/20260512-040649/summary.csv"
+      ]
+    },
+    "Minesweeper": {
+      "rows_summary": 5000,
+      "sources": [
+        "jacobi_ab_sweep_spatial_masks_retry_20260511-232502/Minesweeper/array_12503821_16/20260512-043059/summary.csv"
+      ]
+    },
+    "Photo": {
+      "rows_summary": 5000,
+      "sources": [
+        "jacobi_ab_sweep_spatial_masks_retry_20260511-232502/Photo/array_12503821_2/20260512-012253/summary.csv"
+      ]
+    },
+    "Physics": {
+      "rows_summary": 2500,
+      "note": "K=10 long run canceled; only May 11 (K=4) retained",
+      "sources": [
+        "jacobi_ab_sweep_spatial_masks_retry_20260511-232502/Physics/array_12503821_8/20260512-034317/summary.csv"
+      ]
+    },
+    "PubMed": {
+      "rows_summary": 5000,
+      "sources": [
+        "jacobi_ab_sweep_spatial_masks_retry_20260511-232502/PubMed/array_12503821_1/20260512-011738/summary.csv"
+      ]
+    },
+    "Questions": {
+      "rows_summary": 5000,
+      "sources": [
+        "jacobi_ab_sweep_spatial_masks_retry_20260511-232502/Questions/array_12503821_18/20260512-044329/summary.csv"
+      ]
+    },
+    "RomanEmpire": {
+      "rows_summary": 5000,
+      "expected_summary": 5000,
+      "sources": [
+        "jacobi_ab_sweep_spatial_masks_retry_20260511-232502/RomanEmpire/array_12503821_14/20260512-041622/summary.csv",
+        "jacobi_ab_sweep_spatial_masks_retry_k10_long_20260512-105141/RomanEmpire/array_12565458_14/20260512-121429/summary.csv"
+      ],
+      "merge": "May11 (K=4 grid) + May12 k10_long (K=10 grid)"
+    },
+    "Squirrel": {
+      "rows_summary": 5000,
+      "sources": [
+        "jacobi_ab_sweep_spatial_masks_retry_20260511-232502/Squirrel/array_12503821_13/20260512-041524/summary.csv"
+      ]
+    },
+    "Texas": {
+      "rows_summary": 5000,
+      "sources": [
+        "jacobi_ab_sweep_spatial_masks_retry_20260511-232502/Texas/array_12503821_3/20260512-013545/summary.csv"
+      ]
+    },
+    "Tolokers": {
+      "rows_summary": 5000,
+      "sources": [
+        "jacobi_ab_sweep_spatial_masks_retry_20260511-232502/Tolokers/array_12503821_17/20260512-043344/summary.csv"
+      ]
+    },
+    "WikiCS": {
+      "rows_summary": 5000,
+      "sources": [
+        "jacobi_ab_sweep_spatial_masks_retry_20260511-232502/WikiCS/array_12503821_12/20260512-041432/summary.csv"
+      ]
+    },
+    "Wisconsin": {
+      "rows_summary": 5000,
+      "sources": [
+        "jacobi_ab_sweep_spatial_masks_retry_20260511-232502/Wisconsin/array_12503821_10/20260512-040743/summary.csv"
+      ]
+    }
+  },
+  "git_revision": "73f0911a8ccfd6d72bae965cafe020d29eb1e51d"
+}

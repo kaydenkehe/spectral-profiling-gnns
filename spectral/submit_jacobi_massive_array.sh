@@ -14,6 +14,7 @@ set -euo pipefail
 REPO_DIR="/n/home06/drooryck/spectral-profling-gnns"
 UV_BIN="/n/home06/drooryck/.local/bin/uv"
 OUT_ROOT="${OUT_ROOT:-jacobi_ab_sweep_spatial_masks_massive}"
+K_VALUES="${K_VALUES:-4 10}"
 
 DATASETS=(
   Cora
@@ -55,7 +56,7 @@ nvidia-smi --query-gpu=name,index,memory.total --format=csv,noheader
 
 PYTHONUNBUFFERED=1 "$UV_BIN" run python spectral/jacobi_ab_sweep_massive.py \
   --datasets "$DATASET" \
-  --K 4 10 \
+  --K $K_VALUES \
   --a-min -0.99 \
   --a-max 4.0 \
   --b-min -0.99 \

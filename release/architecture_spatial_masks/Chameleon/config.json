@@ -1,0 +1,46 @@
+{
+  "datasets": [
+    "Chameleon"
+  ],
+  "models": [
+    "GPRGNN",
+    "ChebGNN",
+    "BernNet",
+    "JacobiConv"
+  ],
+  "k": [
+    4,
+    10
+  ],
+  "hidden": [
+    64,
+    128
+  ],
+  "runs": 10,
+  "epochs": [
+    500
+  ],
+  "patience": [
+    50
+  ],
+  "lr": [
+    0.01,
+    0.005,
+    0.001
+  ],
+  "weight_decay": [
+    0.0005,
+    0.0001,
+    0.0
+  ],
+  "dropout": 0.5,
+  "dprate": 0.0,
+  "max_task_batch": 90,
+  "device": "cuda",
+  "out_dir": "spectral_massive_spatial_masks_retry_20260511-232502/Chameleon/array_12503816_4",
+  "no_curves": false,
+  "init_seed": 0,
+  "train_r": 0.8,
+  "val_r": 0.1,
+  "mask_dir": "spatial/masks"
+}
