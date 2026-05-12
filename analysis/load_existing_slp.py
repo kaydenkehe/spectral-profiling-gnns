@@ -1,4 +1,3 @@
-"""Load existing SLP data from metrics.json to avoid recomputation."""
 import json
 from pathlib import Path
 
@@ -14,7 +13,7 @@ def load_existing_slp(metrics_path, dataset_name):
     eigenvalues = np.array(data['eigenvalues'])
     cdf = np.array(data['cdf'])
     
-    # Convert to mass format expected by sparsify_tradeoff
+    # Convert to probability mass
     mass = np.diff(np.concatenate([[0], cdf]))
     mass = mass / mass.sum()  # Normalize
     

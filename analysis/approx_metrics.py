@@ -1,7 +1,6 @@
 """Add approximate SLP-CDF entries to metrics.json for larger datasets.
 
-This leaves metrics.py untouched. The output format keeps the original
-metrics.json fields (num_classes, num_nodes, num_edges, homophily, eigenvalues,
+The output format keeps the original metrics.json fields (num_classes, num_nodes, num_edges, homophily, eigenvalues,
 cdf) and adds metadata describing the approximate SLP run.
 """
 
