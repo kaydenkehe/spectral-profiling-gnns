@@ -591,6 +591,112 @@ def compute_chebyshev_profiles(edge_index, num_nodes, x_centered, y_centered_lis
     return profiles
 
 
+def lanczos_measure(lap, signal, steps):
+    norm = torch.linalg.norm(signal)
+    if norm.item() <= 1e-12:
+        return np.array([], dtype=float), np.array([], dtype=float)
+
+    q = signal / norm
+    q_prev = torch.zeros_like(q)
+    beta_prev = signal.new_tensor(0.0)
+    basis = []
+    alphas = []
+    betas = []
+
+    for _ in range(steps):
+        basis.append(q)
+        z = torch.sparse.mm(lap, q[:, None]).squeeze(1)
+        if len(basis) > 1:
+            z = z - beta_prev * q_prev
+        alpha = torch.dot(q, z)
+        z = z - alpha * q
+        for old_q in basis:
+            z = z - torch.dot(old_q, z) * old_q
+        beta = torch.linalg.norm(z)
+        alphas.append(alpha)
+        if len(alphas) == steps or beta.item() <= 1e-10:
+            break
+        betas.append(beta)
+        q_prev, q, beta_prev = q, z / beta, beta
+
+    t = torch.diag(torch.stack(alphas))
+    if betas:
+        off_diag = torch.stack(betas)
+        t = t + torch.diag(off_diag, diagonal=1) + torch.diag(off_diag, diagonal=-1)
+    evals, evecs = torch.linalg.eigh(t)
+    weights = (evecs[0] ** 2) * (norm ** 2)
+    return (
+        np.clip(evals.detach().cpu().numpy(), 0.0, 2.0),
+        weights.detach().cpu().numpy(),
+    )
+
+
+def lanczos_bin_masses(lap, signals, bins, steps, denom, scale=1.0):
+    masses = {n_bins: np.zeros(n_bins, dtype=float) for n_bins in bins}
+    if denom.item() <= 1e-12:
+        return masses
+
+    for col_idx in range(signals.size(1)):
+        evals, weights = lanczos_measure(lap, signals[:, col_idx], steps)
+        if evals.size == 0:
+            continue
+        for n_bins in bins:
+            masses[n_bins] += aggregate_by_bins(evals, weights, n_bins)
+    return {
+        n_bins: scale * mass / float(denom.item())
+        for n_bins, mass in masses.items()
+    }
+
+
+def rademacher_feature_probes(x_centered, num_probes, seed):
+    generator = torch.Generator()
+    generator.manual_seed(int(seed))
+    signs = torch.randint(
+        0,
+        2,
+        (x_centered.size(1), num_probes),
+        generator=generator,
+        dtype=torch.float32,
+    ).mul_(2).sub_(1)
+    signs = signs.to(device=x_centered.device, dtype=x_centered.dtype)
+    return x_centered @ signs
+
+
+def compute_lanczos_profiles(edge_index, num_nodes, x_centered, y_centered_list, bins,
+                             dtype, device, steps, feature_probes, seed):
+    lap = normalized_laplacian_sparse(edge_index, num_nodes, dtype, device)
+    x_denom = torch.sum(x_centered ** 2)
+    probes = rademacher_feature_probes(x_centered, feature_probes, seed)
+    feature_masses = lanczos_bin_masses(
+        lap,
+        probes,
+        bins,
+        steps,
+        x_denom,
+        scale=1.0 / feature_probes,
+    )
+
+    label_by_seed = []
+    for y_centered in y_centered_list:
+        label_by_seed.append(lanczos_bin_masses(
+            lap,
+            y_centered,
+            bins,
+            steps,
+            torch.sum(y_centered ** 2),
+        ))
+
+    profiles = {}
+    for n_bins in bins:
+        profiles[n_bins] = {
+            "label_mass": np.mean([masses[n_bins] for masses in label_by_seed], axis=0),
+            "feature_mass": feature_masses[n_bins],
+            "band_cka": np.zeros(n_bins, dtype=float),
+        }
+    del lap, probes
+    return profiles
+
+
 def select_spectral_method(method, num_nodes, max_dense_elements):
     dense_elements = num_nodes * num_nodes
     if method == "auto":
@@ -620,14 +726,16 @@ def resolve_device(device_name):
 
 
 def metric_compute_device(requested_device, method_used):
-    if requested_device.type == "mps" and method_used == "chebyshev":
-        return torch.device("cpu"), "mps_sparse_mm_unsupported_for_chebyshev"
+    if requested_device.type == "mps" and method_used in {"chebyshev", "lanczos"}:
+        return torch.device("cpu"), f"mps_sparse_mm_unsupported_for_{method_used}"
     return requested_device, ""
 
 
 def compute_dataset_metrics(dataset_name, dataset, bins, dtype, device, max_dense_elements,
                             spectral_method, chebyshev_order, chebyshev_jackson,
-                            label_scope, label_seeds, label_split_mode):
+                            label_scope, label_seeds, label_split_mode,
+                            lanczos_steps, lanczos_feature_probes, lanczos_seed,
+                            feature_families):
     data = dataset[0]
     num_nodes = int(data.num_nodes)
     method_used = select_spectral_method(spectral_method, num_nodes, max_dense_elements)
@@ -694,6 +802,9 @@ def compute_dataset_metrics(dataset_name, dataset, bins, dtype, device, max_dens
         "device_fallback_reason": fallback_reason,
         "chebyshev_order": int(chebyshev_order) if method_used == "chebyshev" else "",
         "chebyshev_jackson": bool(chebyshev_jackson) if method_used == "chebyshev" else "",
+        "lanczos_steps": int(lanczos_steps) if method_used == "lanczos" else "",
+        "lanczos_feature_probes": int(lanczos_feature_probes) if method_used == "lanczos" else "",
+        "lanczos_seed": int(lanczos_seed) if method_used == "lanczos" else "",
     }
 
     if method_used == "exact":
@@ -736,6 +847,19 @@ def compute_dataset_metrics(dataset_name, dataset, bins, dtype, device, max_dens
             compute_device,
             chebyshev_order,
             chebyshev_jackson,
+        )
+    elif method_used == "lanczos":
+        profiles = compute_lanczos_profiles(
+            edge_index,
+            num_nodes,
+            x_centered,
+            y_centered_list,
+            bins,
+            dtype,
+            compute_device,
+            lanczos_steps,
+            lanczos_feature_probes,
+            lanczos_seed,
         )
     else:
         raise ValueError(f"unknown spectral method: {spectral_method}")
@@ -782,7 +906,7 @@ def compute_dataset_metrics(dataset_name, dataset, bins, dtype, device, max_dens
             homophily,
         ]
 
-        for feature_family in FEATURE_FAMILIES:
+        for feature_family in feature_families:
             values = feature_vectors[(dataset_name, n_bins, feature_family)]
             for feature_index, metric_value in enumerate(values):
                 component, bin_idx = feature_component_name(
@@ -1482,7 +1606,7 @@ def parse_args():
     parser.add_argument("--dtype", choices=["float32", "float64"], default="float32")
     parser.add_argument(
         "--spectral-method",
-        choices=["auto", "exact", "chebyshev"],
+        choices=["auto", "exact", "chebyshev", "lanczos"],
         default="auto",
         help="auto uses exact dense eigendecomposition below --max-dense-elements and Chebyshev band projectors above it.",
     )
@@ -1500,6 +1624,9 @@ def parse_args():
         help="Disable Jackson damping for approximate Chebyshev band projectors.",
     )
     parser.set_defaults(chebyshev_jackson=True)
+    parser.add_argument("--lanczos-steps", type=int, default=64)
+    parser.add_argument("--lanczos-feature-probes", type=int, default=16)
+    parser.add_argument("--lanczos-seed", type=int, default=0)
     parser.add_argument(
         "--label-scope",
         choices=["full", "train"],
@@ -1559,6 +1686,13 @@ def main():
     if device.type == "mps" and dtype == torch.float64:
         print("[device] MPS does not support float64 well; using float32", flush=True)
         dtype = torch.float32
+    if args.spectral_method == "lanczos":
+        unsupported = set(args.feature_families) & {"band_cka", "combined"}
+        if unsupported:
+            raise ValueError(
+                "Lanczos mode estimates spectral masses, not band projections. "
+                f"Remove unsupported feature families: {sorted(unsupported)}"
+            )
     datasets = [canonical_dataset_name(name) for name in args.datasets]
     label_seeds = args.label_seeds
     if label_seeds is None:
@@ -1601,10 +1735,15 @@ def main():
             )
             if method_used == "exact":
                 method_message = "exact eigensystem"
-            else:
+            elif method_used == "chebyshev":
                 method_message = (
                     f"Chebyshev spectral projectors "
                     f"(order={args.chebyshev_order}, jackson={args.chebyshev_jackson})"
+                )
+            else:
+                method_message = (
+                    f"Lanczos spectral measures "
+                    f"(steps={args.lanczos_steps}, feature_probes={args.lanczos_feature_probes})"
                 )
             compute_device, fallback_reason = metric_compute_device(device, method_used)
             if fallback_reason:
@@ -1625,6 +1764,10 @@ def main():
                 label_scope=args.label_scope,
                 label_seeds=label_seeds,
                 label_split_mode=args.label_split_mode,
+                lanczos_steps=args.lanczos_steps,
+                lanczos_feature_probes=args.lanczos_feature_probes,
+                lanczos_seed=args.lanczos_seed,
+                feature_families=args.feature_families,
             )
             metric_rows.extend(rows)
             feature_vectors.update(vectors)
