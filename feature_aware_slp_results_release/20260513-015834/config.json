@@ -1,0 +1,94 @@
+{
+  "paper_root": "release/architecture_spatial_masks",
+  "jacobi_root": "release/jacobi_spatial_masks",
+  "out_dir": "feature_aware_slp_results_release",
+  "datasets": [
+    "Actor",
+    "AmazonRatings",
+    "CS",
+    "Chameleon",
+    "CiteSeer",
+    "Computers",
+    "Cora",
+    "Cornell",
+    "Minesweeper",
+    "Photo",
+    "PubMed",
+    "Questions",
+    "RomanEmpire",
+    "Squirrel",
+    "Texas",
+    "Tolokers",
+    "WikiCS",
+    "Wisconsin"
+  ],
+  "bins": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "feature_families": [
+    "label_slp",
+    "feature_density",
+    "homophily"
+  ],
+  "expected_runs": 10,
+  "regression_alphas": [
+    0.1,
+    1.0,
+    10.0
+  ],
+  "logistic_cs": [
+    1.0
+  ],
+  "device": "cpu",
+  "dtype": "float32",
+  "spectral_method": "lanczos",
+  "max_dense_elements": 50000000,
+  "chebyshev_order": 64,
+  "chebyshev_jackson": true,
+  "lanczos_steps": 64,
+  "lanczos_feature_probes": 16,
+  "lanczos_seed": 0,
+  "label_scope": "train",
+  "label_split_mode": "paper_random",
+  "label_train_r": 0.8,
+  "label_seeds": null,
+  "max_val_pairs": null,
+  "max_test_pairs": null,
+  "protocols": [
+    "nested"
+  ],
+  "write_candidate_scores": false,
+  "n_jobs": -1,
+  "parallel_backend": "threading",
+  "metrics_only": false,
+  "tasks": [
+    "architecture",
+    "paper_K"
+  ],
+  "resolved_label_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "resolved_paper_root": "release/architecture_spatial_masks",
+  "resolved_jacobi_root": "release/jacobi_spatial_masks",
+  "resolved_out_dir": "/workspace/spectral-profling-gnns/feature_aware_slp_results_release/20260513-015834",
+  "resolved_device": "cpu",
+  "resolved_dtype": "torch.float32"
+}

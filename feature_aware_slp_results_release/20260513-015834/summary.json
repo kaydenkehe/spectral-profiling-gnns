@@ -1,0 +1,26 @@
+[
+  {
+    "protocol": "nested_2_test_2_val",
+    "task": "architecture",
+    "folds": 18360,
+    "mean_val_score": 0.4107843137254902,
+    "std_val_score": 0.3486563616088544,
+    "mean_baseline_val_score": 0.5555555555555556,
+    "selected_feature_family_mode": "label_slp",
+    "selected_n_bins_mode": 1,
+    "accuracy_all_predictions": 0.4107843137254902,
+    "baseline_accuracy_all_predictions": 0.5555555555555556
+  },
+  {
+    "protocol": "nested_2_test_2_val",
+    "task": "paper_K",
+    "folds": 18360,
+    "mean_val_score": 0.648338779956427,
+    "std_val_score": 0.3470031465319683,
+    "mean_baseline_val_score": 0.4777777777777778,
+    "selected_feature_family_mode": "label_slp",
+    "selected_n_bins_mode": 2,
+    "accuracy_all_predictions": 0.648338779956427,
+    "baseline_accuracy_all_predictions": 0.4777777777777778
+  }
+]

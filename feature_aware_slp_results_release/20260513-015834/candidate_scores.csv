@@ -1,0 +1,1 @@
+protocol,selection_split,task,fold_id,candidate_id,feature_family,n_bins,model_kind,regularization,train_datasets,test_datasets,val_datasets,train_score,test_score,baseline_test_score,selected
