@@ -323,7 +323,7 @@ def train_centered_one_hot(labels, num_classes, train_mask):
     return out
 
 
-def random_train_mask(num_nodes, seed, train_r=0.6):
+def random_train_mask(num_nodes, seed, train_r):
     generator = torch.Generator()
     generator.manual_seed(int(seed))
     perm = torch.randperm(num_nodes, generator=generator)
@@ -332,20 +332,20 @@ def random_train_mask(num_nodes, seed, train_r=0.6):
     return mask
 
 
-def native_or_random_train_mask(data, seed):
+def native_or_random_train_mask(data, seed, train_r):
     if hasattr(data, "train_mask") and data.train_mask is not None:
         train_mask = data.train_mask
         if train_mask.dim() == 2:
             return train_mask[:, int(seed) % train_mask.size(1)].cpu().bool()
         return train_mask.cpu().bool()
-    return random_train_mask(int(data.num_nodes), seed)
+    return random_train_mask(int(data.num_nodes), seed, train_r)
 
 
-def train_masks_for_label_scope(data, seeds, split_mode):
+def train_masks_for_label_scope(data, seeds, split_mode, train_r):
     if split_mode == "paper_random":
-        return [random_train_mask(int(data.num_nodes), seed) for seed in seeds]
+        return [random_train_mask(int(data.num_nodes), seed, train_r) for seed in seeds]
     if split_mode == "jacobi_native_or_random":
-        return [native_or_random_train_mask(data, seed) for seed in seeds]
+        return [native_or_random_train_mask(data, seed, train_r) for seed in seeds]
     raise ValueError(f"unknown label split mode: {split_mode}")
 
 
@@ -734,6 +734,7 @@ def metric_compute_device(requested_device, method_used):
 def compute_dataset_metrics(dataset_name, dataset, bins, dtype, device, max_dense_elements,
                             spectral_method, chebyshev_order, chebyshev_jackson,
                             label_scope, label_seeds, label_split_mode,
+                            label_train_r,
                             lanczos_steps, lanczos_feature_probes, lanczos_seed,
                             feature_families):
     data = dataset[0]
@@ -757,7 +758,7 @@ def compute_dataset_metrics(dataset_name, dataset, bins, dtype, device, max_dens
 
     x_centered = x - x.mean(dim=0, keepdim=True)
     train_masks = (
-        train_masks_for_label_scope(graph, label_seeds, label_split_mode)
+        train_masks_for_label_scope(graph, label_seeds, label_split_mode, label_train_r)
         if label_scope == "train"
         else []
     )
@@ -794,6 +795,7 @@ def compute_dataset_metrics(dataset_name, dataset, bins, dtype, device, max_dens
         "homophily": float(homophily),
         "label_scope": label_scope,
         "label_split_mode": label_split_mode if label_scope == "train" else "",
+        "label_train_r": float(label_train_r) if label_scope == "train" else "",
         "label_seeds": values_to_arg_string(label_seeds) if label_scope == "train" else "",
         "label_seed_count": len(label_seeds) if label_scope == "train" else 0,
         "spectral_method": method_used,
@@ -1640,6 +1642,12 @@ def parse_args():
         help="paper_random matches train_spectral_massive.py; jacobi_native_or_random matches jacobi_ab_sweep.py.",
     )
     parser.add_argument(
+        "--label-train-r",
+        type=float,
+        default=0.8,
+        help="Train fraction used when reconstructing random train-label masks.",
+    )
+    parser.add_argument(
         "--label-seeds",
         nargs="+",
         type=int,
@@ -1764,6 +1772,7 @@ def main():
                 label_scope=args.label_scope,
                 label_seeds=label_seeds,
                 label_split_mode=args.label_split_mode,
+                label_train_r=args.label_train_r,
                 lanczos_steps=args.lanczos_steps,
                 lanczos_feature_probes=args.lanczos_feature_probes,
                 lanczos_seed=args.lanczos_seed,
